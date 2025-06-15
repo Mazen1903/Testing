@@ -8,19 +8,37 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    primary: '#6B8AFE',  // Light blue
+    secondary: '#8B5CF6', // Purple
+    background: '#FFFFFF',
+    text: '#1A1A1A',
+    secondaryText: '#666666',
+    border: '#E5E5E5',
+    card: '#F8F9FA',
+    success: '#34D399',
+    error: '#EF4444',
+    warning: '#F59E0B',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    primary: '#818CF8',  // Lighter blue for dark mode
+    secondary: '#A78BFA', // Lighter purple for dark mode
+    background: '#1A1A1A',
+    text: '#FFFFFF',
+    secondaryText: '#A1A1AA',
+    border: '#2D2D2D',
+    card: '#262626',
+    success: '#34D399',
+    error: '#EF4444',
+    warning: '#F59E0B',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
   },
 };
+
+export type ThemeColors = typeof Colors.light;

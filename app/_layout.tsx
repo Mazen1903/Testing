@@ -1,39 +1,55 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    SplashScreen.hideAsync();
+  }, []);
 
-  if (!loaded) {
-    return null;
-  }
+    return (
+    <ThemeProvider>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}
+
+function RootLayoutNav() {
+  const { theme, isDark } = useTheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+          <Stack screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: isDark ? '#1A1A1A' : '#FFFFFF' }
+          }}>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/sign-in" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/sign-up" options={{ headerShown: false }} />
+            <Stack.Screen name="reading/[id]" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="settings" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="app-settings" options={{ presentation: 'modal' }} />
+          </Stack>
+          <StatusBar style={isDark ? 'light' : 'dark'} />
+        </NavigationThemeProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
