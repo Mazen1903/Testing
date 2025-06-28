@@ -67,4 +67,3 @@ Built with modern React Native best practices:
 1. Clone the repository
 2. Install dependencies: `npm install`
 3. Start the development server: `npx expo start`
-4. Follow the [ARCHITECTURE.md](./ARCHITECTURE.md) guide for development patterns
