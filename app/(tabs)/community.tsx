@@ -4,8 +4,8 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Colors } from '@/constants/Colors';
-import { useTheme } from '@/contexts/ThemeContext';
+import { Colors } from '@/shared/constants/Colors';
+import { useTheme } from '@/shared/contexts/ThemeContext';
 
 const posts = [
   {

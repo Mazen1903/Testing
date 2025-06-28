@@ -5,9 +5,9 @@ import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Colors } from '@/constants/Colors';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { Colors } from '@/shared/constants/Colors';
+import { useTheme } from '@/shared/contexts/ThemeContext';
+import { useAuth } from '@/shared/contexts/AuthContext';
 
 export default function SignUpScreen() {
   const { isDark } = useTheme();

@@ -5,8 +5,8 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link } from 'expo-router';
 
-import { Colors } from '@/constants/Colors';
-import { useTheme } from '@/contexts/ThemeContext';
+import { Colors } from '@/shared/constants/Colors';
+import { useTheme } from '@/shared/contexts/ThemeContext';
 
 const dummyChapterContent = `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.

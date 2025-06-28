@@ -5,8 +5,8 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Colors } from '@/constants/Colors';
-import { useTheme } from '@/contexts/ThemeContext';
+import { Colors } from '@/shared/constants/Colors';
+import { useTheme } from '@/shared/contexts/ThemeContext';
 
 export default function HomeScreen() {
   const { isDark } = useTheme();

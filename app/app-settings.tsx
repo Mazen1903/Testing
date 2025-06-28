@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Colors } from '@/constants/Colors';
-import { useTheme } from '@/contexts/ThemeContext';
+import { Colors } from '@/shared/constants/Colors';
+import { useTheme } from '@/shared/contexts/ThemeContext';
 
 export default function AppSettingsScreen() {
   const router = useRouter();

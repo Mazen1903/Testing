@@ -3,9 +3,9 @@ import { Tabs, useRouter } from 'expo-router';
 import { View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 
-import { Colors } from '@/constants/Colors';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { Colors } from '@/shared/constants/Colors';
+import { useTheme } from '@/shared/contexts/ThemeContext';
+import { useAuth } from '@/shared/contexts/AuthContext';
 
 type TabIconProps = {
   color: string;

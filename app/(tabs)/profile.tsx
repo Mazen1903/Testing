@@ -5,9 +5,9 @@ import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } fr
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Colors } from '@/constants/Colors';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { Colors } from '@/shared/constants/Colors';
+import { useTheme } from '@/shared/contexts/ThemeContext';
+import { useAuth } from '@/shared/contexts/AuthContext';
 
 const achievements = [
   { id: '1', title: 'Early Bird', description: 'Complete 5 chapters before 9 AM', icon: 'time-outline' as const },
@@ -90,7 +90,7 @@ export default function ProfileScreen() {
           </View>
           <Text style={[styles.name, { color: colors.text }]}>{user?.name || 'User'}</Text>
           <Text style={[styles.bio, { color: colors.secondaryText }]}>
-            {user?.provider === 'google' ? 'Signed in with Google' : 'Passionate about self-improvement and mindfulness'}
+            Passionate about self-improvement and mindfulness
           </Text>
         </Animated.View>
 
