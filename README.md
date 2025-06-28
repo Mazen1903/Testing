@@ -1,50 +1,70 @@
-# Welcome to your Expo app 👋
+# Self-Development App 📚
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native app built with Expo for personal growth and self-development content consumption.
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 🚀 Quick Start
 
 ```bash
-npm run reset-project
+# Install dependencies
+npm install
+
+# Start development server
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 📱 Features
 
-## Learn more
+- **Authentication System** - Secure user registration and login
+- **Reading Library** - Curated self-development content
+- **Progress Tracking** - Monitor your learning journey
+- **Community Features** - Connect with other learners
+- **Dark/Light Theme** - Comfortable reading experience
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🏗️ Architecture
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+This app follows a clean, scalable architecture with:
 
-## Join the community
+- **Type-safe TypeScript** throughout
+- **Service layer pattern** for business logic
+- **Custom hooks** for reusable functionality
+- **Centralized error handling**
+- **Professional folder structure**
 
-Join our community of developers creating universal apps.
+📋 **For detailed architecture information, see [ARCHITECTURE.md](./ARCHITECTURE.md)**
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🛠️ Tech Stack
+
+- **Expo Router** - File-based navigation
+- **TypeScript** - Type safety
+- **React Native Reanimated** - Smooth animations
+- **Async Storage** - Local data persistence
+- **Custom Architecture** - Scalable and maintainable
+
+## 📁 Project Structure
+
+```
+├── app/                    # Expo Router screens
+├── src/shared/            # Shared utilities & services
+│   ├── types/            # TypeScript definitions
+│   ├── services/         # Business logic
+│   ├── hooks/            # Custom React hooks
+│   ├── utils/            # Helper functions
+│   └── contexts/         # React contexts
+├── src/features/         # Feature-based organization
+└── assets/               # Static assets
+```
+
+## 🔧 Development
+
+Built with modern React Native best practices:
+- Clean separation of concerns
+- Proper error handling
+- Consistent code organization
+- Professional architecture patterns
+
+## 📖 Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the development server: `npx expo start`
+4. Follow the [ARCHITECTURE.md](./ARCHITECTURE.md) guide for development patterns
