@@ -30,8 +30,6 @@ This app follows a clean, scalable architecture with:
 - **Centralized error handling**
 - **Professional folder structure**
 
-📋 **For detailed architecture information, see [ARCHITECTURE.md](./ARCHITECTURE.md)**
-
 ## 🛠️ Tech Stack
 
 - **Expo Router** - File-based navigation
