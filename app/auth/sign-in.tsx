@@ -13,7 +13,7 @@ export default function SignInScreen() {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
   const router = useRouter();
-  const { signInWithEmail, isLoading } = useAuth();
+  const { signInWithEmail, signInWithGoogle, isLoading } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +33,15 @@ export default function SignInScreen() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Google sign in failed. Please try again.');
+    }
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -44,17 +53,8 @@ export default function SignInScreen() {
           </Text>
         </Animated.View>
 
-        {/* Demo Credentials Info */}
-        <Animated.View entering={FadeInDown.delay(200)} style={[styles.demoInfo, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Text style={[styles.demoTitle, { color: colors.text }]}>Demo Credentials</Text>
-          <Text style={[styles.demoText, { color: colors.secondaryText }]}>
-            Email: demo@example.com{'\n'}
-            Password: password123
-          </Text>
-        </Animated.View>
-
         {/* Email Form */}
-        <Animated.View entering={FadeInDown.delay(300)} style={styles.form}>
+        <Animated.View entering={FadeInDown.delay(200)} style={styles.form}>
           <View style={styles.inputContainer}>
             <Text style={[styles.label, { color: colors.text }]}>Email</Text>
             <TextInput
@@ -103,6 +103,25 @@ export default function SignInScreen() {
               {isLoading ? 'Signing In...' : 'Sign In'}
             </Text>
           </TouchableOpacity>
+
+          {/* Separator */}
+          <View style={styles.separator}>
+            <View style={[styles.separatorLine, { backgroundColor: colors.border }]} />
+            <Text style={[styles.separatorText, { color: colors.secondaryText }]}>or</Text>
+            <View style={[styles.separatorLine, { backgroundColor: colors.border }]} />
+          </View>
+
+          {/* Google Sign In Button */}
+          <TouchableOpacity
+            style={[styles.googleButton, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={handleGoogleSignIn}
+            disabled={isLoading}
+          >
+            <Ionicons name="logo-google" size={20} color="#EA4335" />
+            <Text style={[styles.googleButtonText, { color: colors.text }]}>
+              {isLoading ? 'Signing In...' : 'Continue with Google'}
+            </Text>
+          </TouchableOpacity>
         </Animated.View>
 
         {/* Footer */}
@@ -147,21 +166,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
-  demoInfo: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 32,
-  },
-  demoTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  demoText: {
-    fontSize: 12,
-    lineHeight: 16,
-  },
+
   form: {
     marginBottom: 32,
   },
@@ -217,6 +222,33 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 14,
+    fontWeight: '600',
+  },
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+  },
+  separatorText: {
+    marginHorizontal: 16,
+    fontSize: 14,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 12,
+  },
+  googleButtonText: {
+    fontSize: 16,
     fontWeight: '600',
   },
 }); 

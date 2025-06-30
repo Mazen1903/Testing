@@ -7,6 +7,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   signInWithEmail: async () => {},
   signUpWithEmail: async () => {},
+  signInWithGoogle: async () => {},
   signOut: async () => {},
 });
 
@@ -72,6 +73,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      setIsLoading(true);
+      
+      const response = await AuthService.signInWithGoogle();
+      
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+      
+      if (response.data) {
+        setUser(response.data);
+      }
+    } catch (error: any) {
+      console.error('Google sign-in failed:', error);
+      throw new Error(error.message || 'Google sign in failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       setIsLoading(true);
@@ -89,6 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading,
     signInWithEmail,
     signUpWithEmail,
+    signInWithGoogle,
     signOut,
   };
 

@@ -10,6 +10,9 @@ import { ThemeProvider } from '@/shared/contexts/ThemeContext';
 import { AuthProvider } from '@/shared/contexts/AuthContext';
 import { useTheme } from '@/shared/contexts/ThemeContext';
 
+// Initialize Firebase early
+import '@/shared/config/firebase-init';
+
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 

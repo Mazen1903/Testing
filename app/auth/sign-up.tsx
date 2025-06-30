@@ -13,7 +13,7 @@ export default function SignUpScreen() {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
   const router = useRouter();
-  const { signUpWithEmail, isLoading } = useAuth();
+  const { signUpWithEmail, signInWithGoogle, isLoading } = useAuth();
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -43,6 +43,15 @@ export default function SignUpScreen() {
       router.replace('/(tabs)');
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to create account');
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Google sign in failed. Please try again.');
     }
   };
 
@@ -145,10 +154,29 @@ export default function SignUpScreen() {
               {isLoading ? 'Creating Account...' : 'Create Account'}
             </Text>
           </TouchableOpacity>
+
+          {/* Separator */}
+          <View style={styles.separator}>
+            <View style={[styles.separatorLine, { backgroundColor: colors.border }]} />
+            <Text style={[styles.separatorText, { color: colors.secondaryText }]}>or</Text>
+            <View style={[styles.separatorLine, { backgroundColor: colors.border }]} />
+          </View>
+
+          {/* Google Sign In Button */}
+          <TouchableOpacity
+            style={[styles.googleButton, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={handleGoogleSignIn}
+            disabled={isLoading}
+          >
+            <Ionicons name="logo-google" size={20} color="#EA4335" />
+            <Text style={[styles.googleButtonText, { color: colors.text }]}>
+              {isLoading ? 'Signing In...' : 'Continue with Google'}
+            </Text>
+          </TouchableOpacity>
         </Animated.View>
 
         {/* Footer */}
-        <Animated.View entering={FadeInDown.delay(300)} style={styles.footer}>
+        <Animated.View entering={FadeInDown.delay(400)} style={styles.footer}>
           <Text style={[styles.footerText, { color: colors.secondaryText }]}>
             Already have an account?{' '}
           </Text>
@@ -244,6 +272,33 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 14,
+    fontWeight: '600',
+  },
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+  },
+  separatorText: {
+    marginHorizontal: 16,
+    fontSize: 14,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 12,
+  },
+  googleButtonText: {
+    fontSize: 16,
     fontWeight: '600',
   },
 }); 
