@@ -5,54 +5,69 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ClerkProvider } from '@clerk/clerk-expo';
 
 import { ThemeProvider } from '@/shared/contexts/ThemeContext';
 import { AuthProvider } from '@/shared/contexts/AuthContext';
 import { useTheme } from '@/shared/contexts/ThemeContext';
-
-// Initialize Firebase early
-import '@/shared/config/firebase-init';
+import { clerkConfig } from '@/shared/config/clerk';
+import { Colors } from '@/shared/constants/Colors';
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootLayoutNav() {
+  const { isDark } = useTheme();
+  const themeColors = Colors[isDark ? 'dark' : 'light'];
+
   useEffect(() => {
-    SplashScreen.hideAsync();
+    // Hide splash screen after a brief moment
+    const timer = setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
-    return (
-    <ThemeProvider>
-      <AuthProvider>
-        <RootLayoutNav />
-      </AuthProvider>
-    </ThemeProvider>
+  return (
+    <NavigationThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+      <SafeAreaProvider style={{ backgroundColor: themeColors.background }}>
+        <GestureHandlerRootView style={{ flex: 1, backgroundColor: themeColors.background }}>
+          <AuthProvider>
+            <Stack 
+              screenOptions={{ 
+                headerShown: false,
+                contentStyle: { backgroundColor: themeColors.background },
+                animation: 'fade'
+              }}
+            >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="onboarding" />
+              <Stack.Screen name="auth/sign-in" />
+              <Stack.Screen name="auth/sign-up" />
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="settings" />
+              <Stack.Screen name="app-settings" />
+              <Stack.Screen name="reading/[id]" />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </AuthProvider>
+          <StatusBar style={isDark ? 'light' : 'dark'} />
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
+    </NavigationThemeProvider>
   );
 }
 
-function RootLayoutNav() {
-  const { theme, isDark } = useTheme();
-
+export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <NavigationThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-          <Stack screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: isDark ? '#1A1A1A' : '#FFFFFF' }
-          }}>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="auth/sign-in" options={{ headerShown: false }} />
-            <Stack.Screen name="auth/sign-up" options={{ headerShown: false }} />
-            <Stack.Screen name="reading/[id]" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="settings" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="app-settings" options={{ presentation: 'modal' }} />
-          </Stack>
-          <StatusBar style={isDark ? 'light' : 'dark'} />
-        </NavigationThemeProvider>
-      </GestureHandlerRootView>
-    </SafeAreaProvider>
+    <ClerkProvider 
+      publishableKey={clerkConfig.publishableKey}
+      tokenCache={clerkConfig.tokenCache}
+    >
+      <ThemeProvider>
+        <RootLayoutNav />
+      </ThemeProvider>
+    </ClerkProvider>
   );
 }

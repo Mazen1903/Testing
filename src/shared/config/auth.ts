@@ -1,12 +1,20 @@
+// Clerk Auth Configuration
 export const AuthConfig = {
-  google: {
-    // TODO: Move these to environment variables in production
-    clientId: '244154342093-ck33g72tu04pgl0hlsq5i78vjcjvv30v.apps.googleusercontent.com',
-    // Add your web client ID if different
-    webClientId: '244154342093-ck33g72tu04pgl0hlsq5i78vjcjvv30v.apps.googleusercontent.com',
-  },
+  // Clerk automatically handles OAuth redirects
   redirectUri: {
     scheme: 'self-development-app',
     web: 'http://localhost:19006',
+  },
+  // Sign-in/up options (configured in Clerk Dashboard)
+  signInOptions: {
+    emailAndPassword: true,
+    googleOAuth: true,
+    appleOAuth: true,
+    microsoftOAuth: true,
+    // You can enable more options in Clerk Dashboard:
+    // phoneNumber: true,
+    // facebookOAuth: true,
+    // githubOAuth: true,
+    // discordOAuth: true,
   },
 } as const; 

@@ -13,7 +13,7 @@ export default function SignUpScreen() {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
   const router = useRouter();
-  const { signUpWithEmail, signInWithGoogle, isLoading } = useAuth();
+  const { signUpWithEmail, signInWithGoogle, signInWithApple, signInWithMicrosoft, isLoading } = useAuth();
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -52,6 +52,24 @@ export default function SignUpScreen() {
       router.replace('/(tabs)');
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Google sign in failed. Please try again.');
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      await signInWithApple();
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Apple sign in failed. Please try again.');
+    }
+  };
+
+  const handleMicrosoftSignIn = async () => {
+    try {
+      await signInWithMicrosoft();
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Microsoft sign in failed. Please try again.');
     }
   };
 
@@ -162,15 +180,37 @@ export default function SignUpScreen() {
             <View style={[styles.separatorLine, { backgroundColor: colors.border }]} />
           </View>
 
-          {/* Google Sign In Button */}
+          {/* OAuth Sign In Buttons */}
           <TouchableOpacity
-            style={[styles.googleButton, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.oauthButton, { backgroundColor: colors.card, borderColor: colors.border }]}
             onPress={handleGoogleSignIn}
             disabled={isLoading}
           >
             <Ionicons name="logo-google" size={20} color="#EA4335" />
-            <Text style={[styles.googleButtonText, { color: colors.text }]}>
+            <Text style={[styles.oauthButtonText, { color: colors.text }]}>
               {isLoading ? 'Signing In...' : 'Continue with Google'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.oauthButton, { backgroundColor: colors.card, borderColor: colors.border, marginTop: 12 }]}
+            onPress={handleAppleSignIn}
+            disabled={isLoading}
+          >
+            <Ionicons name="logo-apple" size={20} color={isDark ? '#FFFFFF' : '#000000'} />
+            <Text style={[styles.oauthButtonText, { color: colors.text }]}>
+              {isLoading ? 'Signing In...' : 'Continue with Apple'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.oauthButton, { backgroundColor: colors.card, borderColor: colors.border, marginTop: 12 }]}
+            onPress={handleMicrosoftSignIn}
+            disabled={isLoading}
+          >
+            <Ionicons name="logo-microsoft" size={20} color="#00A4EF" />
+            <Text style={[styles.oauthButtonText, { color: colors.text }]}>
+              {isLoading ? 'Signing In...' : 'Continue with Microsoft'}
             </Text>
           </TouchableOpacity>
         </Animated.View>
@@ -287,7 +327,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     fontSize: 14,
   },
-  googleButton: {
+  oauthButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -297,7 +337,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: 12,
   },
-  googleButtonText: {
+  oauthButtonText: {
     fontSize: 16,
     fontWeight: '600',
   },

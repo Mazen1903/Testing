@@ -3,41 +3,53 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#8B4513';
+const tintColorDark = '#CD7F32';
 
 export const Colors = {
   light: {
-    primary: '#6B8AFE',  // Light blue
-    secondary: '#8B5CF6', // Purple
-    background: '#FFFFFF',
-    text: '#1A1A1A',
-    secondaryText: '#666666',
-    border: '#E5E5E5',
-    card: '#F8F9FA',
-    success: '#34D399',
-    error: '#EF4444',
-    warning: '#F59E0B',
+    primary: '#8B4513',      // Islamic Brown
+    secondary: '#DAA520',    // Gold
+    background: '#F5F1E8',   // Parchment background
+    text: '#2F1B14',         // Dark ink
+    secondaryText: '#5D4E37', // Light ink
+    border: '#D2B48C',       // Tan border
+    card: '#FAF7F0',         // Light parchment
+    success: '#228B22',      // Islamic green
+    error: '#CC5500',        // Warm red
+    warning: '#FF8C00',      // Orange
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    icon: '#8B4513',
+    tabIconDefault: '#8B7355',
     tabIconSelected: tintColorLight,
+    // Additional manuscript colors
+    parchment: '#F5F1E8',
+    darkParchment: '#E8E0D0',
+    gold: '#DAA520',
+    darkGold: '#B8860B',
+    lightBrown: '#A0764A',
   },
   dark: {
-    primary: '#818CF8',  // Lighter blue for dark mode
-    secondary: '#A78BFA', // Lighter purple for dark mode
-    background: '#1A1A1A',
-    text: '#FFFFFF',
-    secondaryText: '#A1A1AA',
-    border: '#2D2D2D',
-    card: '#262626',
-    success: '#34D399',
-    error: '#EF4444',
-    warning: '#F59E0B',
+    primary: '#CD7F32',      // Warm Bronze for dark mode  
+    secondary: '#B87333',    // Dark Bronze
+    background: '#1C1612',   // Dark parchment
+    text: '#F5F1E8',         // Light parchment text
+    secondaryText: '#C4B69C', // Muted light
+    border: '#3D3426',       // Dark border
+    card: '#2A241A',         // Dark card
+    success: '#32CD32',      // Light green
+    error: '#FF6347',        // Tomato red
+    warning: '#FFA500',      // Orange
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    icon: '#CD7F32',
+    tabIconDefault: '#B8976A',
     tabIconSelected: tintColorDark,
+    // Additional manuscript colors for dark mode
+    parchment: '#2A241A',
+    darkParchment: '#1C1612',
+    gold: '#CD7F32',
+    darkGold: '#B87333',
+    lightBrown: '#8B7355',
   },
 };
 

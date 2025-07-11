@@ -65,25 +65,20 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: isDark ? '#A1A1AA' : '#606060',
+        tabBarInactiveTintColor: colors.secondaryText,
         tabBarStyle: {
           position: 'absolute',
           bottom: 25,
           left: 25,
           right: 25,
-          backgroundColor: isDark ? Colors.dark.card : '#FFFFFF',
+          backgroundColor: colors.card,
           borderRadius: 30,
           height: 64,
           paddingBottom: 0,
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 4,
-          },
-          shadowOpacity: isDark ? 0.3 : 0.15,
-          shadowRadius: 16,
-          elevation: 8,
-          borderTopWidth: 0,
+          borderTopWidth: 1,
+          borderTopColor: colors.border,
+          borderWidth: 1,
+          borderColor: colors.border,
           marginHorizontal: 10,
         },
         tabBarIconStyle: {
@@ -95,7 +90,7 @@ export default function TabLayout() {
           fontSize: 12,
           marginTop: 0,
           marginBottom: 8,
-          fontWeight: '500',
+          fontWeight: '600',
           textAlign: 'center',
         },
         headerShown: false,
@@ -116,6 +111,15 @@ export default function TabLayout() {
           title: 'Library',
           tabBarIcon: (props) => (
             <TabIcon name="library-outline" {...props} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="supplications"
+        options={{
+          title: 'Duas',
+          tabBarIcon: (props) => (
+            <TabIcon name="heart-outline" {...props} />
           ),
         }}
       />

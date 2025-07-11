@@ -4,6 +4,7 @@ import React from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
@@ -31,20 +32,15 @@ export default function HomeScreen() {
         </Animated.View>
 
         {/* Current Reading Section */}
-        <Animated.View entering={FadeInDown.delay(200)} style={[
-          styles.currentReading, 
-          { backgroundColor: colors.card },
-          !isDark && {
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.1,
-            shadowRadius: 12,
-            elevation: 4,
-          }
-        ]}>
-          <View style={[styles.bookCover, { backgroundColor: colors.border }]}>
-            <Ionicons name="bookmark" size={40} color={colors.secondaryText} />
-          </View>
+        <Animated.View entering={FadeInDown.delay(200)} style={styles.manuscriptCard}>
+          <LinearGradient
+            colors={[colors.card, colors.background]}
+            style={styles.cardGradient}
+          >
+            <View style={[styles.currentReading, { borderColor: colors.border }]}>
+              <View style={[styles.bookCover, { backgroundColor: colors.border }]}>
+                <Ionicons name="bookmark" size={40} color={colors.primary} />
+              </View>
           <View style={styles.bookInfo}>
             <Text style={[styles.bookTitle, { color: colors.text }]}>The Keys to Happiness</Text>
             <View style={[styles.progressBar, { backgroundColor: colors.border }]}>
@@ -61,65 +57,60 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </Link>
           </View>
+            </View>
+          </LinearGradient>
         </Animated.View>
 
         {/* Progress Section */}
         <View style={styles.progressSection}>
           <Text style={[styles.sectionTitle, { color: colors.secondaryText }]}>MY PROGRESS</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.progressGrid} contentContainerStyle={{ paddingBottom: 10, paddingLeft: 10 }}>
-            <Animated.View entering={FadeInRight.delay(300)} style={[
-              styles.progressCard, 
-              { backgroundColor: colors.card },
-              !isDark && {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }
-            ]}>
-              <View style={[styles.progressIcon, { backgroundColor: colors.primary + '20' }]}>
-                <Ionicons name="school" size={24} color={colors.primary} />
-              </View>
-              <Text style={[styles.progressCardTitle, { color: colors.text }]}>The Mind</Text>
-              <Text style={[styles.progressCardSubtitle, { color: colors.secondaryText }]}>Chapter 4 of 10</Text>
-              <Text style={[styles.progressCardPercentage, { color: colors.primary }]}>40% Complete</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.progressGrid} contentContainerStyle={{ paddingBottom: 10, paddingLeft: 20, paddingRight: 20 }}>
+            <Animated.View entering={FadeInRight.delay(300)} style={styles.progressCardContainer}>
+              <LinearGradient
+                colors={[colors.card, colors.background]}
+                style={styles.cardGradient}
+              >
+                <View style={[styles.progressCard, { borderColor: colors.border }]}>
+                  <View style={[styles.progressIcon, { backgroundColor: colors.primary + '20' }]}>
+                    <Ionicons name="school" size={24} color={colors.primary} />
+                  </View>
+                  <Text style={[styles.progressCardTitle, { color: colors.text }]}>The Mind</Text>
+                  <Text style={[styles.progressCardSubtitle, { color: colors.secondaryText }]}>Chapter 4 of 10</Text>
+                  <Text style={[styles.progressCardPercentage, { color: colors.primary }]}>40% Complete</Text>
+                </View>
+              </LinearGradient>
             </Animated.View>
-            <Animated.View entering={FadeInRight.delay(400)} style={[
-              styles.progressCard, 
-              { backgroundColor: colors.card },
-              !isDark && {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }
-            ]}>
-              <View style={[styles.progressIcon, { backgroundColor: colors.secondary + '20' }]}>
-                <Ionicons name="body" size={24} color={colors.secondary} />
-              </View>
-              <Text style={[styles.progressCardTitle, { color: colors.text }]}>Health</Text>
-              <Text style={[styles.progressCardSubtitle, { color: colors.secondaryText }]}>Chapter 3 of 10</Text>
-              <Text style={[styles.progressCardPercentage, { color: colors.secondary }]}>30% Complete</Text>
+            
+            <Animated.View entering={FadeInRight.delay(400)} style={styles.progressCardContainer}>
+              <LinearGradient
+                colors={[colors.card, colors.background]}
+                style={styles.cardGradient}
+              >
+                <View style={[styles.progressCard, { borderColor: colors.border }]}>
+                  <View style={[styles.progressIcon, { backgroundColor: colors.secondary + '20' }]}>
+                    <Ionicons name="body" size={24} color={colors.secondary} />
+                  </View>
+                  <Text style={[styles.progressCardTitle, { color: colors.text }]}>Health</Text>
+                  <Text style={[styles.progressCardSubtitle, { color: colors.secondaryText }]}>Chapter 3 of 10</Text>
+                  <Text style={[styles.progressCardPercentage, { color: colors.secondary }]}>30% Complete</Text>
+                </View>
+              </LinearGradient>
             </Animated.View>
-            <Animated.View entering={FadeInRight.delay(500)} style={[
-              styles.progressCard, 
-              { backgroundColor: colors.card },
-              !isDark && {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }
-            ]}>
-              <View style={[styles.progressIcon, { backgroundColor: colors.primary + '20' }]}>
-                <Ionicons name="heart" size={24} color={colors.primary} />
-              </View>
-              <Text style={[styles.progressCardTitle, { color: colors.text }]}>The Soul</Text>
-              <Text style={[styles.progressCardSubtitle, { color: colors.secondaryText }]}>Chapter 2 of 10</Text>
-              <Text style={[styles.progressCardPercentage, { color: colors.primary }]}>20% Complete</Text>
+            
+            <Animated.View entering={FadeInRight.delay(500)} style={styles.progressCardContainer}>
+              <LinearGradient
+                colors={[colors.card, colors.background]}
+                style={styles.cardGradient}
+              >
+                <View style={[styles.progressCard, { borderColor: colors.border }]}>
+                  <View style={[styles.progressIcon, { backgroundColor: colors.primary + '20' }]}>
+                    <Ionicons name="heart" size={24} color={colors.primary} />
+                  </View>
+                  <Text style={[styles.progressCardTitle, { color: colors.text }]}>The Soul</Text>
+                  <Text style={[styles.progressCardSubtitle, { color: colors.secondaryText }]}>Chapter 2 of 10</Text>
+                  <Text style={[styles.progressCardPercentage, { color: colors.primary }]}>20% Complete</Text>
+                </View>
+              </LinearGradient>
             </Animated.View>
           </ScrollView>
         </View>
@@ -223,10 +214,19 @@ const styles = StyleSheet.create({
     fontSize: 34,
     fontWeight: 'bold',
   },
+  manuscriptCard: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  cardGradient: {
+    flex: 1,
+  },
   currentReading: {
     flexDirection: 'row',
     padding: 20,
-    marginHorizontal: 20,
+    borderWidth: 1,
     borderRadius: 24,
   },
   bookCover: {
@@ -293,11 +293,16 @@ const styles = StyleSheet.create({
   progressGrid: {
     flexDirection: 'row',
   },
-  progressCard: {
+  progressCardContainer: {
     width: 160,
-    padding: 16,
-    borderRadius: 20,
     marginRight: 12,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  progressCard: {
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 20,
   },
   progressIcon: {
     width: 40,
