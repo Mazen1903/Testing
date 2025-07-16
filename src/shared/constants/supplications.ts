@@ -1,4 +1,10 @@
-import { ZikrSeries, ZikrCategory } from '../types/supplications';
+import { ZikrSeries, ZikrCategory, SubCategory } from '../types/supplications';
+
+export const PRAYER_SUBCATEGORIES: SubCategory[] = [
+  { id: 'call_to_prayer', name: 'Call to Prayer', description: 'Duas for responding to the call to prayer', icon: 'megaphone', color: '#8B4513' },
+  { id: 'beginning_prayer', name: 'Beginning of Prayer', description: 'Opening invocations before prayer', icon: 'star', color: '#B8860B' },
+  { id: 'during_prayer', name: 'During Prayer', description: 'Invocations during prayer movements', icon: 'body', color: '#D2691E' },
+];
 
 export const ZIKR_CATEGORIES: ZikrCategory[] = [
   { id: 'all', name: 'All', icon: 'apps' },
@@ -7,7 +13,8 @@ export const ZIKR_CATEGORIES: ZikrCategory[] = [
   { id: 'sleep', name: 'Sleep', icon: 'bed' },
   { id: 'waking', name: 'Waking', icon: 'sunny-outline' },
   { id: 'restroom', name: 'Restroom', icon: 'home' },
-  { id: 'mosque', name: 'Mosque', icon: 'business' }
+  { id: 'mosque', name: 'Mosque', icon: 'business' },
+  { id: 'prayer', name: 'Prayer', icon: 'walk', subCategories: PRAYER_SUBCATEGORIES }
 ];
 
 export const ZIKR_SERIES: ZikrSeries[] = [
@@ -27,6 +34,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         category: 'morning',
         occasion: 'Morning',
         reference: 'Sahih Muslim',
+        fullReference: 'This supplication is reported in Sahih Muslim (2723) on the authority of Ibn Mas\'ud (may Allah be pleased with him). The Prophet (peace be upon him) used to recite this dua when he woke up in the morning, acknowledging Allah\'s sovereignty over all creation. This declaration serves as a reminder that everything belongs to Allah and that we should start our day with gratitude and recognition of His lordship. The scholars recommend reciting this immediately upon waking up to begin the day with remembrance of Allah.',
         repetitions: 1
       },
       {
@@ -38,6 +46,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         category: 'morning',
         occasion: 'Morning',
         reference: 'Quran',
+        fullReference: 'This is from the Quran (16:98) where Allah says: "So when you recite the Quran, [first] seek refuge in Allah from Satan, the expelled [from His mercy]." This formula of seeking refuge (Ta\'awwudh) is recommended before reciting the Quran, performing prayers, or beginning any important task. It serves as spiritual protection against the whispers and temptations of Satan. The scholars emphasize that saying this with sincerity and understanding creates a barrier between the believer and Satan\'s influence. It is particularly powerful when recited in the morning as it provides protection throughout the day.',
         repetitions: 3
       },
       {
@@ -69,6 +78,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         category: 'evening',
         occasion: 'Evening',
         reference: 'Sahih Muslim',
+        fullReference: 'This evening supplication is also reported in Sahih Muslim (2723) as part of the comprehensive adhkar taught by the Prophet (peace be upon him). Just as the morning declaration acknowledges Allah\'s sovereignty at the start of the day, this evening version serves the same purpose as we transition into night. This dua helps Muslims end their day with the remembrance of Allah, reflecting on His continuous dominion over all creation. The timing is significant - it should be recited as the sun sets and evening approaches, marking the end of the day with gratitude and submission to Allah\'s will.',
         repetitions: 1
       },
       {
@@ -140,7 +150,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
       {
         id: '2-8',
         title: 'Master of Forgiveness',
-        arabic: 'اللَّهُمَّ أَنْتَ رَبِّي لّا إِلٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِر لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',
+        arabic: 'اللَّهُمَّ أَنْتَ رَبِّي لّا إِلٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِر لِي ذُنُوبِي جَمِيعاً إِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',
         transliteration: 'Allaahumma \'Anta Rabbee laa \'ilaaha \'illaa \'Anta, khalaqtanee wa \'anaa \'abduka, wa \'anaa \'alaa \'ahdika wa wa\'dika mas-tata\'tu, \'a\'oothu bika min sharri maa sana\'tu, \'aboo\'u laka bini\'matika \'alayya, wa \'aboo\'u bithanbee faghfir lee fa\'innahu laa yaghfiruth-thunooba \'illaa \'Anta',
         translation: 'O Allah, You are my Lord, there is none worthy of worship but You. You created me and I am your slave. I keep Your covenant, and my pledge to You so far as I am able. I seek refuge in You from the evil of what I have done. I admit to Your blessings upon me, and I admit to my misdeeds. Forgive me, for there is none who may forgive sins but You',
         category: 'evening',
@@ -342,6 +352,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         category: 'sleep',
         occasion: 'Before Sleep',
         reference: 'Sahih Bukhari',
+        fullReference: 'This beautiful sleeping supplication is narrated in Sahih Bukhari (6320) and Sahih Muslim (2714) on the authority of Al-Bara\' ibn \'Azib (may Allah be pleased with him). The Prophet (peace be upon him) taught this dua to be recited when going to bed, emphasizing complete reliance on Allah even in sleep. The phrase "In Your name" shows that we begin our rest with Allah\'s remembrance, while "by You I raise it" acknowledges that waking up depends entirely on Allah\'s will. This dua serves as a protection during sleep and a reminder that life and death are in Allah\'s hands. The scholars recommend lying on the right side when reciting this, following the Prophet\'s sunnah.',
         repetitions: 1
       },
       {
@@ -433,7 +444,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         transliteration: 'Allaahummaj\'al fee qalbee nooran, wa fee lisaaanee nooran, wa fee sam\'ee nooran, wa fee basaree nooran, wa min fawqee nooran, wa min tahtee nooran, wa \'an yameenee nooran, wa \'an shimaalee nooran, wa min \'amaamee nooran, wa min khalfee nooran, waj\'alfee nafsee nooran, wa \'a\'dhim lee nooran, wa \'adhdhim lee nooran, wafal lee nooran, waj\'alnee nooran, Allaahumma \'a\'tinee nooran, waj\'al fee \'asabee nooran, wafee lahmee nooran, wafee damee nooran, wa fee sha\'ree nooran, wa fee basharee nooran. Allaahummaj\'al lee nooran fee qabree wa nooran fee \'idhaamee. Wa zidnee nooran, wa zidnee nooran, wa zidnee nooran. Wa hab lee nooran \'alaa noor',
         translation: 'O Allah, place light in my heart, and on my tongue light, and in my ears light and in my sight light, and above me light, and below me light, and to my right light, and to my left light, and before me light and behind me light. Place in my soul light. Magnify for me light, and amplify for me light. Make for me light and make me a light. O Allah, grant me light, and place light in my nerves, and in my body light and in my blood light and in my hair light and in my skin light. O Allah, make for me a light in my grave and a light in my bones. Increase me in light, increase me in light, increase me in light. Grant me light upon light',
         category: 'mosque',
-        occasion: 'General',
+        occasion: 'Mosque Invocations',
         reference: 'Al-Bukhari 11/116 (Hadith no. 6316) and by Muslim 1/526, 529-530 (Hadith no. 763)',
         repetitions: 1
       },
@@ -441,11 +452,162 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         id: '6-2',
         title: 'Entering the Mosque',
         arabic: 'أَعُوذُ بِاللهِ الْعَظِيمِ، وَبِوَجْهِهِ الْكَرِيمِ، وَسُلْطَانِهِ الْقَدِيمِ، مِنَ الشَّيْطَانِ الرَّجِيمِ بِسْمِ اللهِ، وَالصَّلَاةُ وَالسَّلَّامُ عَلَى رَسُولِ اللهِ اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ',
-        transliteration: 'A\'oothu billaahil-\'Adheem, wa bi-Wajhihil-Kareem, wa Sultaanihil-qadeem, minash-Shaytaanir-rajeem. Bismillaahi, wassalaatu. Wassalaamu \'alaaRasoolillaahi. Allaahum-maftah lee \'abwaaba rahmatika',
+        transliteration: 'A\'oodhu billaahil \'adheem, wa bi wajhihil kareem, wa sultaanihil qadeem, minash-shaytaanir rajeem. Bismillaah, wassalaatu wassalaamu \'alaa rasoolillaah. Allaahumma iftah lee abwaaba rahmatik',
         translation: 'I seek refuge in Almighty Allah, by His Noble Face, by His primordial power, from Satan the outcast. In the Name of Allah, and blessings. And peace be upon the Messenger of Allah. O Allah, open before me the doors of Your mercy',
         category: 'mosque',
-        occasion: 'Entering Mosque',
+        occasion: 'Mosque Invocations',
         reference: 'Abu Dawud and Al-Albani, Sahihul-Jdmi\' As-Saghir (Hadithno. 4591). Muslim 1/494',
+        repetitions: 1
+      }
+    ]
+  },
+  {
+    id: '7',
+    title: 'Call to Prayer',
+    description: 'Duas for responding to the call to prayer (Athan)',
+    category: 'prayer',
+    subCategory: 'call_to_prayer',
+    icon: 'megaphone',
+    duas: [
+      {
+        id: '7-1',
+        title: 'Upon Hearing the Athan (Call to Prayer)',
+        arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',
+        transliteration: 'Laa hawla wa laa quwwata \'illaa billaah',
+        translation: 'There is no might and no power except by Allah.',
+        category: 'prayer',
+        occasion: 'Call to Prayer',
+        reference: 'Al-Bukhari 1/152, Muslim 1/288',
+        repetitions: 1
+      },
+      {
+        id: '7-2',
+        title: 'After the Mu\'aththin\'s Tashahhud',
+        arabic: 'وَأَنَا أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَنَّ مُحَمَّداً عَبْدُهُ وَرَسُولُهُ، رَضِيتُ بِاللهِ رَبَّاً وَبِمُحَمَّدٍ رَسُولاً وَبِالإِْسلاَمِ دِيناً',
+        transliteration: 'Wa \'anaa \'ash-hadu \'an laa \'ilaaha \'illallaahu wahdahu laa shareeka lahu wa \'anna Muhammadan \'abduhu wa Rasooluhu, radheetu billaahi Rabban, wa bi-Muhammadin Rasoolan wa bil\'islaami deenan.',
+        translation: 'I bear witness that none has the right to be worshipped but Allah alone, Who has no partner, and that Muhammad is His slave and His Messenger. I am pleased with Allah as my Lord, with Muhammad as my Messenger and with Islam as my religion.',
+        category: 'prayer',
+        occasion: 'Call to Prayer',
+        reference: 'Muslim 1/290, Ibn Khuzaymah 1/220.',
+        repetitions: 1
+      },
+      {
+        id: '7-3',
+        title: 'After Replying to the Call of the Mu\'aththin',
+        arabic: 'اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ، وَالصَّلَاةِ الْقَائِمَةِ، آتِ مُحَمَّداً الْوَسِيلَةَ وَالْفَضِيلَةَ، وَابْعَثْهُ مَقَاماً مَحْمُوداً الَّذِي وَعَدْتَهُ، [إِنَّكَ لَا تُخْلِفُ الْمِيعَادَ]',
+        transliteration: 'Allaahumma Rabba haathihid-da\'watit-taammati wassalaatil-qaa\'imati, \'aati Muhammadanil-waseelata walfadheelata, wab\'ath-hu maqaamam-mahmoodanil-lathee wa\'adtahu, [\'innaka laa tukhliful-mee\'aad]',
+        translation: 'O Allah, Lord of this perfect call and established prayer. Grant Muhammad the intercession and favor, and raise him to the honored station You have promised him, [verily You do not neglect promises].',
+        category: 'prayer',
+        occasion: 'Call to Prayer',
+        reference: 'Al-Bukhari 1/152, and the addition between brackets is from Al-Bayhaqi 1/410 with a good (Hasan) chain of narration.',
+        repetitions: 1
+      }
+    ]
+  },
+  {
+    id: '8',
+    title: 'Beginning of Prayer',
+    description: 'Opening invocations before prayer starts',
+    category: 'prayer',
+    subCategory: 'beginning_prayer',
+    icon: 'star',
+    duas: [
+      {
+        id: '8-1',
+        title: 'Invocation for the Beginning of Prayer',
+        arabic: 'اللَّهُمَّ بَاعِدْ بَيْنِي وَبَيْنَ خَطَايَايَ كَمَا بَاعَدْتَ بَيْنَ الْمَشْرِقِ وَالْمَغْرِبِ، اللَّهُمَّ نَقِّنِي مِنْ خَطَايَايَ، كَمَا يُنَقَّى الثَّوْبُ الْأَ بْيَضُ مِنَ الدَّنَسِ، اللَّهُمَّ اغْسِلْنِي مِنْ خَطَايَايَ بِالثَّلْجِ وّالْمَاءِ وَالْبَرَدِ',
+        transliteration: 'Allaahumma baa\'id baynee wa bayna khataayaaya kamaa baa\'adta baynal-mashriqi walmaghribi, Allaahumma naqqinee min khataayaaya kamaa yunaqqath-thawbul-\'abyadhu minad-danasi, Allaahum-maghsilnee min khataayaaya, bith-thalji walmaa\'i walbarad.',
+        translation: 'O Allah, separate me from my sins as You have separated the East from the West. O Allah, cleanse me of my transgressions as the white garment is cleansed of stains. O Allah, wash away my sins with ice and water and frost.',
+        category: 'prayer',
+        occasion: 'Beginning of Prayer',
+        reference: 'Al-Bukhari 1/181, Muslim 1/419.',
+        repetitions: 1
+      },
+      {
+        id: '8-2',
+        title: 'Invocation for the Beginning of Prayer',
+        arabic: 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ',
+        transliteration: 'Subhaanaka Allaahumma wa bihamdika, wa tabaarakasmuka, wa ta\'aalaa jadduka, wa laa \'ilaaha ghayruka.',
+        translation: 'Glory is to You O Allah, and praise. Blessed is Your Name and Exalted is Your Majesty. There is none worthy of worship but You.',
+        category: 'prayer',
+        occasion: 'Beginning of Prayer',
+        reference: 'Abu Dawud, Ibn Majah, An-Nasa\'i, At-Tirmithi. See Al-Albani, Sahih At-Tirmithi 1/77.',
+        repetitions: 1
+      },
+      {
+        id: '8-3',
+        title: 'Comprehensive Opening Invocation',
+        arabic: 'وَجَّهْتُ وَجْهِيَ لِلَّذِي فَطَرَ السَّمٰوَاتِ وَالْأَرْضَ حَنِيفاً وَمَا أَنَا مِنَ الْمُشْرِكِينَ، إِنَّ صَلَاتِي، وَنُسُكِي، وَمَحْيَايَ، وَمَمَاتِي للهِ رَبِّ الْعَالَمِينَ، لَا شَرِيكَ لَهُ وَبِذَلِكَ أُمِرْتُ وَأَنَا مِنَ الْمُسْلِمِينَ',
+        transliteration: 'Wajjahtu wajhiya lillathee fataras-samawati wal-arda haneefan wama ana minal-mushrikeen, inna salatee wanusukee wamahyaya wamamatee lillahi rabbil-AAalameen, la shareeka lahu wabithalika omirtu wa-ana minal-muslimeen.',
+        translation: 'I have turned my face sincerely towards He who has brought forth the heavens and the Earth and I am not of those who associate others with Allah. Indeed my prayer, my sacrifice, my life and my death are for Allah, Lord of the worlds, no partner has He, with this I am commanded and I am of the Muslims.',
+        category: 'prayer',
+        occasion: 'Beginning of Prayer',
+        reference: 'Muslim 1/534',
+        repetitions: 1
+      }
+    ]
+  },
+  {
+    id: '9',
+    title: 'During Prayer',
+    description: 'Invocations during prayer movements (Ruku, Sujood)',
+    category: 'prayer',
+    subCategory: 'during_prayer',
+    icon: 'body',
+    duas: [
+      {
+        id: '9-1',
+        title: 'During Ruku (Bowing in Prayer)',
+        arabic: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
+        transliteration: 'Subhaana Rabbiyal-\'Adheem.',
+        translation: 'Glory to my Lord the Exalted.',
+        category: 'prayer',
+        occasion: 'During Prayer',
+        reference: 'Abu Dawud, Ibn Majah, An-Nasa\'i, At-Tirmithi, and Ahmad. See Al-Albani\'s Sahih At-Tirmithi 1/83.',
+        repetitions: 3
+      },
+      {
+        id: '9-2',
+        title: 'During Ruku (Bowing in Prayer)',
+        arabic: 'سُبْحَانَكَ اللَّهُمَّ رَبَّنَا وَبِحَمْدِكَ اللَّهُمَّ اغْفِرْ لِي',
+        transliteration: 'Subhaanaka Allaahumma Rabbanaa wa bihamdika Allaahum-maghfir lee.',
+        translation: 'Glory is to You, O Allah, our Lord, and praise is Yours. O Allah, forgive me.',
+        category: 'prayer',
+        occasion: 'During Prayer',
+        reference: 'Al-Bukhari 1/99, Muslim 1/350.',
+        repetitions: 1
+      },
+      {
+        id: '9-3',
+        title: 'During Ruku (Bowing in Prayer)',
+        arabic: 'سُبُّوحٌ، قُدُّوسٌ، رَبُّ الْمَلَائِكَةِ وَالرُّوحِ',
+        transliteration: 'Subboohun, Quddoosun, Rabbul-malaa\'ikati warrooh.',
+        translation: 'Glory (to You), Most Holy (are You), Lord of the angels and the Spirit.',
+        category: 'prayer',
+        occasion: 'During Prayer',
+        reference: 'Muslim 1/353, Abu Dawud 1/230.',
+        repetitions: 1
+      },
+      {
+        id: '9-4',
+        title: 'During Ruku (Bowing in Prayer)',
+        arabic: 'اللَّهُمَّ لَكَ رَكَعْتُ، وَبِكَ آمَنْتُ، وَلَكَ أَسْلَمْتُ خَشَعَ لَكَ سَمْعِي، وَبَصَرِي وَمُخِّي، وَعَظْمِي، وَعَصَبِي، وَمَا اسْتَقَلَّ بِهِ قَدَمِي',
+        transliteration: 'Allaahumma laka raka\'tu, wa bika \'aamantu, wa laka \'aslamtu khasha\'a laka sam\'ee, wa basaree, wa mukhkhee, wa \'adhmee, wa \'asabee, wa mastaqalla bihi qadamee.',
+        translation: 'O Allah, to You I bow (in prayer) and in You I believe and to You I have submitted. Before You my hearing is humbled, as is my sight, my mind, my bones, my nerves and what my feet have mounted upon.',
+        category: 'prayer',
+        occasion: 'During Prayer',
+        reference: 'Muslim 1/534, Abu Dawud, An-Nasa\'i and At-Tirmithi.',
+        repetitions: 1
+      },
+      {
+        id: '9-5',
+        title: 'During Ruku (Bowing in Prayer)',
+        arabic: 'سُبْحَانَ ذِي الْجَبَرُوتِ، وَالْمَلَكُوتِ، وَالْكِبْرِيَاءِ، وَالْعَظَمَةِ',
+        transliteration: 'Subhaana thil-jabarooti, walmalakooti, walkibriyaa\'i, wal\'adhamati.',
+        translation: 'Glory is to You, Master of power, of dominion, of majesty and greatness.',
+        category: 'prayer',
+        occasion: 'During Prayer',
+        reference: 'Abu Dawud 1/230, An-Nasa\'i and Ahmad. Its chain of narration is good (Hasan).',
         repetitions: 1
       }
     ]

@@ -66,7 +66,7 @@ export function ExpandableText({
           onPress={toggleExpanded}
         >
           <Text style={[styles.buttonText, { color: colors.primary }]}>
-            {isExpanded ? 'Show Less' : 'Read More'}
+            {isExpanded ? 'Minimize Hadith' : 'Expand Hadith'}
           </Text>
           <Ionicons 
             name={isExpanded ? 'chevron-up' : 'chevron-down'} 

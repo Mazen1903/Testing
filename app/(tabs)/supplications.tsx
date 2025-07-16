@@ -17,7 +17,7 @@ import * as Haptics from 'expo-haptics';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
-import { ZikrSeries, ZikrCategory } from '@/shared/types/supplications';
+import { ZikrSeries, ZikrCategory, SubCategory } from '@/shared/types/supplications';
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
 
@@ -42,16 +42,26 @@ export default function SupplicationsScreen() {
   const colors = Colors[isDark ? 'dark' : 'light'];
   const manuscriptColors = getManuscriptColors(isDark, colors);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [selectedSeries, setSelectedSeries] = useState<ZikrSeries | null>(null);
   const [zikrSessionVisible, setZikrSessionVisible] = useState(false);
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
   const horizontalScrollRef = useRef<ScrollView>(null);
 
+  const selectedCategoryData = ZIKR_CATEGORIES.find(cat => cat.id === selectedCategory);
+  const showSubCategories = selectedCategory === 'prayer' && selectedCategoryData?.subCategories;
+
   const filteredSeries = ZIKR_SERIES.filter((series: ZikrSeries) => {
     const matchesCategory = selectedCategory === 'all' || series.category === selectedCategory;
-    return matchesCategory;
+    const matchesSubCategory = !selectedSubCategory || series.subCategory === selectedSubCategory;
+    return matchesCategory && matchesSubCategory;
   });
+
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setSelectedSubCategory(null); // Reset sub-category when category changes
+  };
 
   const startZikrSession = (series: ZikrSeries) => {
     setSelectedSeries(series);
@@ -121,7 +131,7 @@ export default function SupplicationsScreen() {
           borderWidth: 1
         }
       ]}
-      onPress={() => setSelectedCategory(category.id)}
+      onPress={() => handleCategorySelect(category.id)}
     >
       <Ionicons 
         name={category.icon as any} 
@@ -134,6 +144,42 @@ export default function SupplicationsScreen() {
       ]}>
         {category.name}
       </Text>
+    </TouchableOpacity>
+  );
+
+  const SubCategoryButton = ({ subCategory, isSelected }: { subCategory: SubCategory, isSelected: boolean }) => (
+    <TouchableOpacity
+      style={[
+        styles.subCategoryButton,
+        { 
+          backgroundColor: isSelected ? manuscriptColors.darkBrown : manuscriptColors.darkParchment,
+          borderColor: manuscriptColors.border,
+          borderWidth: 1
+        }
+      ]}
+      onPress={() => setSelectedSubCategory(isSelected ? null : subCategory.id)}
+    >
+      <View style={[styles.subCategoryIcon, { backgroundColor: subCategory.color || manuscriptColors.brown }]}>
+        <Ionicons 
+          name={subCategory.icon as any} 
+          size={16} 
+          color={manuscriptColors.parchment} 
+        />
+      </View>
+      <View style={styles.subCategoryContent}>
+        <Text style={[
+          styles.subCategoryName,
+          { color: isSelected ? manuscriptColors.parchment : manuscriptColors.brown }
+        ]}>
+          {subCategory.name}
+        </Text>
+        <Text style={[
+          styles.subCategoryDescription,
+          { color: isSelected ? manuscriptColors.parchment + '80' : manuscriptColors.lightInk }
+        ]}>
+          {subCategory.description}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 
@@ -211,13 +257,30 @@ export default function SupplicationsScreen() {
           </ScrollView>
         </Animated.View>
 
+        {/* Sub-Categories for Prayer */}
+        {showSubCategories && (
+          <Animated.View entering={FadeInDown.delay(400)} style={styles.subCategoriesSection}>
+            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>PRAYER TYPES</Text>
+            <View style={styles.subCategoriesGrid}>
+              {selectedCategoryData.subCategories?.map((subCategory: SubCategory, index: number) => (
+                <Animated.View key={subCategory.id} entering={FadeInDown.delay(500 + index * 100)}>
+                  <SubCategoryButton
+                    subCategory={subCategory}
+                    isSelected={selectedSubCategory === subCategory.id}
+                  />
+                </Animated.View>
+              ))}
+            </View>
+          </Animated.View>
+        )}
+
         {/* Zikr Series List */}
-        <Animated.View entering={FadeInDown.delay(400)} style={styles.supplicationsSection}>
+        <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
           <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
             ZIKR SERIES ({filteredSeries.length})
           </Text>
           {filteredSeries.map((series: ZikrSeries, index: number) => (
-            <Animated.View key={series.id} entering={FadeInDown.delay(500 + index * 100)}>
+            <Animated.View key={series.id} entering={FadeInDown.delay(700 + index * 100)}>
               <SeriesCard series={series} />
             </Animated.View>
           ))}
@@ -259,16 +322,12 @@ export default function SupplicationsScreen() {
                 <Ionicons name="chevron-back" size={24} color={manuscriptColors.brown} />
               </TouchableOpacity>
               
-              <Text style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}>
-                {selectedSeries?.duas[currentDuaIndex]?.title || 'دعاء'}
-              </Text>
-              
-              <View style={[styles.progressIndicator, { 
-                backgroundColor: manuscriptColors.brown + '20',
-                borderColor: manuscriptColors.border 
-              }]}>
-                <Text style={[styles.progressText, { color: manuscriptColors.brown }]}>
-                  {currentDuaIndex + 1} / {selectedSeries?.duas.length || 0}
+              <View style={styles.titleContainer}>
+                <Text style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}>
+                  {selectedSeries?.duas[currentDuaIndex]?.occasion || selectedSeries?.duas[currentDuaIndex]?.category || 'دعاء'}
+                </Text>
+                <Text style={[styles.manuscriptSubtitle, { color: manuscriptColors.lightInk }]}>
+                  {selectedSeries?.duas[currentDuaIndex]?.title || ''}
                 </Text>
               </View>
             </View>
@@ -322,9 +381,23 @@ export default function SupplicationsScreen() {
                       
                       {/* Reference */}
                       <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
-                        <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
-                          {dua.reference || ''}
-                        </Text>
+                        {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
+                          <ExpandableText
+                            text={`Reference: ${dua.reference || ''}\n\n${dua.fullReference}`}
+                            numberOfLines={2}
+                            style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                            expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                            buttonStyle={[styles.learnMoreButton, { 
+                              backgroundColor: manuscriptColors.brown + '15',
+                              borderColor: manuscriptColors.brown + '30'
+                            }]}
+                            textAlign="left"
+                          />
+                        ) : (
+                          <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
+                            {dua.reference || ''}
+                          </Text>
+                        )}
                       </View>
                     </TouchableOpacity>
                   </ScrollView>
@@ -332,7 +405,7 @@ export default function SupplicationsScreen() {
               </ScrollView>
             )}
 
-                        {/* Navigation Indicator */}
+            {/* Navigation Indicator */}
             {selectedSeries && (
               <View style={styles.swipeIndicatorContainer}>
                 {selectedSeries.duas.length > 1 && (
@@ -474,6 +547,46 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 8,
   },
+  subCategoriesSection: {
+    marginBottom: 20,
+  },
+  subCategoriesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    paddingHorizontal: 20,
+  },
+  subCategoryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginVertical: 8,
+    marginHorizontal: 8,
+    width: '45%', // Adjust as needed for grid layout
+    aspectRatio: 1.2, // Make buttons slightly taller than wide
+  },
+  subCategoryIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  subCategoryContent: {
+    flex: 1,
+  },
+  subCategoryName: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  subCategoryDescription: {
+    fontSize: 12,
+    lineHeight: 18,
+  },
   supplicationsSection: {
     paddingHorizontal: 20,
   },
@@ -567,12 +680,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 16,
+  },
   manuscriptTitle: {
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
-    flex: 1,
-    marginHorizontal: 16,
+  },
+  manuscriptSubtitle: {
+    fontSize: 14,
+    fontWeight: '400',
+    textAlign: 'center',
+    marginTop: 2,
   },
   progressIndicator: {
     padding: 8,
@@ -707,4 +829,10 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
   },
+  learnMoreButton: {
+    borderWidth: 1,
+    borderRadius: 12,
+    marginTop: 10,
+    right: 10,
+  }
 }); 
