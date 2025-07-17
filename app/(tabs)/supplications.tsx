@@ -1,14 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState, useRef } from 'react';
-import { 
-  ScrollView, 
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
-  View, 
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
   Modal,
   Dimensions,
-  ImageBackground
 } from 'react-native';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -42,25 +41,20 @@ export default function SupplicationsScreen() {
   const colors = Colors[isDark ? 'dark' : 'light'];
   const manuscriptColors = getManuscriptColors(isDark, colors);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [selectedSeries, setSelectedSeries] = useState<ZikrSeries | null>(null);
   const [zikrSessionVisible, setZikrSessionVisible] = useState(false);
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
   const horizontalScrollRef = useRef<ScrollView>(null);
 
-  const selectedCategoryData = ZIKR_CATEGORIES.find(cat => cat.id === selectedCategory);
-  const showSubCategories = selectedCategory === 'prayer' && selectedCategoryData?.subCategories;
 
   const filteredSeries = ZIKR_SERIES.filter((series: ZikrSeries) => {
     const matchesCategory = selectedCategory === 'all' || series.category === selectedCategory;
-    const matchesSubCategory = !selectedSubCategory || series.subCategory === selectedSubCategory;
-    return matchesCategory && matchesSubCategory;
+    return matchesCategory;
   });
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    setSelectedSubCategory(null); // Reset sub-category when category changes
   };
 
   const startZikrSession = (series: ZikrSeries) => {
@@ -79,10 +73,10 @@ export default function SupplicationsScreen() {
 
   const incrementCount = () => {
     if (!selectedSeries) return;
-    
+
     const currentDua = selectedSeries.duas[currentDuaIndex];
     const newCount = currentCount + 1;
-    
+
     if (newCount >= (currentDua.repetitions || 1)) {
       // Move to next dua
       if (currentDuaIndex < selectedSeries.duas.length - 1) {
@@ -125,7 +119,7 @@ export default function SupplicationsScreen() {
     <TouchableOpacity
       style={[
         styles.categoryButton,
-        { 
+        {
           backgroundColor: isSelected ? manuscriptColors.brown : manuscriptColors.parchment,
           borderColor: manuscriptColors.border,
           borderWidth: 1
@@ -133,10 +127,10 @@ export default function SupplicationsScreen() {
       ]}
       onPress={() => handleCategorySelect(category.id)}
     >
-      <Ionicons 
-        name={category.icon as any} 
-        size={20} 
-        color={isSelected ? manuscriptColors.parchment : manuscriptColors.brown} 
+      <Ionicons
+        name={category.icon as any}
+        size={20}
+        color={isSelected ? manuscriptColors.parchment : manuscriptColors.brown}
       />
       <Text style={[
         styles.categoryText,
@@ -144,42 +138,6 @@ export default function SupplicationsScreen() {
       ]}>
         {category.name}
       </Text>
-    </TouchableOpacity>
-  );
-
-  const SubCategoryButton = ({ subCategory, isSelected }: { subCategory: SubCategory, isSelected: boolean }) => (
-    <TouchableOpacity
-      style={[
-        styles.subCategoryButton,
-        { 
-          backgroundColor: isSelected ? manuscriptColors.darkBrown : manuscriptColors.darkParchment,
-          borderColor: manuscriptColors.border,
-          borderWidth: 1
-        }
-      ]}
-      onPress={() => setSelectedSubCategory(isSelected ? null : subCategory.id)}
-    >
-      <View style={[styles.subCategoryIcon, { backgroundColor: subCategory.color || manuscriptColors.brown }]}>
-        <Ionicons 
-          name={subCategory.icon as any} 
-          size={16} 
-          color={manuscriptColors.parchment} 
-        />
-      </View>
-      <View style={styles.subCategoryContent}>
-        <Text style={[
-          styles.subCategoryName,
-          { color: isSelected ? manuscriptColors.parchment : manuscriptColors.brown }
-        ]}>
-          {subCategory.name}
-        </Text>
-        <Text style={[
-          styles.subCategoryDescription,
-          { color: isSelected ? manuscriptColors.parchment + '80' : manuscriptColors.lightInk }
-        ]}>
-          {subCategory.description}
-        </Text>
-      </View>
     </TouchableOpacity>
   );
 
@@ -230,9 +188,9 @@ export default function SupplicationsScreen() {
         <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
           <View>
             <View style={styles.greetingContainer}>
-              <View style={[styles.greetingBadge, { 
+              <View style={[styles.greetingBadge, {
                 backgroundColor: manuscriptColors.brown + '20',
-                borderColor: manuscriptColors.border 
+                borderColor: manuscriptColors.border
               }]}>
                 <Ionicons name="moon" size={16} color={manuscriptColors.brown} style={styles.greetingIcon} />
                 <Text style={[styles.greeting, { color: manuscriptColors.brown }]}>Islamic Supplications</Text>
@@ -256,23 +214,6 @@ export default function SupplicationsScreen() {
             ))}
           </ScrollView>
         </Animated.View>
-
-        {/* Sub-Categories for Prayer */}
-        {showSubCategories && (
-          <Animated.View entering={FadeInDown.delay(400)} style={styles.subCategoriesSection}>
-            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>PRAYER TYPES</Text>
-            <View style={styles.subCategoriesGrid}>
-              {selectedCategoryData.subCategories?.map((subCategory: SubCategory, index: number) => (
-                <Animated.View key={subCategory.id} entering={FadeInDown.delay(500 + index * 100)}>
-                  <SubCategoryButton
-                    subCategory={subCategory}
-                    isSelected={selectedSubCategory === subCategory.id}
-                  />
-                </Animated.View>
-              ))}
-            </View>
-          </Animated.View>
-        )}
 
         {/* Zikr Series List */}
         <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
@@ -309,19 +250,19 @@ export default function SupplicationsScreen() {
           <SafeAreaView style={styles.manuscriptSafeArea}>
             {/* Spiral Binding */}
             <SpiralBinding />
-            
+
             {/* Manuscript Header */}
             <View style={[styles.manuscriptHeader, { borderBottomColor: manuscriptColors.border }]}>
-              <TouchableOpacity 
-                style={[styles.closeButton, { 
+              <TouchableOpacity
+                style={[styles.closeButton, {
                   backgroundColor: manuscriptColors.parchment,
-                  borderColor: manuscriptColors.border 
+                  borderColor: manuscriptColors.border
                 }]}
                 onPress={closeZikrSession}
               >
                 <Ionicons name="chevron-back" size={24} color={manuscriptColors.brown} />
               </TouchableOpacity>
-              
+
               <View style={styles.titleContainer}>
                 <Text style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}>
                   {selectedSeries?.duas[currentDuaIndex]?.occasion || selectedSeries?.duas[currentDuaIndex]?.category || 'دعاء'}
@@ -344,7 +285,7 @@ export default function SupplicationsScreen() {
                 contentOffset={{ x: currentDuaIndex * width, y: 0 }}
               >
                 {selectedSeries.duas.map((dua, index) => (
-                  <ScrollView 
+                  <ScrollView
                     key={index}
                     style={[styles.manuscriptScrollView, { width }]}
                     contentContainerStyle={styles.manuscriptContent}
@@ -361,24 +302,24 @@ export default function SupplicationsScreen() {
                           {dua.arabic || ''}
                         </Text>
                       </View>
-                      
+
                       {/* Divider */}
                       <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
-                      
+
                       {/* Transliteration */}
                       <View style={styles.textSection}>
                         <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
                           {dua.transliteration || ''}
                         </Text>
                       </View>
-                      
+
                       {/* Translation */}
                       <View style={styles.textSection}>
                         <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
                           {dua.translation || ''}
                         </Text>
                       </View>
-                      
+
                       {/* Reference */}
                       <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
                         {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
@@ -387,7 +328,7 @@ export default function SupplicationsScreen() {
                             numberOfLines={2}
                             style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
                             expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                            buttonStyle={[styles.learnMoreButton, { 
+                            buttonStyle={[styles.learnMoreButton, {
                               backgroundColor: manuscriptColors.brown + '15',
                               borderColor: manuscriptColors.brown + '30'
                             }]}
@@ -416,8 +357,8 @@ export default function SupplicationsScreen() {
                         style={[
                           styles.swipeDot,
                           {
-                            backgroundColor: index === currentDuaIndex 
-                              ? manuscriptColors.brown 
+                            backgroundColor: index === currentDuaIndex
+                              ? manuscriptColors.brown
                               : manuscriptColors.border
                           }
                         ]}
@@ -426,7 +367,7 @@ export default function SupplicationsScreen() {
                   </View>
                 )}
                 <Text style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}>
-                  {selectedSeries.duas.length > 1 
+                  {selectedSeries.duas.length > 1
                     ? 'Swipe left/right to navigate • Tap anywhere to count'
                     : 'Tap anywhere on the screen to count'
                   }
@@ -438,15 +379,15 @@ export default function SupplicationsScreen() {
             <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
               {/* Counter Info Row */}
               <View style={styles.counterInfoRow}>
-                <View style={[styles.counterLabelContainer, { 
+                <View style={[styles.counterLabelContainer, {
                   backgroundColor: manuscriptColors.parchment + '80',
-                  borderColor: manuscriptColors.border 
+                  borderColor: manuscriptColors.border
                 }]}>
                   <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
                     Dhikr {currentDuaIndex + 1} of {selectedSeries?.duas.length || 1}
                   </Text>
                 </View>
-                
+
                 <TouchableOpacity
                   style={styles.islamicCounterButton}
                   onPress={incrementCount}
@@ -460,10 +401,10 @@ export default function SupplicationsScreen() {
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
-                
-                <View style={[styles.counterLabelContainer, { 
+
+                <View style={[styles.counterLabelContainer, {
                   backgroundColor: manuscriptColors.parchment + '80',
-                  borderColor: manuscriptColors.border 
+                  borderColor: manuscriptColors.border
                 }]}>
                   <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
                     {selectedSeries?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSeries?.duas[currentDuaIndex]?.repetitions || 1} times`}

@@ -25,7 +25,6 @@ export interface ZikrSeries {
   description: string;
   category: string;
   icon: string;
-  subCategory?: string;
   duas: Dua[];
 }
 
@@ -33,5 +32,4 @@ export interface ZikrCategory {
   id: string;
   name: string;
   icon: string;
-  subCategories?: SubCategory[];
 } 
