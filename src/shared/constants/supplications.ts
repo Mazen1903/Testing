@@ -1,4 +1,4 @@
-import { ZikrSeries, ZikrCategory, SubCategory } from '../types/supplications';
+import { ZikrSeries, ZikrCategory} from '../types/supplications';
 
 export const ZIKR_CATEGORIES: ZikrCategory[] = [
   { id: 'all', name: 'All', icon: 'apps' },

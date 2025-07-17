@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
-import { ZikrSeries, ZikrCategory, SubCategory } from '@/shared/types/supplications';
+import { ZikrSeries, ZikrCategory } from '@/shared/types/supplications';
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
 
