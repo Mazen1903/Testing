@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs, useRouter } from 'expo-router';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Image } from 'react-native';
 import { useEffect } from 'react';
 
 import { Colors } from '@/shared/constants/Colors';
@@ -12,6 +12,43 @@ type TabIconProps = {
   size: number;
   focused: boolean;
 };
+
+// Custom image icons mapping
+const customIcons = {
+  home: require('../../assets/images/home.png'),
+  library: require('../../assets/images/libarary.png'), // Note: keeping original filename
+  supplications: require('../../assets/images/dua.png'),
+  community: require('../../assets/images/community.png'),
+  profile: require('../../assets/images/settings.png'),
+};
+
+function CustomImageIcon({ 
+  imageSource, 
+  color, 
+  size, 
+  focused 
+}: TabIconProps & { imageSource: any }) {
+  return (
+    <View style={{
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: focused ? color + '20' : 'transparent',
+    }}>
+      <Image 
+        source={imageSource}
+        style={{ 
+          width: 30, 
+          height: 30,
+          tintColor: color,
+        }}
+        resizeMode="contain"
+      />
+    </View>
+  );
+}
 
 function TabIcon({ name, color, size, focused }: TabIconProps & { name: keyof typeof Ionicons.glyphMap }) {
   return (
@@ -101,7 +138,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: (props) => (
-            <TabIcon name="home-outline" {...props} />
+            <CustomImageIcon imageSource={customIcons.home} {...props} />
           ),
         }}
       />
@@ -110,7 +147,7 @@ export default function TabLayout() {
         options={{
           title: 'Library',
           tabBarIcon: (props) => (
-            <TabIcon name="library-outline" {...props} />
+            <CustomImageIcon imageSource={customIcons.library} {...props} />
           ),
         }}
       />
@@ -119,7 +156,7 @@ export default function TabLayout() {
         options={{
           title: 'Duas',
           tabBarIcon: (props) => (
-            <TabIcon name="heart-outline" {...props} />
+            <CustomImageIcon imageSource={customIcons.supplications} {...props} />
           ),
         }}
       />
@@ -128,7 +165,7 @@ export default function TabLayout() {
         options={{
           title: 'Community',
           tabBarIcon: (props) => (
-            <TabIcon name="people-outline" {...props} />
+            <CustomImageIcon imageSource={customIcons.community} {...props} />
           ),
         }}
       />
@@ -137,7 +174,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: (props) => (
-            <TabIcon name="person-outline" {...props} />
+            <CustomImageIcon imageSource={customIcons.profile} {...props} />
           ),
         }}
       />

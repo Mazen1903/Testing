@@ -9,23 +9,27 @@ export interface Dua {
   reference: string;
   fullReference?: string;
   repetitions?: number;
+  subcategory?: string;
 }
 
-export interface SubCategory {
+export interface DuaSubcategory {
   id: string;
   name: string;
   description: string;
   icon: string;
-  color?: string;
+  category: string;
+  duas: Dua[];
 }
 
 export interface ZikrSeries {
   id: string;
   title: string;
   description: string;
-  category: string;
+  categories: string[];
   icon: string;
-  duas: Dua[];
+  // Either subcategories OR duas directly - not both
+  subcategories?: DuaSubcategory[];
+  duas?: Dua[];
 }
 
 export interface ZikrCategory {

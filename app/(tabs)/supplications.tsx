@@ -16,11 +16,41 @@ import * as Haptics from 'expo-haptics';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
-import { ZikrSeries, ZikrCategory } from '@/shared/types/supplications';
+import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplications';
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
 
 const { width, height } = Dimensions.get('window');
+
+// Helper functions for handling mixed series (subcategories + direct duas)
+const getAllDuasFromSeries = (series: ZikrSeries): any[] => {
+  const allDuas: any[] = [];
+  
+  // Add direct duas first (if any)
+  if (series.duas && series.duas.length > 0) {
+    allDuas.push(...series.duas);
+  }
+  
+  // Add duas from subcategories (if any)
+  if (series.subcategories && series.subcategories.length > 0) {
+    const subcategoryDuas = series.subcategories.flatMap(subcategory => subcategory.duas);
+    allDuas.push(...subcategoryDuas);
+  }
+  
+  return allDuas;
+};
+
+const hasSubcategories = (series: ZikrSeries): boolean => {
+  return !!(series.subcategories && series.subcategories.length > 0);
+};
+
+const hasDirectDuas = (series: ZikrSeries): boolean => {
+  return !!(series.duas && series.duas.length > 0);
+};
+
+const isMixedSeries = (series: ZikrSeries): boolean => {
+  return hasSubcategories(series) && hasDirectDuas(series);
+};
 
 // Helper function to get manuscript-style colors based on theme
 const getManuscriptColors = (isDark: boolean, themeColors: any) => ({
@@ -42,6 +72,8 @@ export default function SupplicationsScreen() {
   const manuscriptColors = getManuscriptColors(isDark, colors);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSeries, setSelectedSeries] = useState<ZikrSeries | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<DuaSubcategory | null>(null);
+  const [showSubcategories, setShowSubcategories] = useState(false);
   const [zikrSessionVisible, setZikrSessionVisible] = useState(false);
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
@@ -49,7 +81,7 @@ export default function SupplicationsScreen() {
 
 
   const filteredSeries = ZIKR_SERIES.filter((series: ZikrSeries) => {
-    const matchesCategory = selectedCategory === 'all' || series.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || series.categories.includes(selectedCategory);
     return matchesCategory;
   });
 
@@ -57,8 +89,18 @@ export default function SupplicationsScreen() {
     setSelectedCategory(categoryId);
   };
 
-  const startZikrSession = (series: ZikrSeries) => {
-    setSelectedSeries(series);
+  const handleSeriesSelect = (series: ZikrSeries) => {
+    if (hasSubcategories(series) || isMixedSeries(series)) {
+      // Complex or mixed series - show subcategories (and direct duas if mixed)
+      setSelectedSeries(series);
+      setShowSubcategories(true);
+    } else {
+      
+    }
+  };
+
+  const startZikrSession = (subcategory: DuaSubcategory) => {
+    setSelectedSubcategory(subcategory);
     setCurrentDuaIndex(0);
     setCurrentCount(0);
     setZikrSessionVisible(true);
@@ -66,20 +108,25 @@ export default function SupplicationsScreen() {
 
   const closeZikrSession = () => {
     setZikrSessionVisible(false);
-    setSelectedSeries(null);
+    setSelectedSubcategory(null);
     setCurrentDuaIndex(0);
     setCurrentCount(0);
   };
 
-  const incrementCount = () => {
-    if (!selectedSeries) return;
+  const goBackToSeries = () => {
+    setShowSubcategories(false);
+    setSelectedSeries(null);
+  };
 
-    const currentDua = selectedSeries.duas[currentDuaIndex];
+  const incrementCount = () => {
+    if (!selectedSubcategory) return;
+
+    const currentDua = selectedSubcategory.duas[currentDuaIndex];
     const newCount = currentCount + 1;
 
     if (newCount >= (currentDua.repetitions || 1)) {
       // Move to next dua
-      if (currentDuaIndex < selectedSeries.duas.length - 1) {
+      if (currentDuaIndex < selectedSubcategory.duas.length - 1) {
         // Completed current dhikr, moving to next
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         const nextIndex = currentDuaIndex + 1;
@@ -107,7 +154,7 @@ export default function SupplicationsScreen() {
 
   const handlePageChange = (event: any) => {
     const pageIndex = Math.round(event.nativeEvent.contentOffset.x / width);
-    if (pageIndex !== currentDuaIndex && pageIndex >= 0 && pageIndex < (selectedSeries?.duas.length || 0)) {
+    if (pageIndex !== currentDuaIndex && pageIndex >= 0 && pageIndex < (selectedSubcategory?.duas.length || 0)) {
       setCurrentDuaIndex(pageIndex);
       setCurrentCount(0); // Reset counter when manually swiping to different dua
       // Light haptic feedback for manual swipe
@@ -141,10 +188,49 @@ export default function SupplicationsScreen() {
     </TouchableOpacity>
   );
 
-  const SeriesCard = ({ series }: { series: ZikrSeries }) => (
+  const SeriesCard = ({ series }: { series: ZikrSeries }) => {
+    const totalDuas = getAllDuasFromSeries(series).length;
+    const hasSubcats = hasSubcategories(series);
+    
+    return (
+      <TouchableOpacity
+        style={styles.manuscriptCard}
+        onPress={() => handleSeriesSelect(series)}
+      >
+        <LinearGradient
+          colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
+          style={styles.cardGradient}
+        >
+          <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
+            <View style={styles.duaHeader}>
+              <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{series.title}</Text>
+              <Ionicons name={series.icon as any} size={20} color={manuscriptColors.brown} />
+            </View>
+            <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
+              {series.description}
+            </Text>
+            <View style={styles.duaFooter}>
+              <View style={styles.duaFooterLeft}>
+                <Ionicons name="book" size={12} color={manuscriptColors.brown} />
+                <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
+                  {hasSubcats 
+                    ? `${series.subcategories?.length || 0} categories • ${totalDuas} duas`
+                    : `${totalDuas} duas`
+                  }
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
+            </View>
+          </View>
+        </LinearGradient>
+      </TouchableOpacity>
+    );
+  };
+
+  const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => (
     <TouchableOpacity
       style={styles.manuscriptCard}
-      onPress={() => startZikrSession(series)}
+      onPress={() => startZikrSession(subcategory)}
     >
       <LinearGradient
         colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
@@ -152,17 +238,17 @@ export default function SupplicationsScreen() {
       >
         <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
           <View style={styles.duaHeader}>
-            <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{series.title}</Text>
-            <Ionicons name={series.icon as any} size={20} color={manuscriptColors.brown} />
+            <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{subcategory.name}</Text>
+            <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
           </View>
           <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
-            {series.description}
+            {subcategory.description}
           </Text>
           <View style={styles.duaFooter}>
             <View style={styles.duaFooterLeft}>
               <Ionicons name="book" size={12} color={manuscriptColors.brown} />
               <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
-                {series.duas.length} duas
+                {subcategory.duas.length} duas
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
@@ -215,25 +301,52 @@ export default function SupplicationsScreen() {
           </ScrollView>
         </Animated.View>
 
-        {/* Zikr Series List */}
-        <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
-          <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-            ZIKR SERIES ({filteredSeries.length})
-          </Text>
-          {filteredSeries.map((series: ZikrSeries, index: number) => (
-            <Animated.View key={series.id} entering={FadeInDown.delay(700 + index * 100)}>
-              <SeriesCard series={series} />
-            </Animated.View>
-          ))}
-          {filteredSeries.length === 0 && (
-            <View style={styles.emptyState}>
-              <Ionicons name="book" size={48} color={manuscriptColors.lightInk} />
-              <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
-                No zikr series in this category
+        {/* Zikr Series List or Subcategories */}
+        {!showSubcategories ? (
+          <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
+            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
+              ZIKR SERIES ({filteredSeries.length})
+            </Text>
+            {filteredSeries.map((series: ZikrSeries, index: number) => (
+              <Animated.View key={series.id} entering={FadeInDown.delay(700 + index * 100)}>
+                <SeriesCard series={series} />
+              </Animated.View>
+            ))}
+            {filteredSeries.length === 0 && (
+              <View style={styles.emptyState}>
+                <Ionicons name="book" size={48} color={manuscriptColors.lightInk} />
+                <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
+                  No zikr series in this category
+                </Text>
+              </View>
+            )}
+          </Animated.View>
+        ) : (
+          <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
+            {/* Back Button */}
+            <TouchableOpacity
+              style={[styles.backButton, {
+                backgroundColor: manuscriptColors.parchment,
+                borderColor: manuscriptColors.border
+              }]}
+              onPress={goBackToSeries}
+            >
+              <Ionicons name="chevron-back" size={20} color={manuscriptColors.brown} />
+              <Text style={[styles.backButtonText, { color: manuscriptColors.brown }]}>
+                Back to Series
               </Text>
-            </View>
-          )}
-        </Animated.View>
+            </TouchableOpacity>
+
+            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
+              {selectedSeries?.title ? `${selectedSeries.title.toUpperCase()} CATEGORIES` : 'CATEGORIES'}
+            </Text>
+            {selectedSeries?.subcategories?.map((subcategory: DuaSubcategory, index: number) => (
+              <Animated.View key={subcategory.id} entering={FadeInDown.delay(400 + index * 100)}>
+                <SubcategoryCard subcategory={subcategory} />
+              </Animated.View>
+            ))}
+          </Animated.View>
+        )}
       </ScrollView>
 
       {/* Zikr Session Modal - Islamic Manuscript Style */}
@@ -265,16 +378,16 @@ export default function SupplicationsScreen() {
 
               <View style={styles.titleContainer}>
                 <Text style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}>
-                  {selectedSeries?.duas[currentDuaIndex]?.occasion || selectedSeries?.duas[currentDuaIndex]?.category || 'دعاء'}
+                  {selectedSubcategory?.name || 'دعاء'}
                 </Text>
                 <Text style={[styles.manuscriptSubtitle, { color: manuscriptColors.lightInk }]}>
-                  {selectedSeries?.duas[currentDuaIndex]?.title || ''}
+                  {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
                 </Text>
               </View>
             </View>
 
             {/* Manuscript Content - Horizontal Swiping */}
-            {selectedSeries && selectedSeries.duas && selectedSeries.duas.length > 0 && (
+            {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
               <ScrollView
                 ref={horizontalScrollRef}
                 horizontal
@@ -284,7 +397,7 @@ export default function SupplicationsScreen() {
                 style={styles.horizontalScrollView}
                 contentOffset={{ x: currentDuaIndex * width, y: 0 }}
               >
-                {selectedSeries.duas.map((dua, index) => (
+                {selectedSubcategory.duas.map((dua, index) => (
                   <ScrollView
                     key={index}
                     style={[styles.manuscriptScrollView, { width }]}
@@ -347,11 +460,11 @@ export default function SupplicationsScreen() {
             )}
 
             {/* Navigation Indicator */}
-            {selectedSeries && (
+            {selectedSubcategory && (
               <View style={styles.swipeIndicatorContainer}>
-                {selectedSeries.duas.length > 1 && (
+                {selectedSubcategory.duas.length > 1 && (
                   <View style={styles.swipeDotsContainer}>
-                    {selectedSeries.duas.map((_, index) => (
+                    {selectedSubcategory.duas.map((_, index) => (
                       <View
                         key={index}
                         style={[
@@ -367,7 +480,7 @@ export default function SupplicationsScreen() {
                   </View>
                 )}
                 <Text style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}>
-                  {selectedSeries.duas.length > 1
+                  {selectedSubcategory.duas.length > 1
                     ? 'Swipe left/right to navigate • Tap anywhere to count'
                     : 'Tap anywhere on the screen to count'
                   }
@@ -384,7 +497,7 @@ export default function SupplicationsScreen() {
                   borderColor: manuscriptColors.border
                 }]}>
                   <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    Dhikr {currentDuaIndex + 1} of {selectedSeries?.duas.length || 1}
+                    Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
                   </Text>
                 </View>
 
@@ -407,7 +520,7 @@ export default function SupplicationsScreen() {
                   borderColor: manuscriptColors.border
                 }]}>
                   <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    {selectedSeries?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSeries?.duas[currentDuaIndex]?.repetitions || 1} times`}
+                    {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
                   </Text>
                 </View>
               </View>
@@ -775,5 +888,20 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 10,
     right: 10,
-  }
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 20,
+    alignSelf: 'flex-start',
+  },
+  backButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
 }); 
