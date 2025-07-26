@@ -22,4 +22,24 @@ export type {
   Dua,
   ZikrSeries,
   ZikrCategory,
-} from './supplications'; 
+} from './supplications';
+
+// Community types
+export type {
+  CommunityPost,
+  PollOption,
+  Discussion,
+  DiscussionReply,
+  Message,
+  Conversation,
+  CreatePostRequest,
+  UpdatePostRequest,
+  CreateDiscussionRequest,
+  CreateReplyRequest,
+  SendMessageRequest,
+  PostInteraction,
+  Comment,
+  PostsResponse,
+  DiscussionsResponse,
+  ConversationsResponse,
+} from './community'; 

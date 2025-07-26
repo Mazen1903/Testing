@@ -3,8 +3,8 @@ export const DEV_CONFIG = {
   API_BASE_URL: __DEV__ ? 'http://localhost:3000/api' : 'https://api.yourapp.com',
   API_TIMEOUT: 10000, // 10 seconds
   
-  // Mock Data Settings
-  ENABLE_MOCK_DATA: __DEV__,
+  // Mock Data Settings - Set to false when you have real backend
+  ENABLE_MOCK_DATA: false, // Change to false when connecting to real database
   MOCK_API_DELAY: 1000, // 1 second delay for mock calls
   
   // Logging

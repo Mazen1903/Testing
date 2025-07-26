@@ -1,7 +1,8 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { useAuth as useClerkAuth, useUser, useSignIn, useSignUp, useOAuth } from '@clerk/clerk-expo';
 import { User, AuthContextType } from '@/shared/types';
 import { AuthService } from '@/shared/services/auth.service';
+import { supabaseCommunityService } from '@/shared/services/supabase-community.service';
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
@@ -28,6 +29,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   // Loading state - true when Clerk is not loaded or when authentication is in progress
   const isLoading = !isLoaded;
+
+  // Sync user to Supabase when Clerk user changes
+  useEffect(() => {
+    const syncUserToSupabase = async () => {
+      if (clerkUser && isLoaded) {
+        // Sync user to Supabase (this handles errors internally)
+        await supabaseCommunityService.syncUser(clerkUser);
+      }
+    };
+
+    syncUserToSupabase();
+  }, [clerkUser, isLoaded]);
 
   const signInWithEmail = async (email: string, password: string) => {
     try {
