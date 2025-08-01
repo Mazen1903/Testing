@@ -42,4 +42,8 @@ export type {
   PostsResponse,
   DiscussionsResponse,
   ConversationsResponse,
+  ConnectedUser,
+  UserSearchResponse,
+  CreateConversationRequest,
+  ConversationDetails,
 } from './community'; 

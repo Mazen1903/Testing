@@ -1,15 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, FlatList } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, FlatList, AppState } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
 import { useAuth } from '@/shared/contexts/AuthContext';
 import { supabaseCommunityService as communityService } from '@/shared/services/supabase-community.service';
-import { CommunityPost, CreatePostRequest } from '@/shared/types';
+import { CommunityPost, CreatePostRequest, Conversation, ConnectedUser } from '@/shared/types';
 import { useAuthHelper } from '@/shared/utils/auth-helper';
+import EnhancedChatScreen from '@/src/components/messaging/EnhancedChatScreen';
+import AddUserModal from '@/src/components/messaging/AddUserModal';
+import SwipeableConversationItem from '@/src/components/messaging/SwipeableConversationItem';
+import { FeedPost, DiscussionTopic, CreatePostModal, CreateTopicModal } from '@/src/components/community';
 
 type TabType = 'Feed' | 'Discuss' | 'Messages';
 
@@ -165,30 +168,37 @@ const discussionTopics = [
 const messagesList = [
   {
     id: '1',
-    user: 'User',
+    user: 'Ahmad_99',
     time: '10:30 AM',
-    lastMessage: 'Thank you for your support...',
+    lastMessage: 'Thank you for your support with the book recommendation! 📚',
     unread: true,
   },
   {
     id: '2',
-    user: 'User',
+    user: 'Fatima.Learns',
     time: 'Yesterday',
-    lastMessage: 'Looking forward to the discussion.',
+    lastMessage: 'Looking forward to the discussion about morning routines.',
     unread: false,
   },
   {
     id: '3',
-    user: 'User', 
+    user: 'Yusuf_Habits', 
     time: '3/6/24',
-    lastMessage: 'Great insights on mindfulness.',
+    lastMessage: '🎵 Voice message (0:45)',
     unread: false,
   },
   {
     id: '4',
-    user: 'User',
+    user: 'Maryam.Reflects',
     time: '3/1/24',
-    lastMessage: 'Hope to join the next session.',
+    lastMessage: '📎 Shared a document: "Daily_Dhikr_Guide.pdf"',
+    unread: false,
+  },
+  {
+    id: '5',
+    user: 'Omar.Journey',
+    time: '2/28/24',
+    lastMessage: '📷 Photo',
     unread: false,
   },
 ];
@@ -227,6 +237,9 @@ export default function CommunityScreen() {
   const [showNewPostModal, setShowNewPostModal] = useState(false);
   const [showNewTopicModal, setShowNewTopicModal] = useState(false);
   const [showChatScreen, setShowChatScreen] = useState(false);
+  const [showEnhancedChat, setShowEnhancedChat] = useState(false);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newPostContent, setNewPostContent] = useState('');
   const [newTopicTitle, setNewTopicTitle] = useState('');
   const [newTopicContent, setNewTopicContent] = useState('');
@@ -236,28 +249,60 @@ export default function CommunityScreen() {
   const [pollQuestion, setPollQuestion] = useState('');
   const [pollOptions, setPollOptions] = useState(['', '']);
   const [showPollOptions, setShowPollOptions] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageCaption, setImageCaption] = useState('');
   
   // Real data state
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
+  const [isCreatingTopic, setIsCreatingTopic] = useState(false);
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
   const [discussions, setDiscussions] = useState<any[]>([]);
   const [isLoadingDiscussions, setIsLoadingDiscussions] = useState(true);
   const [conversations, setConversations] = useState<any[]>([]);
   const [isLoadingConversations, setIsLoadingConversations] = useState(true);
+  const [totalUnreadCount, setTotalUnreadCount] = useState(0);
 
   // Load data on component mount and tab changes
   useEffect(() => {
     loadPosts();
     loadDiscussions();
+    loadConversations(); // Always load conversations to get unread count
   }, []);
 
   useEffect(() => {
     if (activeTab === 'Discuss' && discussions.length === 0) {
       loadDiscussions();
-    } else if (activeTab === 'Messages' && conversations.length === 0) {
+    } else if (activeTab === 'Messages') {
+      // Always reload conversations when switching to Messages tab to get latest unread counts
       loadConversations();
     }
+  }, [activeTab]);
+
+  // Refresh unread count periodically (every 30 seconds)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (activeTab !== 'Messages') {
+        // Only refresh if not on Messages tab to avoid conflicts
+        loadConversations(true); // Skip loading state for background refresh
+      }
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, [activeTab]);
+
+  // Refresh unread count when app becomes active
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: string) => {
+      if (nextAppState === 'active' && activeTab !== 'Messages') {
+        // Refresh unread count when app becomes active (if not on Messages tab)
+        loadConversations(true); // Skip loading state for background refresh
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    return () => subscription?.remove();
   }, [activeTab]);
 
   const loadPosts = async () => {
@@ -298,22 +343,38 @@ export default function CommunityScreen() {
     }
   };
 
-  const loadConversations = async () => {
+  const loadConversations = async (skipLoadingState = false) => {
     try {
-      setIsLoadingConversations(true);
+      if (!skipLoadingState) {
+        setIsLoadingConversations(true);
+      }
       const response = await communityService.getConversations();
       if (response.success && response.data) {
         setConversations(response.data.conversations);
+        
+        // Calculate total unread count
+        const totalUnread = response.data.conversations.reduce((sum: number, conv: any) => {
+          return sum + (conv.unreadCount || 0);
+        }, 0);
+        setTotalUnreadCount(totalUnread);
       }
     } catch (error) {
       console.error('Error loading conversations:', error);
     } finally {
-      setIsLoadingConversations(false);
+      if (!skipLoadingState) {
+        setIsLoadingConversations(false);
+      }
     }
   };
 
   const handleCreatePost = async () => {
-    if (!user || !newPostContent.trim()) {
+    if (!user) {
+      alert('Please log in to create a post');
+      return;
+    }
+
+    // Validate based on post type
+    if (postType === 'text' && !newPostContent.trim()) {
       alert('Please enter some content for your post');
       return;
     }
@@ -323,13 +384,18 @@ export default function CommunityScreen() {
       return;
     }
 
+    if (postType === 'image' && !selectedImage) {
+      alert('Please select an image for your post');
+      return;
+    }
+
     try {
       setIsCreatingPost(true);
-      console.log('Creating post...', { user: user.id, content: newPostContent });
+      console.log('Creating post...', { user: user.id, content: newPostContent, type: postType });
       
       const postData: CreatePostRequest = {
         content: newPostContent,
-        type: postType === 'poll' ? 'poll' : 'text',
+        type: postType,
         isPublic: true,
       };
 
@@ -338,6 +404,11 @@ export default function CommunityScreen() {
           question: pollQuestion,
           options: pollOptions.filter(opt => opt.trim()),
         };
+      }
+
+      if (postType === 'image' && selectedImage) {
+        postData.imageUrl = selectedImage;
+        postData.imageCaption = imageCaption;
       }
 
       console.log('Sending post data:', postData);
@@ -353,6 +424,8 @@ export default function CommunityScreen() {
         setPollQuestion('');
         setPollOptions(['', '']);
         setShowPollOptions(false);
+        setSelectedImage(null);
+        setImageCaption('');
         
         // Reload posts
         await loadPosts();
@@ -382,7 +455,7 @@ export default function CommunityScreen() {
 
       // Update local state optimistically
       setPosts(prevPosts => 
-        prevPosts.map(p => 
+        prevPosts.map((p: CommunityPost) => 
           p.id === postId 
             ? { 
                 ...p, 
@@ -402,24 +475,34 @@ export default function CommunityScreen() {
       await communityService.voteOnPoll(postId, optionId);
       // Reload posts to get updated poll data
       loadPosts();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error voting on poll:', error);
+      
+      // Handle duplicate vote error gracefully
+      if (error?.message?.includes('duplicate key value') || error?.details?.includes('already exists')) {
+        // User already voted on this option, just reload to show current state
+        loadPosts();
+      } else {
+        // Show error for other types of errors
+        alert('Failed to vote on poll. Please try again.');
+      }
     }
   };
 
-  const handleCreateTopic = async () => {
-    if (!user || !newTopicTitle.trim() || !newTopicContent.trim()) {
+  const handleCreateTopic = async (title: string, content: string, category: string) => {
+    if (!user || !title.trim() || !content.trim()) {
       alert('Please fill in both title and content');
       return;
     }
 
     try {
-      console.log('Creating discussion...', { user: user.id, title: newTopicTitle });
+      setIsCreatingTopic(true);
+      console.log('Creating discussion...', { user: user.id, title });
       
       const topicData = {
-        title: newTopicTitle,
-        content: newTopicContent,
-        category: newTopicCategory,
+        title: title.trim(),
+        content: content.trim(),
+        category: category as any, // Cast to any to handle custom categories
         tags: []
       };
 
@@ -431,9 +514,6 @@ export default function CommunityScreen() {
         console.log('✅ Discussion created successfully');
         // Close modal and reset form
         setShowNewTopicModal(false);
-        setNewTopicTitle('');
-        setNewTopicContent('');
-        setNewTopicCategory('Islamic Practice & Spirituality');
         
         // Reload discussions
         await loadDiscussions();
@@ -445,6 +525,129 @@ export default function CommunityScreen() {
     } catch (error) {
       console.error('❌ Error creating discussion:', error);
       alert(`Failed to create discussion: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsCreatingTopic(false);
+    }
+  };
+
+  const handleReplyToDiscussion = async (topicId: string, reply: string): Promise<boolean> => {
+    if (!user || !reply.trim()) {
+      alert('Please enter a reply');
+      return false;
+    }
+    
+    if (isSubmittingReply) {
+      return false; // Prevent double submission
+    }
+    
+    try {
+      setIsSubmittingReply(true);
+      console.log('Replying to discussion:', topicId, reply);
+      
+      // Call the actual API to save reply to database
+      const replyData = {
+        discussion_id: topicId,
+        content: reply.trim(),
+      };
+      
+      const response = await communityService.replyToDiscussion(replyData);
+      
+      if (response.success) {
+        console.log('✅ Reply saved to database successfully');
+        // Reload discussions to get updated counts from database
+        await loadDiscussions();
+        return true; // Indicate success
+      } else {
+        console.error('❌ Failed to save reply to database:', response.error);
+        alert(`Failed to add reply: ${response.error}`);
+        return false;
+      }
+      
+    } catch (error) {
+      console.error('❌ Error saving reply to database:', error);
+      alert(`Failed to add reply: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      return false;
+    } finally {
+      setIsSubmittingReply(false);
+    }
+  };
+
+  const handleUserSelected = async (selectedUser: ConnectedUser, conversationId?: string) => {
+    console.log('🎯 handleUserSelected called with user:', selectedUser.name, 'conversationId:', conversationId);
+    
+    try {
+      let conversation: Conversation;
+      
+      if (conversationId) {
+        // Use the real conversation ID passed from AddUserModal
+        console.log('📋 Using conversation ID:', conversationId);
+        
+        // Check if this conversation already exists in our list
+        const existingConversation = conversations.find(conv => conv.id === conversationId);
+        
+        if (existingConversation) {
+          console.log('📋 Found existing conversation in list, using it');
+          conversation = existingConversation;
+        } else {
+          console.log('📋 Creating conversation object for new conversation');
+          conversation = {
+            id: conversationId,
+            participants: [
+              { id: selectedUser.id, name: selectedUser.name, avatar: selectedUser.avatar },
+              { id: user?.id || 'current-user-id', name: user?.email?.split('@')[0] || 'You', avatar: undefined }
+            ],
+            lastMessage: {
+              content: 'Start a conversation...',
+              timestamp: new Date().toISOString(),
+              senderId: user?.id || 'current-user-id'
+            },
+            unreadCount: 0,
+            updatedAt: new Date().toISOString()
+          };
+        }
+      } else {
+        // This shouldn't happen anymore since AddUserModal always provides conversationId
+        console.log('📞 Creating new conversation with user:', selectedUser.id);
+        const response = await communityService.createConversation({
+          participantIds: [selectedUser.id],
+        });
+
+        if (response.success && response.data) {
+          conversation = response.data;
+        } else {
+          alert('Failed to create conversation');
+          return;
+        }
+      }
+      
+      console.log('📱 Setting selected conversation and showing enhanced chat');
+      setSelectedConversation(conversation);
+      setShowEnhancedChat(true);
+      
+      // Refresh conversations to update unread counts
+      await loadConversations();
+    } catch (error) {
+      console.error('Error in handleUserSelected:', error);
+      alert('Failed to start conversation');
+    }
+  };
+
+  const handleDeleteConversation = async (conversationId: string) => {
+    try {
+      console.log('🗑️ Deleting conversation:', conversationId);
+      const response = await communityService.deleteConversation(conversationId);
+      
+      if (response.success) {
+        console.log('✅ Conversation deleted successfully');
+        // Refresh conversations to update the list
+        await loadConversations();
+      } else {
+        console.error('❌ Failed to delete conversation:', response.error);
+        alert(`Failed to delete conversation: ${response.error}`);
+      }
+    } catch (error) {
+      console.error('❌ Error deleting conversation:', error);
+      alert('Failed to delete conversation');
     }
   };
 
@@ -475,93 +678,21 @@ export default function CommunityScreen() {
           <Text style={{ color: colors.secondaryText }}>No posts yet. Be the first to share!</Text>
         </View>
       ) : (
-        posts.map((post, index) => (
-        <Animated.View
+        posts.map((post) => (
+          <FeedPost
           key={post.id}
-          entering={FadeInDown.delay(index * 100)}
-          style={[styles.postCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={styles.postHeader}>
-            <View style={styles.userInfo}>
-              <View style={[styles.avatar, { backgroundColor: colors.primary + '20' }]}>
-                <Ionicons name="person" size={20} color={colors.primary} />
-              </View>
-                          <View style={styles.userDetails}>
-              <Text style={[styles.username, { color: colors.text }]}>{post.author.name}</Text>
-              <Text style={[styles.timeAgo, { color: colors.secondaryText }]}>
-                {new Date(post.createdAt).toLocaleDateString()}
-              </Text>
-            </View>
-            </View>
-          </View>
-          
-          <Text style={[styles.postContent, { color: colors.text }]}>{post.content}</Text>
-          
-          {post.imageUrl && (
-            <View style={[styles.postImage, { backgroundColor: colors.border }]}>
-              <Ionicons name="image" size={40} color={colors.secondaryText} />
-              <Text style={[styles.imageText, { color: colors.secondaryText }]}>
-                {post.imageCaption || 'Image'}
-              </Text>
-            </View>
-          )}
-
-          {post.type === 'poll' && post.poll && (
-            <View style={styles.postPoll}>
-              <Text style={[styles.pollQuestionText, { color: colors.text }]}>
-                {post.poll.question}
-              </Text>
-              <View style={styles.pollOptionsContainer}>
-                {post.poll.options.map((option, optIndex) => (
-                  <TouchableOpacity 
-                    key={option.id} 
-                    style={styles.pollOptionContainer}
-                    onPress={() => handleVoteOnPoll(post.id, option.id)}
-                  >
-                    <View style={[styles.pollOptionBar, { backgroundColor: colors.border }]}>
-                      <View 
-                        style={[
-                          styles.pollOptionFill, 
-                          { 
-                            backgroundColor: option.hasVoted ? colors.primary : colors.primary + '40',
-                            width: `${option.percentage}%` 
-                          }
-                        ]} 
-                      />
-                    </View>
-                    <Text style={[styles.pollOptionText, { color: colors.text }]}>
-                      {option.text} ({option.percentage}%)
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <Text style={[styles.pollStats, { color: colors.secondaryText }]}>
-                {post.poll.totalVotes} votes{post.poll.expiresAt ? ` • Expires ${new Date(post.poll.expiresAt).toLocaleDateString()}` : ''}
-              </Text>
-            </View>
-          )}
-          
-          <View style={styles.postActions}>
-            <TouchableOpacity 
-              style={styles.actionButton}
-              onPress={() => handleLikePost(post.id)}
-            >
-              <Ionicons 
-                name={post.hasLiked ? "heart" : "heart-outline"} 
-                size={20} 
-                color={post.hasLiked ? colors.primary : colors.text} 
-              />
-              <Text style={[styles.actionText, { color: colors.text }]}>{post.likes}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="chatbubble-outline" size={20} color={colors.text} />
-              <Text style={[styles.actionText, { color: colors.text }]}>{post.comments}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="share-outline" size={20} color={colors.text} />
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
+            post={post}
+            onLike={handleLikePost}
+            onComment={(postId, comment) => {
+              // TODO: Implement comment functionality
+              console.log('Comment on post:', postId, comment);
+            }}
+            onShare={(postId) => {
+              // TODO: Implement share functionality
+              console.log('Share post:', postId);
+            }}
+            onVotePoll={handleVoteOnPoll}
+          />
         ))
       )}
     </ScrollView>
@@ -592,37 +723,17 @@ export default function CommunityScreen() {
           <Text style={{ color: colors.secondaryText }}>No discussions yet. Start a conversation!</Text>
         </View>
       ) : (
-        discussions.map((topic, index) => (
-        <Animated.View
+        discussions.map((topic) => (
+          <DiscussionTopic
           key={topic.id}
-          entering={FadeInDown.delay(index * 50)}
-          style={[styles.discussionCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={styles.discussionHeader}>
-            {topic.isPinned && <Ionicons name="pin" size={16} color={colors.primary} />}
-            {topic.isSolved && <Ionicons name="checkmark-circle" size={16} color={colors.success} />}
-            {topic.isScholarly && <Ionicons name="school" size={16} color={colors.secondary} />}
-          </View>
-          
-          <Text style={[styles.discussionTitle, { color: colors.text }]}>{topic.title}</Text>
-          
-          <View style={[styles.categoryBadge, { backgroundColor: colors.primary + '15' }]}>
-            <Text style={[styles.categoryBadgeText, { color: colors.primary }]}>{topic.category}</Text>
-          </View>
-          
-          <Text style={[styles.discussionPreview, { color: colors.secondaryText }]}>
-            {topic.content}
-          </Text>
-          
-          <View style={styles.discussionFooter}>
-            <Text style={[styles.discussionMeta, { color: colors.secondaryText }]}>
-              By {topic.author.name} • {new Date(topic.createdAt).toLocaleDateString()}
-            </Text>
-            <Text style={[styles.discussionStats, { color: colors.primary }]}>
-              {topic.replies} replies • Last: {topic.lastReply?.timestamp || 'No replies yet'}
-            </Text>
-          </View>
-        </Animated.View>
+            topic={topic}
+            onPress={(topicId) => {
+              // TODO: Navigate to discussion detail
+              console.log('Open discussion:', topicId);
+            }}
+            onReply={handleReplyToDiscussion}
+            isSubmittingReply={isSubmittingReply}
+          />
         ))
       )}
     </ScrollView>
@@ -632,21 +743,31 @@ export default function CommunityScreen() {
 
   const renderMessagesScreen = () => (
     <View style={styles.tabContent}>
-      {/* Search Bar */}
-      <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <Ionicons name="search" size={20} color={colors.secondaryText} />
-        <TextInput
-          style={[styles.searchInput, { color: colors.text }]}
-          placeholder="Search messages..."
-          placeholderTextColor={colors.secondaryText}
-          value={searchMessages}
-          onChangeText={setSearchMessages}
-        />
-        {searchMessages.length > 0 && (
-          <TouchableOpacity onPress={() => setSearchMessages('')}>
-            <Ionicons name="close-circle" size={20} color={colors.secondaryText} />
-          </TouchableOpacity>
-        )}
+      {/* Header with Search and New Chat Button */}
+      <View style={styles.messagesHeader}>
+        <View style={[styles.searchBarContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Ionicons name="search" size={20} color={colors.secondaryText} />
+          <TextInput
+            style={[styles.searchInput, { color: colors.text }]}
+            placeholder="Search messages..."
+            placeholderTextColor={colors.secondaryText}
+            value={searchMessages}
+            onChangeText={setSearchMessages}
+          />
+          {searchMessages.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchMessages('')}>
+              <Ionicons name="close-circle" size={20} color={colors.secondaryText} />
+            </TouchableOpacity>
+          )}
+        </View>
+        
+        <TouchableOpacity 
+          style={[styles.newChatButton, { backgroundColor: colors.primary }]}
+          onPress={() => setShowAddUserModal(true)}
+        >
+          <Ionicons name="add" size={18} color="#FFFFFF" />
+          <Text style={styles.newChatButtonText}>New</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Messages List */}
@@ -655,42 +776,44 @@ export default function CommunityScreen() {
           <Text style={{ color: colors.secondaryText }}>Loading conversations...</Text>
         </View>
       ) : conversations.length === 0 ? (
-        <View style={{ padding: 20, alignItems: 'center' }}>
-          <Text style={{ color: colors.secondaryText }}>No conversations yet.</Text>
+        <View style={styles.emptyMessagesContainer}>
+          <Ionicons name="chatbubbles-outline" size={64} color={colors.border} />
+          <Text style={[styles.emptyMessagesTitle, { color: colors.text }]}>
+            No conversations yet
+          </Text>
+          <Text style={[styles.emptyMessagesText, { color: colors.secondaryText }]}>
+            Start a conversation with someone from the community
+          </Text>
+          <TouchableOpacity 
+            style={[styles.startChatButton, { backgroundColor: colors.primary }]}
+            onPress={() => setShowAddUserModal(true)}
+          >
+            <Ionicons name="add" size={16} color="#FFFFFF" />
+            <Text style={styles.startChatButtonText}>Start a Chat</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <FlatList
-          data={conversations}
+          data={conversations.filter(conv => 
+            searchMessages === '' || 
+            conv.participants.some((p: any) => p.name.toLowerCase().includes(searchMessages.toLowerCase())) ||
+            conv.lastMessage.content.toLowerCase().includes(searchMessages.toLowerCase())
+          )}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 120 }} // Add bottom padding for floating tab bar
           renderItem={({ item, index }) => (
-          <Animated.View entering={FadeInDown.delay(index * 50)}>
-            <TouchableOpacity
-              style={[styles.messageItem, { backgroundColor: colors.card, borderColor: colors.border }]}
-              onPress={() => setShowChatScreen(true)}
-            >
-              <View style={[styles.avatar, { backgroundColor: colors.primary + '20' }]}>
-                <Ionicons name="person" size={20} color={colors.primary} />
-              </View>
-              <View style={styles.messageContent}>
-                <View style={styles.messageHeader}>
-                  <Text style={[styles.messageUser, { color: colors.text }]}>
-                    {item.participants.find((p: any) => p.name !== 'You')?.name || 'Unknown'}
-                  </Text>
-                  <Text style={[styles.messageTime, { color: colors.secondaryText }]}>
-                    {new Date(item.lastMessage.timestamp).toLocaleDateString()}
-                  </Text>
-                </View>
-                <Text style={[styles.lastMessage, { color: colors.secondaryText }]} numberOfLines={1}>
-                  {item.lastMessage.content}
-                </Text>
-              </View>
-              {item.unreadCount > 0 && <View style={[styles.unreadIndicator, { backgroundColor: colors.primary }]} />}
-            </TouchableOpacity>
-          </Animated.View>
-        )}
-      />
+            <SwipeableConversationItem
+              item={item}
+              index={index}
+              onPress={() => {
+                setSelectedConversation(item);
+                setShowEnhancedChat(true);
+              }}
+              onDelete={() => handleDeleteConversation(item.id)}
+            />
+          )}
+        />
       )}
     </View>
   );
@@ -726,15 +849,20 @@ export default function CommunityScreen() {
             ]}
             onPress={() => setActiveTab(tab)}
           >
-            <Text
-              style={[
-                styles.tabButtonText,
-                { color: colors.secondaryText },
-                activeTab === tab && [styles.activeTabButtonText, { color: colors.primary }]
-              ]}
-            >
-              {tab}
-            </Text>
+            <View style={styles.tabButtonContent}>
+              <Text
+                style={[
+                  styles.tabButtonText,
+                  { color: colors.secondaryText },
+                  activeTab === tab && [styles.activeTabButtonText, { color: colors.primary }]
+                ]}
+              >
+                {tab}
+              </Text>
+              {tab === 'Messages' && totalUnreadCount > 0 && (
+                <View style={[styles.tabUnreadDot, { backgroundColor: colors.primary }]} />
+              )}
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -743,244 +871,32 @@ export default function CommunityScreen() {
       {renderTabContent()}
 
       {/* New Post Modal */}
-      <Modal
+      <CreatePostModal
         visible={showNewPostModal}
-        animationType="slide"
-        presentationStyle="pageSheet"
-      >
-        <SafeAreaView style={[styles.modalContainer, { backgroundColor: colors.background }]}>
-          <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
-            <TouchableOpacity onPress={() => {
-              setShowNewPostModal(false);
-              setNewPostContent('');
-              setPostType('text');
-              setPollQuestion('');
-              setPollOptions(['', '']);
-              setShowPollOptions(false);
-            }}>
-              <Ionicons name="close" size={24} color={colors.text} />
-            </TouchableOpacity>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>Create New Post</Text>
-            <TouchableOpacity 
-              style={[
-                styles.postButton, 
-                { 
-                  backgroundColor: isCreatingPost ? colors.border : colors.primary,
-                  opacity: isCreatingPost ? 0.6 : 1
-                }
-              ]}
-              onPress={handleCreatePost}
-              disabled={isCreatingPost}
-            >
-              <Text style={styles.postButtonText}>
-                {isCreatingPost ? 'Posting...' : 'Post'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+        onClose={() => setShowNewPostModal(false)}
+        onSubmit={(content, type, pollData, settings, imageData) => {
+          // Store all data for use in handleCreatePost
+          setNewPostContent(content);
+          setPostType(type);
+          setPollQuestion(pollData?.question || '');
+          setPollOptions(pollData?.options || ['', '']);
+          setSelectedImage(imageData?.uri || null);
+          setImageCaption(imageData?.caption || '');
           
-          <View style={styles.modalContent}>
-            <View style={styles.userRow}>
-              <View style={[styles.avatar, { backgroundColor: colors.primary + '20' }]}>
-                <Ionicons name="person" size={16} color={colors.primary} />
-              </View>
-              <Text style={[styles.username, { color: colors.text }]}>User</Text>
-            </View>
-            
-            <TextInput
-              style={[styles.postInput, { color: colors.text }]}
-              placeholder="What's on your mind?"
-              placeholderTextColor={colors.secondaryText}
-              multiline
-              value={newPostContent}
-              onChangeText={setNewPostContent}
-            />
-            
-            <Text style={[styles.addToPostLabel, { color: colors.text }]}>Add to your post:</Text>
-            <View style={styles.mediaOptions}>
-              <TouchableOpacity 
-                style={[
-                  styles.mediaOption, 
-                  { backgroundColor: postType === 'image' ? colors.primary + '20' : colors.card }
-                ]}
-                onPress={() => setPostType('image')}
-              >
-                <Ionicons name="image-outline" size={20} color={postType === 'image' ? colors.primary : colors.text} />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[
-                  styles.mediaOption, 
-                  { backgroundColor: postType === 'poll' ? colors.primary + '20' : colors.card }
-                ]}
-                onPress={() => {
-                  setPostType('poll');
-                  setShowPollOptions(true);
-                }}
-              >
-                <Ionicons name="stats-chart-outline" size={20} color={postType === 'poll' ? colors.primary : colors.text} />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[
-                  styles.mediaOption, 
-                  { backgroundColor: postType === 'text' ? colors.primary + '20' : colors.card }
-                ]}
-                onPress={() => setPostType('text')}
-              >
-                <Ionicons name="create-outline" size={20} color={postType === 'text' ? colors.primary : colors.text} />
-              </TouchableOpacity>
-            </View>
-
-            {/* Poll Creation Section */}
-            {postType === 'poll' && (
-              <View style={styles.pollCreation}>
-                <Text style={[styles.pollLabel, { color: colors.text }]}>Poll Question</Text>
-                <TextInput
-                  style={[styles.pollQuestionInput, { color: colors.text, borderColor: colors.border }]}
-                  placeholder="Ask a question..."
-                  placeholderTextColor={colors.secondaryText}
-                  value={pollQuestion}
-                  onChangeText={setPollQuestion}
-                />
-                
-                <Text style={[styles.pollLabel, { color: colors.text }]}>Options</Text>
-                {pollOptions.map((option, index) => (
-                  <View key={index} style={styles.pollOptionRow}>
-                    <TextInput
-                      style={[styles.pollOptionInput, { color: colors.text, borderColor: colors.border }]}
-                      placeholder={`Option ${index + 1}`}
-                      placeholderTextColor={colors.secondaryText}
-                      value={option}
-                      onChangeText={(text) => {
-                        const newOptions = [...pollOptions];
-                        newOptions[index] = text;
-                        setPollOptions(newOptions);
-                      }}
-                    />
-                    {pollOptions.length > 2 && (
-                      <TouchableOpacity
-                        style={styles.removeOptionButton}
-                        onPress={() => {
-                          const newOptions = pollOptions.filter((_, i) => i !== index);
-                          setPollOptions(newOptions);
-                        }}
-                      >
-                        <Ionicons name="close" size={16} color={colors.secondaryText} />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                ))}
-                
-                {pollOptions.length < 5 && (
-                  <TouchableOpacity
-                    style={[styles.addOptionButton, { borderColor: colors.border }]}
-                    onPress={() => setPollOptions([...pollOptions, ''])}
-                  >
-                    <Ionicons name="add" size={16} color={colors.primary} />
-                    <Text style={[styles.addOptionText, { color: colors.primary }]}>Add option</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            )}
-            
-            <View style={styles.postSettings}>
-              <TouchableOpacity style={[styles.settingButton, { backgroundColor: colors.card }]}>
-                <Text style={[styles.settingText, { color: colors.text }]}>Privacy: Public</Text>
-                <Ionicons name="chevron-down" size={16} color={colors.text} />
-              </TouchableOpacity>
-              
-              <TouchableOpacity style={[styles.settingButton, { backgroundColor: colors.card }]}>
-                <Text style={[styles.settingText, { color: colors.text }]}>Topic: General</Text>
-                <Ionicons name="chevron-down" size={16} color={colors.text} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
-      </Modal>
+          handleCreatePost();
+        }}
+        isCreating={isCreatingPost}
+      />
 
       {/* New Topic Modal */}
-      <Modal
+      <CreateTopicModal
         visible={showNewTopicModal}
-        animationType="slide"
-        presentationStyle="pageSheet"
-      >
-        <SafeAreaView style={[styles.modalContainer, { backgroundColor: colors.background }]}>
-          <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
-            <TouchableOpacity onPress={() => {
-              setShowNewTopicModal(false);
-              setNewTopicTitle('');
-              setNewTopicContent('');
-              setNewTopicCategory('Islamic Practice & Spirituality');
-            }}>
-              <Ionicons name="close" size={24} color={colors.text} />
-            </TouchableOpacity>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>Create New Topic</Text>
-            <TouchableOpacity 
-              style={[styles.postButton, { backgroundColor: colors.primary }]}
-              onPress={handleCreateTopic}
-            >
-              <Text style={styles.postButtonText}>Create</Text>
-            </TouchableOpacity>
-          </View>
-          
-          <View style={styles.modalContent}>
-            <View style={styles.userRow}>
-              <View style={[styles.avatar, { backgroundColor: colors.primary + '20' }]}>
-                <Ionicons name="person" size={16} color={colors.primary} />
-              </View>
-              <Text style={[styles.username, { color: colors.text }]}>User</Text>
-            </View>
-            
-            <Text style={[styles.addToPostLabel, { color: colors.text }]}>Title:</Text>
-            <TextInput
-              style={[styles.topicTitleInput, { color: colors.text, borderColor: colors.border }]}
-              placeholder="What's your discussion topic?"
-              placeholderTextColor={colors.secondaryText}
-              value={newTopicTitle}
-              onChangeText={setNewTopicTitle}
-            />
-            
-            <Text style={[styles.addToPostLabel, { color: colors.text }]}>Content:</Text>
-            <TextInput
-              style={[styles.postInput, { color: colors.text }]}
-              placeholder="Describe your topic in detail..."
-              placeholderTextColor={colors.secondaryText}
-              multiline
-              value={newTopicContent}
-              onChangeText={setNewTopicContent}
-            />
-            
-            <Text style={[styles.addToPostLabel, { color: colors.text }]}>Category:</Text>
-            <View style={styles.categoryOptions}>
-              {[
-                'Islamic Practice & Spirituality',
-                'Book Study & Reflection', 
-                'Habit Building & Discipline',
-                'Healthy Living (Halal Lifestyle)',
-                'Community Support',
-                'Ask a Scholar'
-              ].map((category) => (
-                <TouchableOpacity
-                  key={category}
-                  style={[
-                    styles.categoryOption,
-                    { 
-                      backgroundColor: newTopicCategory === category ? colors.primary + '20' : colors.card,
-                      borderColor: colors.border
-                    }
-                  ]}
-                  onPress={() => setNewTopicCategory(category as any)}
-                >
-                  <Text style={[
-                    styles.categoryOptionText, 
-                    { color: newTopicCategory === category ? colors.primary : colors.text }
-                  ]}>
-                    {category}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        </SafeAreaView>
-      </Modal>
+        onClose={() => setShowNewTopicModal(false)}
+        onSubmit={(title, content, category) => {
+          handleCreateTopic(title, content, category);
+        }}
+        isCreating={isCreatingTopic}
+      />
 
       {/* Chat Screen Modal */}
       <Modal
@@ -1039,6 +955,33 @@ export default function CommunityScreen() {
           </View>
         </SafeAreaView>
       </Modal>
+
+      {/* Enhanced Chat Screen */}
+      {showEnhancedChat && selectedConversation && (
+        <Modal
+          visible={showEnhancedChat}
+          animationType="slide"
+          presentationStyle="fullScreen"
+        >
+          <EnhancedChatScreen
+            conversationId={selectedConversation.id}
+            participantName={selectedConversation.participants[0]?.name || 'Unknown'}
+            onClose={() => {
+              setShowEnhancedChat(false);
+              setSelectedConversation(null);
+              // Reload conversations to get updated data
+              loadConversations();
+            }}
+          />
+        </Modal>
+      )}
+
+      {/* Add User Modal */}
+      <AddUserModal
+        visible={showAddUserModal}
+        onClose={() => setShowAddUserModal(false)}
+        onUserSelected={handleUserSelected}
+      />
     </SafeAreaView>
   );
 }
@@ -1076,6 +1019,16 @@ const styles = StyleSheet.create({
   },
   activeTabButtonText: {
     fontWeight: '600',
+  },
+  tabButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  tabUnreadDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   tabContent: {
     flex: 1,
@@ -1249,15 +1202,7 @@ const styles = StyleSheet.create({
     top: 8,
     zIndex: 1,
   },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 16,
-    borderWidth: 1,
-    gap: 8,
-  },
+
   searchInput: {
     flex: 1,
     fontSize: 16,
@@ -1570,5 +1515,95 @@ const styles = StyleSheet.create({
   categoryOptionText: {
     fontSize: 14,
     fontWeight: '500',
+  },
+  
+  // Enhanced messaging styles
+  messagesHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    gap: 12,
+  },
+  searchBarContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 8,
+  },
+  addUserButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  newChatButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 4,
+    flexShrink: 0, // Prevent the button from shrinking
+    minWidth: 60, // Ensure minimum width
+  },
+  newChatButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  emptyMessagesContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyMessagesTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyMessagesText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  startChatButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 24,
+    gap: 8,
+  },
+  startChatButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  lastMessageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  unreadBadge: {
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+  },
+  unreadCount: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
   },
 }); 

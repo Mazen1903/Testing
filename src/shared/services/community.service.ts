@@ -1,6 +1,7 @@
 import { 
   CommunityPost, 
   Discussion, 
+  DiscussionReply,
   Conversation, 
   Message,
   CreatePostRequest, 
@@ -91,6 +92,8 @@ class CommunityService {
       return { success: true, data: this.getMockDiscussions() as T };
     } else if (endpoint.includes('/conversations')) {
       return { success: true, data: this.getMockConversations() as T };
+    } else if (endpoint.includes('/replies')) {
+      return { success: true, data: this.getMockReplies() as T };
     }
 
     return { success: true, data: {} as T };
@@ -177,6 +180,10 @@ class CommunityService {
     });
   }
 
+  async getDiscussionReplies(discussionId: string): Promise<ApiResponse<DiscussionReply[]>> {
+    return this.apiCall<DiscussionReply[]>(`/community/discussions/${discussionId}/replies`);
+  }
+
   // Messages API methods
   async getConversations(): Promise<ApiResponse<ConversationsResponse>> {
     return this.apiCall<ConversationsResponse>('/community/conversations');
@@ -232,7 +239,7 @@ class CommunityService {
         hashtags: ['#FajrVibes', '#MorningDhikr'],
         hasLiked: true,
         isPublic: true,
-        imageUrl: 'https://example.com/sunrise.jpg',
+        imageUrl: 'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=800&h=600&fit=crop',
         imageCaption: 'Beautiful sunrise 🌅'
       },
       {
@@ -260,6 +267,23 @@ class CommunityService {
           allowMultipleVotes: false,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
         }
+      },
+      {
+        id: '4',
+        userId: 'user4',
+        author: { id: 'user4', name: 'Sara_Photography', avatar: undefined },
+        content: 'Captured this beautiful moment during my evening walk 🚶‍♀️ The golden hour light was perfect for reflection',
+        type: 'image',
+        createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+        likes: 45,
+        comments: 6,
+        shares: 3,
+        hashtags: ['#GoldenHour', '#Reflection', '#Photography'],
+        hasLiked: false,
+        isPublic: true,
+        imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d75df4?w=800&h=600&fit=crop',
+        imageCaption: 'Evening golden hour 🌅'
       }
     ];
 
@@ -345,6 +369,61 @@ class CommunityService {
       conversations: mockConversations,
       pagination: { page: 1, limit: 10, total: mockConversations.length, hasNext: false }
     };
+  }
+
+  private getMockReplies(): DiscussionReply[] {
+    const mockReplies: DiscussionReply[] = [
+      {
+        id: '1',
+        discussion_id: '1',
+        user_id: 'user1',
+        content: 'I found that focusing on the meaning of the words really helps. Try reciting slowly and understanding what you\'re saying.',
+        likes_count: 12,
+        is_accepted_answer: true,
+        parent_reply_id: undefined,
+        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        updated_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        author: {
+          id: 'user1',
+          name: 'Scholar_Ahmad',
+          avatar: undefined
+        }
+      },
+      {
+        id: '2',
+        discussion_id: '1',
+        user_id: 'user2',
+        content: 'Also, try to find a quiet place and minimize distractions. I found that praying in a dedicated prayer space helps a lot.',
+        likes_count: 8,
+        is_accepted_answer: false,
+        parent_reply_id: undefined,
+        created_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+        updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+        author: {
+          id: 'user2',
+          name: 'Fatima.Learns',
+          avatar: undefined
+        }
+      },
+      {
+        id: '3',
+        discussion_id: '1',
+        user_id: 'user3',
+        content: 'I struggled with this too when I first converted. What helped me was starting with shorter prayers and gradually building up. Don\'t be too hard on yourself!',
+        likes_count: 15,
+        is_accepted_answer: false,
+        parent_reply_id: undefined,
+        created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+        updated_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+        author: {
+          id: 'user3',
+          name: 'NewMuslim_Brother',
+          avatar: undefined
+        }
+      }
+    ];
+
+    return mockReplies;
   }
 }
 

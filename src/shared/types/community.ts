@@ -68,18 +68,20 @@ export interface Discussion {
 
 export interface DiscussionReply {
   id: string;
-  discussionId: string;
+  discussion_id: string;
+  user_id: string;
   content: string;
-  author: {
+  likes_count: number;
+  is_accepted_answer?: boolean;
+  parent_reply_id?: string; // For nested replies
+  created_at: string;
+  updated_at: string;
+  // Joined author data (from users table)
+  author?: {
     id: string;
     name: string;
     avatar?: string;
   };
-  createdAt: string;
-  updatedAt: string;
-  likes: number;
-  isAcceptedAnswer?: boolean;
-  parentReplyId?: string; // For nested replies
 }
 
 export interface Message {
@@ -89,7 +91,27 @@ export interface Message {
   content: string;
   createdAt: string;
   isRead: boolean;
-  messageType: 'text' | 'image' | 'file';
+  messageType: 'text' | 'image' | 'file' | 'voice';
+  
+  // For media messages
+  mediaUrl?: string;
+  mediaCaption?: string;
+  mediaDuration?: number; // For voice messages in seconds
+  mediaSize?: number; // File size in bytes
+  mediaFileName?: string; // Original file name
+  mediaMimeType?: string; // MIME type for files
+  
+  // Message status
+  deliveryStatus: 'sending' | 'sent' | 'delivered' | 'read';
+  
+  // Reply functionality
+  replyToMessageId?: string;
+  replyToMessage?: {
+    id: string;
+    content: string;
+    senderName: string;
+    messageType: Message['messageType'];
+  };
 }
 
 export interface Conversation {
@@ -139,15 +161,27 @@ export interface CreateDiscussionRequest {
 }
 
 export interface CreateReplyRequest {
-  discussionId: string;
+  discussion_id: string;
   content: string;
-  parentReplyId?: string;
+  parent_reply_id?: string;
 }
 
 export interface SendMessageRequest {
-  receiverId: string;
+  receiverId?: string;
+  conversationId?: string;
   content: string;
   messageType?: Message['messageType'];
+  
+  // For media messages
+  mediaUrl?: string;
+  mediaCaption?: string;
+  mediaDuration?: number;
+  mediaSize?: number;
+  mediaFileName?: string;
+  mediaMimeType?: string;
+  
+  // Reply functionality
+  replyToMessageId?: string;
 }
 
 export interface PostInteraction {
@@ -203,4 +237,39 @@ export interface ConversationsResponse {
     total: number;
     hasNext: boolean;
   };
+}
+
+// New types for user discovery and connections
+export interface ConnectedUser {
+  id: string;
+  name: string;
+  avatar?: string;
+  isOnline: boolean;
+  lastSeen?: string;
+  mutualConnections?: number;
+  bio?: string;
+}
+
+export interface UserSearchResponse {
+  users: ConnectedUser[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    hasNext: boolean;
+  };
+}
+
+export interface CreateConversationRequest {
+  participantIds: string[];
+  initialMessage?: string;
+}
+
+// Enhanced conversation with typing indicators and online status
+export interface ConversationDetails extends Conversation {
+  isTyping?: {
+    userId: string;
+    userName: string;
+  }[];
+  onlineParticipants: string[];
 } 
