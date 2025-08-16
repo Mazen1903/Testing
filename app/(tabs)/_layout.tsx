@@ -44,17 +44,17 @@ function TabIcon({ name, color, size, focused }: TabIconProps & { name: keyof ty
 function getCustomIcon(iconName: string) {
   switch (iconName) {
     case 'custom-home':
-      return require('@/assets/images/home.png');
+      return require('../../assets/images/home.png');
     case 'custom-library':
-      return require('@/assets/images/libarary.png');
+      return require('../../assets/images/libarary.png');
     case 'custom-dua':
-      return require('@/assets/images/dua.png');
+      return require('../../assets/images/dua.png');
     case 'custom-community':
-      return require('@/assets/images/community.png');
+      return require('../../assets/images/community.png');
     case 'custom-settings':
-      return require('@/assets/images/settings.png');
+      return require('../../assets/images/settings.png');
     default:
-      return require('@/assets/images/home.png');
+      return require('../../assets/images/home.png');
   }
 }
 
