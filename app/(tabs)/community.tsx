@@ -266,44 +266,22 @@ export default function CommunityScreen() {
 
   // Load data on component mount and tab changes
   useEffect(() => {
-    loadPosts();
-    loadDiscussions();
-    loadConversations(); // Always load conversations to get unread count
+    // Only load initial data for the active tab to speed up startup
+    if (activeTab === 'Feed') {
+      loadPosts();
+    }
   }, []);
 
   useEffect(() => {
-    if (activeTab === 'Discuss' && discussions.length === 0) {
+    if (activeTab === 'Discuss') {
       loadDiscussions();
     } else if (activeTab === 'Messages') {
-      // Always reload conversations when switching to Messages tab to get latest unread counts
       loadConversations();
+    } else if (activeTab === 'Feed' && posts.length === 0) {
+      loadPosts();
     }
   }, [activeTab]);
 
-  // Refresh unread count periodically (every 30 seconds)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (activeTab !== 'Messages') {
-        // Only refresh if not on Messages tab to avoid conflicts
-        loadConversations(true); // Skip loading state for background refresh
-      }
-    }, 30000); // 30 seconds
-
-    return () => clearInterval(interval);
-  }, [activeTab]);
-
-  // Refresh unread count when app becomes active
-  useEffect(() => {
-    const handleAppStateChange = (nextAppState: string) => {
-      if (nextAppState === 'active' && activeTab !== 'Messages') {
-        // Refresh unread count when app becomes active (if not on Messages tab)
-        loadConversations(true); // Skip loading state for background refresh
-      }
-    };
-
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
-    return () => subscription?.remove();
-  }, [activeTab]);
 
   const loadPosts = async () => {
     try {

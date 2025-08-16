@@ -13,6 +13,7 @@ import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
+import { Platform } from 'react-native';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
@@ -128,7 +129,9 @@ export default function SupplicationsScreen() {
       // Move to next dua
       if (currentDuaIndex < selectedSubcategory.duas.length - 1) {
         // Completed current dhikr, moving to next
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        if (Platform.OS !== 'web') {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
         const nextIndex = currentDuaIndex + 1;
         setCurrentDuaIndex(nextIndex);
         setCurrentCount(0);
@@ -139,15 +142,19 @@ export default function SupplicationsScreen() {
         });
       } else {
         // Session complete - stronger celebration feedback
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        setTimeout(() => {
+        if (Platform.OS !== 'web') {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        }, 200);
+          setTimeout(() => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          }, 200);
+        }
         closeZikrSession();
       }
     } else {
       // Regular count increment - light tap feedback
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
       setCurrentCount(newCount);
     }
   };
@@ -158,7 +165,9 @@ export default function SupplicationsScreen() {
       setCurrentDuaIndex(pageIndex);
       setCurrentCount(0); // Reset counter when manually swiping to different dua
       // Light haptic feedback for manual swipe
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
     }
   };
 

@@ -34,6 +34,11 @@ class SupabaseCommunityService {
 
   // Helper to set RLS context for current user
   private async setUserContext(): Promise<void> {
+    // Skip in development to prevent blocking
+    if (__DEV__) {
+      return;
+    }
+    
     const clerkUserId = authHelper.getCurrentUserId();
     if (clerkUserId) {
       try {
@@ -95,6 +100,12 @@ class SupabaseCommunityService {
 
   // Sync user from Clerk to Supabase
   async syncUser(clerkUser: any): Promise<void> {
+    // Skip sync in development to prevent startup blocking
+    if (__DEV__) {
+      console.log('🔄 Skipping user sync in development mode');
+      return;
+    }
+    
     try {
       console.log("🔄 Syncing user to Supabase:", clerkUser.id);
 

@@ -13,43 +13,7 @@ type TabIconProps = {
   focused: boolean;
 };
 
-// Custom image icons mapping
-const customIcons = {
-  home: require('../../assets/images/home.png'),
-  library: require('../../assets/images/libarary.png'), // Note: keeping original filename
-  supplications: require('../../assets/images/dua.png'),
-  community: require('../../assets/images/community.png'),
-  profile: require('../../assets/images/settings.png'),
-};
-
-function CustomImageIcon({ 
-  imageSource, 
-  color, 
-  size, 
-  focused 
-}: TabIconProps & { imageSource: any }) {
-  return (
-    <View style={{
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      backgroundColor: focused ? color + '20' : 'transparent',
-    }}>
-      <Image 
-        source={imageSource}
-        style={{ 
-          width: 30, 
-          height: 30,
-          tintColor: color,
-        }}
-        resizeMode="contain"
-      />
-    </View>
-  );
-}
-
+// Simplified icon component to reduce load time
 function TabIcon({ name, color, size, focused }: TabIconProps & { name: keyof typeof Ionicons.glyphMap }) {
   return (
     <View style={{
@@ -95,7 +59,7 @@ export default function TabLayout() {
   }
 
   if (!user) {
-    return null; // Will redirect to sign-in
+    return null;
   }
 
   return (
@@ -120,15 +84,12 @@ export default function TabLayout() {
         },
         tabBarIconStyle: {
           marginTop: 8,
-          alignItems: 'center',
-          justifyContent: 'center',
         },
         tabBarLabelStyle: {
           fontSize: 12,
           marginTop: 0,
           marginBottom: 8,
           fontWeight: '600',
-          textAlign: 'center',
         },
         headerShown: false,
       }}
@@ -138,7 +99,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: (props) => (
-            <CustomImageIcon imageSource={customIcons.home} {...props} />
+            <TabIcon name="home" {...props} />
           ),
         }}
       />
@@ -147,7 +108,7 @@ export default function TabLayout() {
         options={{
           title: 'Library',
           tabBarIcon: (props) => (
-            <CustomImageIcon imageSource={customIcons.library} {...props} />
+            <TabIcon name="library" {...props} />
           ),
         }}
       />
@@ -156,7 +117,7 @@ export default function TabLayout() {
         options={{
           title: 'Duas',
           tabBarIcon: (props) => (
-            <CustomImageIcon imageSource={customIcons.supplications} {...props} />
+            <TabIcon name="moon" {...props} />
           ),
         }}
       />
@@ -165,7 +126,7 @@ export default function TabLayout() {
         options={{
           title: 'Community',
           tabBarIcon: (props) => (
-            <CustomImageIcon imageSource={customIcons.community} {...props} />
+            <TabIcon name="people" {...props} />
           ),
         }}
       />
@@ -174,7 +135,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: (props) => (
-            <CustomImageIcon imageSource={customIcons.profile} {...props} />
+            <TabIcon name="person" {...props} />
           ),
         }}
       />

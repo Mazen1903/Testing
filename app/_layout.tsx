@@ -21,12 +21,8 @@ function RootLayoutNav() {
   const themeColors = Colors[isDark ? 'dark' : 'light'];
 
   useEffect(() => {
-    // Hide splash screen after a brief moment
-    const timer = setTimeout(() => {
-      SplashScreen.hideAsync();
-    }, 500);
-
-    return () => clearTimeout(timer);
+    // Hide splash screen immediately to prevent blocking
+    SplashScreen.hideAsync();
   }, []);
 
   return (
