@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs, useRouter } from 'expo-router';
-import { View, ActivityIndicator, Image } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 
 import { Colors } from '@/shared/constants/Colors';
@@ -13,8 +13,8 @@ type TabIconProps = {
   focused: boolean;
 };
 
-// Simplified icon component to reduce load time
-function TabIcon({ name, color, size, focused }: TabIconProps & { name: keyof typeof Ionicons.glyphMap | string }) {
+// Standard Ionicon component for reliability
+function TabIcon({ name, color, size, focused }: TabIconProps & { name: keyof typeof Ionicons.glyphMap }) {
   return (
     <View style={{
       alignItems: 'center',
@@ -24,38 +24,13 @@ function TabIcon({ name, color, size, focused }: TabIconProps & { name: keyof ty
       borderRadius: 16,
       backgroundColor: focused ? color + '20' : 'transparent',
     }}>
-      {typeof name === 'string' && name.startsWith('custom-') ? (
-        <Image 
-          source={getCustomIcon(name)} 
-          style={{ width: size, height: size, tintColor: color }}
-        />
-      ) : (
-        <Ionicons 
-          name={name as keyof typeof Ionicons.glyphMap} 
-          size={size} 
-          color={color}
-        />
-      )}
+      <Ionicons 
+        name={name} 
+        size={size} 
+        color={color}
+      />
     </View>
   );
-}
-
-// Helper function to get custom icon sources
-function getCustomIcon(iconName: string) {
-  switch (iconName) {
-    case 'custom-home':
-      return require('@/assets/images/home.png');
-    case 'custom-library':
-      return require('@/assets/images/libarary.png');
-    case 'custom-dua':
-      return require('@/assets/images/dua.png');
-    case 'custom-community':
-      return require('@/assets/images/community.png');
-    case 'custom-settings':
-      return require('@/assets/images/settings.png');
-    default:
-      return require('@/assets/images/home.png');
-  }
 }
 
 export default function TabLayout() {
@@ -124,7 +99,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: (props) => (
-            <TabIcon name="custom-home" {...props} />
+            <TabIcon name="home" {...props} />
           ),
         }}
       />
@@ -133,7 +108,7 @@ export default function TabLayout() {
         options={{
           title: 'Library',
           tabBarIcon: (props) => (
-            <TabIcon name="custom-library" {...props} />
+            <TabIcon name="library" {...props} />
           ),
         }}
       />
@@ -142,7 +117,7 @@ export default function TabLayout() {
         options={{
           title: 'Duas',
           tabBarIcon: (props) => (
-            <TabIcon name="custom-dua" {...props} />
+            <TabIcon name="moon" {...props} />
           ),
         }}
       />
@@ -151,7 +126,7 @@ export default function TabLayout() {
         options={{
           title: 'Community',
           tabBarIcon: (props) => (
-            <TabIcon name="custom-community" {...props} />
+            <TabIcon name="people" {...props} />
           ),
         }}
       />
@@ -160,7 +135,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: (props) => (
-            <TabIcon name="custom-settings" {...props} />
+            <TabIcon name="person" {...props} />
           ),
         }}
       />
