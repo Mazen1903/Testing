@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs, useRouter } from 'expo-router';
-import { View, ActivityIndicator, Image } from 'react-native';
-import { useEffect } from 'react';
+import { Tabs } from 'expo-router';
+import { View, ActivityIndicator } from 'react-native';
+import { useEffect, useState } from 'react';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
@@ -13,64 +13,22 @@ type TabIconProps = {
   focused: boolean;
 };
 
-// Simplified icon component to reduce load time
-function TabIcon({ name, color, size, focused }: TabIconProps & { name: keyof typeof Ionicons.glyphMap | string }) {
-  return (
-    <View style={{
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      backgroundColor: focused ? color + '20' : 'transparent',
-    }}>
-      {typeof name === 'string' && name.startsWith('custom-') ? (
-        <Image 
-          source={getCustomIcon(name)} 
-          style={{ width: size, height: size, tintColor: color }}
-        />
-      ) : (
-        <Ionicons 
-          name={name as keyof typeof Ionicons.glyphMap} 
-          size={size} 
-          color={color}
-        />
-      )}
-    </View>
-  );
-}
-
-// Helper function to get custom icon sources
-function getCustomIcon(iconName: string) {
-  switch (iconName) {
-    case 'custom-home':
-      return require('../../assets/images/home.png');
-    case 'custom-library':
-      return require('../../assets/images/libarary.png');
-    case 'custom-dua':
-      return require('../../assets/images/dua.png');
-    case 'custom-community':
-      return require('../../assets/images/community.png');
-    case 'custom-settings':
-      return require('../../assets/images/settings.png');
-    default:
-      return require('../../assets/images/home.png');
-  }
-}
-
 export default function TabLayout() {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
   const { user, isLoading } = useAuth();
-  const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.replace('/auth/sign-in');
-    }
-  }, [user, isLoading, router]);
+    // Simple initialization
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (isLoading) {
+  if (isLoading || !isReady) {
     return (
       <View style={{ 
         flex: 1, 
@@ -81,10 +39,6 @@ export default function TabLayout() {
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (
@@ -123,8 +77,17 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: (props) => (
-            <TabIcon name="custom-home" {...props} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <View style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: focused ? color + '20' : 'transparent',
+            }}>
+              <Ionicons name="home" size={size} color={color} />
+            </View>
           ),
         }}
       />
@@ -132,8 +95,17 @@ export default function TabLayout() {
         name="library"
         options={{
           title: 'Library',
-          tabBarIcon: (props) => (
-            <TabIcon name="custom-library" {...props} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <View style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: focused ? color + '20' : 'transparent',
+            }}>
+              <Ionicons name="library" size={size} color={color} />
+            </View>
           ),
         }}
       />
@@ -141,8 +113,17 @@ export default function TabLayout() {
         name="supplications"
         options={{
           title: 'Duas',
-          tabBarIcon: (props) => (
-            <TabIcon name="custom-dua" {...props} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <View style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: focused ? color + '20' : 'transparent',
+            }}>
+              <Ionicons name="moon" size={size} color={color} />
+            </View>
           ),
         }}
       />
@@ -150,8 +131,17 @@ export default function TabLayout() {
         name="community"
         options={{
           title: 'Community',
-          tabBarIcon: (props) => (
-            <TabIcon name="custom-community" {...props} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <View style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: focused ? color + '20' : 'transparent',
+            }}>
+              <Ionicons name="people" size={size} color={color} />
+            </View>
           ),
         }}
       />
@@ -159,8 +149,17 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: (props) => (
-            <TabIcon name="custom-settings" {...props} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <View style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: focused ? color + '20' : 'transparent',
+            }}>
+              <Ionicons name="person" size={size} color={color} />
+            </View>
           ),
         }}
       />
