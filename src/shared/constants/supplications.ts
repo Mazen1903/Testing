@@ -102,191 +102,141 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         icon: 'information-circle',
         category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '3',
-    title: 'Virtues & General Remembrance',
-    description: 'The virtues and excellence of remembering Allah',
-    categories: ['virtues'],
-    icon: 'heart',
-    subcategories: [
+      },
       {
-        id: '3-virtue',
+        id: '2-virtue',
         name: 'The Virtue of Remembering Allah',
         description: 'Understanding the importance of dhikr',
         icon: 'heart',
-        category: 'virtues',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '3-excellence',
+        id: '2-excellence',
         name: 'The excellence of remembering Allah',
         description: 'The benefits and rewards of constant remembrance',
         icon: 'star',
-        category: 'virtues',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '3-blessings',
+        id: '2-blessings',
         name: 'The excellence of asking for Allah\'s blessings upon the Prophet (ﷺ)',
         description: 'The importance of sending salawat',
         icon: 'heart-outline',
-        category: 'virtues',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '3-glorification',
+        id: '2-glorification',
         name: 'How the Prophet (ﷺ) glorified Allah',
         description: 'Learning from the Prophet\'s way of praising Allah',
         icon: 'star-outline',
-        category: 'virtues',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '3-goodness',
+        id: '2-goodness',
         name: 'Types of goodness and good etiquette for community life',
         description: 'Islamic manners and community ethics',
         icon: 'people',
-        category: 'virtues',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '3-istikharah',
+        id: '2-istikharah',
         name: 'For seeking Allah\'s counsel (Istikharah)',
         description: 'Prayer for guidance in decision making',
         icon: 'compass',
-        category: 'virtues',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '4',
-    title: 'Clothing',
-    description: 'Supplications related to dressing and clothing',
-    categories: ['clothing'],
-    icon: 'shirt',
-    subcategories: [
+      },
       {
-        id: '4-dressing',
+        id: '2-dressing',
         name: 'When getting dressed',
         description: 'Prayers when putting on clothes',
         icon: 'shirt',
-        category: 'clothing',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '4-new-clothes',
+        id: '2-new-clothes',
         name: 'When putting on new clothes',
         description: 'Supplications for new garments',
         icon: 'gift',
-        category: 'clothing',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '4-for-others',
+        id: '2-for-others',
         name: 'For someone who has put on new clothes',
         description: 'Prayers for others wearing new clothes',
         icon: 'people',
-        category: 'clothing',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '4-undressing',
+        id: '2-undressing',
         name: 'Before undressing',
         description: 'Supplications before removing clothes',
         icon: 'eye-off',
-        category: 'clothing',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '5',
-    title: 'Restroom & Purification',
-    description: 'Supplications for restroom use and purification',
-    categories: ['restroom'],
-    icon: 'water',
-    subcategories: [
+      },
       {
-        id: '5-entering',
+        id: '2-entering-restroom',
         name: 'Before entering the restroom',
         description: 'Prayer before entering the toilet',
         icon: 'enter',
-        category: 'restroom',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '5-leaving',
+        id: '2-leaving-restroom',
         name: 'After leaving the restroom',
         description: 'Prayer after leaving the toilet',
         icon: 'exit',
-        category: 'restroom',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '5-before-wudu',
+        id: '2-before-wudu',
         name: 'Before performing ablution',
         description: 'Supplications before wudu',
         icon: 'water',
-        category: 'restroom',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '5-after-wudu',
+        id: '2-after-wudu',
         name: 'Upon completing ablution',
         description: 'Prayers after completing wudu',
         icon: 'checkmark-circle',
-        category: 'restroom',
-        duas: []
-      }
-    ]
-  },
-
-  {
-    id: '6',
-    title: 'Home',
-    description: 'Supplications for entering and leaving the home',
-    categories: ['home'],
-    icon: 'home',
-    subcategories: [
-      {
-        id: '6-leaving',
-        name: 'When leaving the home',
-        description: 'Prayers when going out',
-        icon: 'exit',
-        category: 'home',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '6-entering',
+        id: '2-leaving-home',
+        name: 'When leaving the home',
+        description: 'Prayers when going out',
+        icon: 'exit',
+        category: 'hadith',
+        duas: []
+      },
+      {
+        id: '2-entering-home',
         name: 'Upon entering the home',
         description: 'Supplications when returning home',
         icon: 'enter',
-        category: 'home',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '7',
-    title: 'Mosque & Prayer Call (Athan)',
-    description: 'Supplications related to mosque and prayer call',
-    categories: ['mosque'],
-    icon: 'star',
-    subcategories: [
+      },
       {
-        id: '7-going',
+        id: '2-going-mosque',
         name: 'When going to the mosque',
         description: 'Prayers while traveling to the mosque',
         icon: 'walk',
-        category: 'mosque',
+        category: 'hadith',
         duas: [
           {
             id: '2-1-1',
@@ -303,1043 +253,913 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         ]
       },
       {
-        id: '7-entering',
+        id: '2-entering-mosque',
         name: 'Upon entering the mosque',
         description: 'Prayers when entering the mosque',
         icon: 'enter',
-        category: 'mosque',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '7-leaving',
+        id: '2-leaving-mosque',
         name: 'Upon leaving the mosque',
         description: 'Supplications when leaving the mosque',
         icon: 'exit',
-        category: 'mosque',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '7-athan',
+        id: '2-athan',
         name: 'When hearing the Athan',
         description: 'Responses to the call to prayer',
         icon: 'volume-high',
-        category: 'mosque',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '8',
-    title: 'Inside the Prayer (Salah)',
-    description: 'Supplications during different parts of the prayer',
-    categories: ['prayer'],
-    icon: 'pray',
-    subcategories: [
+      },
       {
-        id: '8-beginning',
+        id: '2-prayer-beginning',
         name: 'At beginning of the prayer (after takbeer)',
         description: 'Opening supplications in prayer',
         icon: 'play',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-ruku',
+        id: '2-ruku',
         name: 'While bowing (Ruku)',
         description: 'Dhikr during ruku position',
         icon: 'arrow-down',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-rising',
+        id: '2-rising',
         name: 'Upon rising from the bowing position',
         description: 'Supplications when standing from ruku',
         icon: 'arrow-up',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-sujood',
+        id: '2-sujood',
         name: 'During prostration (Sujood)',
         description: 'Dhikr during prostration',
         icon: 'arrow-down-circle',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-sitting',
+        id: '2-sitting',
         name: 'While sitting between two prostrations',
         description: 'Supplications between sujood',
         icon: 'pause',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-tashahhud',
+        id: '2-tashahhud',
         name: 'The Tashahhud (sitting in prayer)',
         description: 'The testimony recited while sitting',
         icon: 'hand-right',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-salawat',
+        id: '2-salawat',
         name: 'Prayers upon the Prophet ﷺ after the tashahhud',
         description: 'Sending blessings upon the Prophet',
         icon: 'heart',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-final',
+        id: '2-final',
         name: 'After the final Tashahhud and before ending the prayer',
         description: 'Final supplications before salam',
         icon: 'checkmark-circle',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-whispers',
+        id: '2-whispers',
         name: 'When afflicted by Satan whisperings in prayer or Quran recitation',
         description: 'Protection from satanic whispers',
         icon: 'shield',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-after',
+        id: '2-after-prayer',
         name: 'What to say after completing the prayer',
         description: 'Post-prayer supplications',
         icon: 'checkmark-done',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-qunut',
+        id: '2-qunut',
         name: 'Invocations for Qunut in Witr (Night Prayer)',
         description: 'Special supplications for witr prayer',
         icon: 'moon',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '8-witr',
+        id: '2-witr',
         name: 'Immediately following the Witr prayer',
         description: 'After witr prayer supplications',
         icon: 'moon-outline',
-        category: 'prayer',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '9',
-    title: 'Sleep Issues',
-    description: 'Supplications for sleep-related concerns',
-    categories: ['sleep'],
-    icon: 'moon',
-    subcategories: [
+      },
       {
-        id: '9-tossing',
+        id: '2-tossing',
         name: 'When tossing and turning during the night',
         description: 'For restless nights',
         icon: 'refresh',
-        category: 'sleep',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '9-unrest',
+        id: '2-unrest',
         name: 'Upon experiencing unrest, fear, apprehensiveness before or during sleep',
         description: 'For anxiety and fear at bedtime',
         icon: 'shield',
-        category: 'sleep',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '9-dreams',
+        id: '2-dreams',
         name: 'Upon seeing a good dream or a bad dream',
         description: 'Responses to dreams',
         icon: 'cloud',
-        category: 'sleep',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '10',
-    title: 'Distress, Trials & Protection',
-    description: 'Supplications for difficult times and seeking protection',
-    categories: ['distress'],
-    icon: 'shield',
-    subcategories: [
+      },
       {
-        id: '10-worry',
+        id: '2-worry',
         name: 'In times of worry and grief',
         description: 'For anxiety and sadness',
         icon: 'sad',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-distress',
+        id: '2-distress',
         name: 'In times of distress',
         description: 'For overwhelming difficulties',
         icon: 'alert-circle',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-tragedy',
+        id: '2-tragedy',
         name: 'When tragedy strikes',
         description: 'For major calamities',
         icon: 'warning',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-difficulty',
+        id: '2-difficulty',
         name: 'When you find something becoming difficult for you',
         description: 'For challenging situations',
         icon: 'help-circle',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-sin',
+        id: '2-sin',
         name: 'Upon committing a sin',
         description: 'Seeking forgiveness after wrongdoing',
         icon: 'heart-dislike',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-devil',
+        id: '2-devil',
         name: 'For expelling the devil and his whisperings',
         description: 'Protection from satanic influence',
         icon: 'shield-checkmark',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-shirk',
+        id: '2-shirk',
         name: 'For fear of Shirk',
         description: 'Protection from associating partners with Allah',
         icon: 'warning-outline',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-dislike',
+        id: '2-dislike',
         name: 'When something you dislike happens or when you fail to achieve something',
         description: 'Accepting Allah\'s decree',
         icon: 'thumbs-down',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-anger',
+        id: '2-anger',
         name: 'When angry',
         description: 'Controlling anger through prayer',
         icon: 'flame',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-startled',
+        id: '2-startled',
         name: 'When startled',
         description: 'For sudden fear or shock',
         icon: 'flash',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-evil-eye',
+        id: '2-evil-eye',
         name: 'When in fear of afflicting something with evil eye',
         description: 'Protection from evil eye',
         icon: 'eye',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-devils',
+        id: '2-devils',
         name: 'To ward off the plot of the rebellious devils',
         description: 'Protection from evil plots',
         icon: 'shield',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-repentance',
+        id: '2-repentance',
         name: 'Repentance and seeking forgiveness',
         description: 'Tawbah and istighfar',
         icon: 'heart',
-        category: 'distress',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '10-doubts',
+        id: '2-doubts',
         name: 'When having doubts about the faith',
         description: 'Strengthening faith and certainty',
         icon: 'help',
-        category: 'distress',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '11',
-    title: 'Enemies, Oppression & Harm',
-    description: 'Supplications for protection from enemies and oppression',
-    categories: ['enemies'],
-    icon: 'warning',
-    subcategories: [
+      },
       {
-        id: '11-enemy',
+        id: '2-enemy',
         name: 'Upon encountering an enemy or those of authority',
         description: 'When facing hostile people',
         icon: 'people',
-        category: 'enemies',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '11-ruler',
+        id: '2-ruler',
         name: 'When afraid of the ruler\'s injustice',
         description: 'Protection from unjust authority',
         icon: 'shield',
-        category: 'enemies',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '11-against',
+        id: '2-against',
         name: 'Against enemies',
         description: 'General protection from enemies',
         icon: 'shield-checkmark',
-        category: 'enemies',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '11-harm',
+        id: '2-harm',
         name: 'What to say if you fear people may harm you',
         description: 'Protection from potential harm',
         icon: 'warning-outline',
-        category: 'enemies',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '12',
-    title: 'Debts & Worldly Difficulties',
-    description: 'Supplications for financial and worldly problems',
-    categories: ['debts'],
-    icon: 'card',
-    subcategories: [
+      },
       {
-        id: '12-debt',
+        id: '2-debt',
         name: 'For the settling of a debt',
         description: 'Prayers for financial relief',
         icon: 'card',
-        category: 'debts',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '13',
-    title: 'Family, Marriage & Intimacy',
-    description: 'Supplications for family life and relationships',
-    categories: ['family'],
-    icon: 'people',
-    subcategories: [
+      },
       {
-        id: '13-birth',
+        id: '2-birth',
         name: 'Congratulation on the occasion of a birth and its reply',
         description: 'Prayers for newborns',
         icon: 'happy',
-        category: 'family',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '13-children',
+        id: '2-children',
         name: 'How to seek Allah\'s protection for children',
         description: 'Protecting children through prayer',
         icon: 'shield',
-        category: 'family',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '13-newlywed',
+        id: '2-newlywed',
         name: 'To the newlywed',
         description: 'Blessings for newly married couples',
         icon: 'heart',
-        category: 'family',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '13-wedding',
+        id: '2-wedding',
         name: 'On the wedding night or when buying an animal',
         description: 'Special occasion prayers',
         icon: 'gift',
-        category: 'family',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '13-intimacy',
+        id: '2-intimacy',
         name: 'Before intercourse',
         description: 'Prayers for marital intimacy',
         icon: 'heart-outline',
-        category: 'family',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '14',
-    title: 'Illness, Death & Funeral Rites',
-    description: 'Supplications for sickness, death, and funeral procedures',
-    categories: ['illness'],
-    icon: 'medical',
-    subcategories: [
+      },
       {
-        id: '14-visiting',
+        id: '2-visiting',
         name: 'When visiting the sick',
         description: 'Prayers when visiting ill people',
         icon: 'medical',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-reward',
+        id: '2-reward',
         name: 'The reward for visiting the sick',
         description: 'Understanding the benefits of visiting the sick',
         icon: 'star',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-terminal',
+        id: '2-terminal',
         name: 'When having terminal illness',
         description: 'Prayers for serious illness',
         icon: 'sad',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-dying',
+        id: '2-dying',
         name: 'Instruction for the one nearing death',
         description: 'Guidance for the dying person',
         icon: 'information',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-closing-eyes',
+        id: '2-closing-eyes',
         name: 'When closing the eyes of the deceased',
         description: 'Prayer when someone passes away',
         icon: 'eye-off',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-funeral',
+        id: '2-funeral',
         name: 'For the deceased at the funeral prayer',
         description: 'Janazah prayer supplications',
         icon: 'flower',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-child',
+        id: '2-child',
         name: 'For the deceased child in the funeral prayer',
         description: 'Special prayers for deceased children',
         icon: 'heart-outline',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-condolence',
+        id: '2-condolence',
         name: 'Condolence',
         description: 'Offering condolences to the bereaved',
         icon: 'hand-left',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-grave',
+        id: '2-grave',
         name: 'When placing the deceased in the grave',
         description: 'Prayers during burial',
         icon: 'location',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-after-burial',
+        id: '2-after-burial',
         name: 'After burying the deceased',
         description: 'Post-burial supplications',
         icon: 'checkmark',
-        category: 'illness',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '14-visiting-graves',
+        id: '2-visiting-graves',
         name: 'When visiting the graves',
         description: 'Prayers when visiting cemetery',
         icon: 'flower-outline',
-        category: 'illness',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '15',
-    title: 'Weather & Celestial Phenomena',
-    description: 'Supplications for weather and natural phenomena',
-    categories: ['weather'],
-    icon: 'cloud',
-    subcategories: [
+      },
       {
-        id: '15-wind',
+        id: '2-wind',
         name: 'When the wind blows',
         description: 'Prayers during windy weather',
         icon: 'leaf',
-        category: 'weather',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '15-thunder',
+        id: '2-thunder',
         name: 'When it thunders',
         description: 'Supplications during thunderstorms',
         icon: 'flash',
-        category: 'weather',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '15-rain-request',
+        id: '2-rain-request',
         name: 'For rainfall',
         description: 'Asking Allah for rain',
         icon: 'cloud-upload',
-        category: 'weather',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '15-during-rain',
+        id: '2-during-rain',
         name: 'During rainfall',
         description: 'Prayers while it\'s raining',
         icon: 'rainy',
-        category: 'weather',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '15-after-rain',
+        id: '2-after-rain',
         name: 'After rainfall',
         description: 'Gratitude after rain',
         icon: 'checkmark-circle',
-        category: 'weather',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '15-clear-skies',
+        id: '2-clear-skies',
         name: 'Asking for clear skies',
         description: 'Requesting good weather',
         icon: 'sunny',
-        category: 'weather',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '15-moon',
+        id: '2-moon',
         name: 'Upon sighting the crescent moon',
         description: 'Prayers when seeing the new moon',
         icon: 'moon',
-        category: 'weather',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '16',
-    title: 'Eating, Drinking & Fasting',
-    description: 'Supplications related to food and fasting',
-    categories: ['eating'],
-    icon: 'restaurant',
-    subcategories: [
+      },
       {
-        id: '16-before-eating',
+        id: '2-before-eating',
         name: 'Before eating',
         description: 'Prayers before meals',
         icon: 'restaurant',
-        category: 'eating',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '16-after-eating',
+        id: '2-after-eating',
         name: 'After eating',
         description: 'Gratitude after meals',
         icon: 'checkmark-circle',
-        category: 'eating',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '16-guest',
+        id: '2-guest',
         name: 'Of the guest for the host',
         description: 'Guest\'s prayer for the host',
         icon: 'people',
-        category: 'eating',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '16-given-food',
+        id: '2-given-food',
         name: 'When someone gives you food or drink',
         description: 'Gratitude for offered food',
         icon: 'gift',
-        category: 'eating',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '16-breaking-fast',
+        id: '2-breaking-fast',
         name: 'When breaking fast in someone\'s home',
         description: 'Iftar prayers at others\' homes',
         icon: 'home',
-        category: 'eating',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '16-offered-while-fasting',
+        id: '2-offered-while-fasting',
         name: 'When someone offers you food when you are fasting (which you decline)',
         description: 'Polite decline while fasting',
         icon: 'hand-left',
-        category: 'eating',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '16-iftar',
+        id: '2-iftar',
         name: 'Upon breaking fast',
         description: 'Prayers when ending the fast',
         icon: 'time',
-        category: 'eating',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '16-insulted-fasting',
+        id: '2-insulted-fasting',
         name: 'When insulted while fasting',
         description: 'Response to provocation while fasting',
         icon: 'shield',
-        category: 'eating',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '16-early-fruit',
+        id: '2-early-fruit',
         name: 'Upon seeing the early or premature fruit',
         description: 'Gratitude for seasonal fruits',
         icon: 'leaf',
-        category: 'eating',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '17',
-    title: 'Social Etiquette & Interactions',
-    description: 'Supplications for social situations and interactions',
-    categories: ['social'],
-    icon: 'chatbubbles',
-    subcategories: [
+      },
       {
-        id: '17-sneezing',
+        id: '2-sneezing',
         name: 'Upon sneezing',
         description: 'Prayers when sneezing',
         icon: 'medical',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-disbeliever-sneeze',
+        id: '2-disbeliever-sneeze',
         name: 'When a disbeliever praises Allah after sneezing',
         description: 'Response to non-Muslim\'s praise',
         icon: 'people',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-greeting',
+        id: '2-greeting',
         name: 'The excellence of spreading the Islamic greeting',
         description: 'Importance of saying Salam',
         icon: 'hand-right',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-greeting-disbeliever',
+        id: '2-greeting-disbeliever',
         name: 'Returning a greeting to a disbeliever',
         description: 'How to respond to non-Muslim greetings',
         icon: 'people-outline',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-forgiveness',
+        id: '2-forgiveness',
         name: 'Returning an invocation of forgiveness',
         description: 'Responding to requests for forgiveness',
         icon: 'heart',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-good-deed',
+        id: '2-good-deed',
         name: 'When someone does good to you',
         description: 'Gratitude for kindness',
         icon: 'thumbs-up',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-love',
+        id: '2-love',
         name: 'To one who pronounces their love for you, for Allah\'s sake',
         description: 'Response to expressions of love for Allah\'s sake',
         icon: 'heart',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-wealth',
+        id: '2-wealth',
         name: 'To one who has offered you some of their wealth',
         description: 'Response to financial generosity',
         icon: 'gift',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-debt-settled',
+        id: '2-debt-settled',
         name: 'To the debtor when his debt is settled',
         description: 'Prayer when debt is paid off',
         icon: 'checkmark-circle',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-blessing',
+        id: '2-blessing',
         name: 'To someone who says "May Allah bless you"',
         description: 'Response to blessings',
         icon: 'star',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-sitting',
+        id: '2-sitting',
         name: 'At a sitting or gathering',
         description: 'Prayers during gatherings',
         icon: 'people',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-conclusion',
+        id: '2-conclusion',
         name: 'For the expiation of sins, said at the conclusion of a sitting or gathering',
         description: 'Closing prayers for gatherings',
         icon: 'checkmark-done',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-insulted',
+        id: '2-insulted',
         name: 'For one you have insulted',
         description: 'Seeking forgiveness after insulting someone',
         icon: 'sad',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-praising',
+        id: '2-praising',
         name: 'The etiquette of praising a fellow Muslim',
         description: 'How to properly praise others',
         icon: 'thumbs-up',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-praised',
+        id: '2-praised',
         name: 'For the one that have been praised',
         description: 'Response when being praised',
         icon: 'star-outline',
-        category: 'social',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '17-trial',
+        id: '2-trial',
         name: 'Upon seeing someone in trial or tribulation',
         description: 'Prayer when seeing others in difficulty',
         icon: 'sad-outline',
-        category: 'social',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '18',
-    title: 'Travel, Riding & Commerce',
-    description: 'Supplications for travel and transportation',
-    categories: ['travel'],
-    icon: 'car',
-    subcategories: [
+      },
       {
-        id: '18-mounting',
+        id: '2-mounting',
         name: 'When mounting an animal or any means of transport',
         description: 'Prayers before traveling',
         icon: 'car',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-travel',
+        id: '2-travel',
         name: 'For travel',
         description: 'General travel supplications',
         icon: 'airplane',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-entering-town',
+        id: '2-entering-town',
         name: 'Upon entering a town or village',
         description: 'Prayers when arriving at destination',
         icon: 'location',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-stumble',
+        id: '2-stumble',
         name: 'When your vehicle stumbles',
         description: 'Prayers during travel difficulties',
         icon: 'warning',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-traveler-resident',
+        id: '2-traveler-resident',
         name: 'The traveler for the resident',
         description: 'Traveler\'s prayer for those at home',
         icon: 'home',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-resident-traveler',
+        id: '2-resident-traveler',
         name: 'The resident for the traveler',
         description: 'Home dweller\'s prayer for travelers',
         icon: 'airplane-outline',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-glorifying',
+        id: '2-glorifying',
         name: 'Glorifying and magnifying Allah during travel',
         description: 'Dhikr while traveling',
         icon: 'star',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-dawn',
+        id: '2-dawn',
         name: 'The traveler as dawn approaches',
         description: 'Morning prayers while traveling',
         icon: 'sunny',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-stopping',
+        id: '2-stopping',
         name: 'Stopping along the way of a travel',
         description: 'Prayers during travel breaks',
         icon: 'pause',
-        category: 'travel',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '18-returning',
+        id: '2-returning',
         name: 'Upon returning from travel',
         description: 'Gratitude when returning home',
         icon: 'home',
-        category: 'travel',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '19',
-    title: 'Hajj & Umrah Rites',
-    description: 'Supplications for pilgrimage rituals',
-    categories: ['hajj'],
-    icon: 'location',
-    subcategories: [
+      },
       {
-        id: '19-announcement',
+        id: '2-announcement',
         name: 'The pilgrim\'s announcement of his arrival for Hajj or \'Umrah',
         description: 'Talbiyah and arrival prayers',
         icon: 'megaphone',
-        category: 'hajj',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '19-black-stone',
+        id: '2-black-stone',
         name: 'Saying "Allahu Akbar" when passing the Black Stone',
         description: 'Takbir at the Black Stone',
         icon: 'star',
-        category: 'hajj',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '19-corners',
+        id: '2-corners',
         name: 'Between the Yemeni Corner and the Black Stone',
         description: 'Prayers during tawaf',
         icon: 'refresh',
-        category: 'hajj',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '19-safa-marwah',
+        id: '2-safa-marwah',
         name: 'While standing at Safa and Marwah',
         description: 'Supplications during sa\'i',
         icon: 'walk',
-        category: 'hajj',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '19-arafah',
+        id: '2-arafah',
         name: 'The Day of \'Arafah',
         description: 'Special prayers on the Day of Arafah',
         icon: 'sunny',
-        category: 'hajj',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '19-muzdalifah',
+        id: '2-muzdalifah',
         name: 'At the sacred area of Muzdalifah',
         description: 'Prayers at Muzdalifah',
         icon: 'location-outline',
-        category: 'hajj',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '19-stoning',
+        id: '2-stoning',
         name: 'Saying "Allahu Akbar" while stoning the three pillars at Mina',
         description: 'Takbir during stoning ritual',
         icon: 'star-outline',
-        category: 'hajj',
+        category: 'hadith',
         duas: []
-      }
-    ]
-  },
-
-  {
-    id: '20',
-    title: 'Miscellaneous Situations',
-    description: 'Supplications for various other situations',
-    categories: ['miscellaneous'],
-    icon: 'ellipsis-horizontal',
-    subcategories: [
+      },
       {
-        id: '20-prostration',
+        id: '2-prostration',
         name: 'When prostrating due to recitation of the Quran',
         description: 'Sujood at-tilawah supplications',
         icon: 'book',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-amazement',
+        id: '2-amazement',
         name: 'At times of amazement and that which delights',
         description: 'Expressions of wonder and joy',
         icon: 'happy',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-pleasant-news',
+        id: '2-pleasant-news',
         name: 'Upon receiving pleasant news',
         description: 'Gratitude for good news',
         icon: 'checkmark-circle',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-any-news',
+        id: '2-any-news',
         name: 'Upon receiving pleasing or displeasing news',
         description: 'Response to any type of news',
         icon: 'information-circle',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-pain',
+        id: '2-pain',
         name: 'What to say when you feel a pain in your body',
         description: 'Prayers for physical discomfort',
         icon: 'medical',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-sacrifice',
+        id: '2-sacrifice',
         name: 'When slaughtering or offering a sacrifice',
         description: 'Prayers during sacrifice',
         icon: 'cut',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-omens',
+        id: '2-omens',
         name: 'Against evil omens',
         description: 'Protection from superstitions',
         icon: 'shield',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-false-messiah',
+        id: '2-false-messiah',
         name: 'For Allah\'s protection from the False Messiah',
         description: 'Protection from Dajjal',
         icon: 'shield-checkmark',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-cock-crow',
+        id: '2-cock-crow',
         name: 'Upon hearing the cock\'s crow or the bray of a donkey',
         description: 'Responses to animal sounds',
         icon: 'volume-high',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       },
       {
-        id: '20-dog-bark',
+        id: '2-dog-bark',
         name: 'Upon hearing a dog barking at night',
         description: 'Prayer when hearing dogs at night',
         icon: 'moon',
-        category: 'miscellaneous',
+        category: 'hadith',
         duas: []
       }
     ]
   },
 
   {
-    id: '21',
+    id: '3',
     title: 'Quranic Supplications',
     description: 'Supplications from the Quran by various prophets',
     categories: ['quranic'],
     icon: 'library',
     subcategories: [
       {
-        id: '21-importance',
+        id: '3-importance',
         name: 'The importance of Quranic Supplications',
         description: 'Understanding the significance of Quranic duas',
         icon: 'information-circle',
@@ -1347,7 +1167,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-adam',
+        id: '3-adam',
         name: 'Prophet Adam',
         description: 'Supplications of Prophet Adam (AS)',
         icon: 'person',
@@ -1355,7 +1175,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-nooh',
+        id: '3-nooh',
         name: 'Prophet Nooh (Noah)',
         description: 'Supplications of Prophet Noah (AS)',
         icon: 'boat',
@@ -1363,7 +1183,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-hood',
+        id: '3-hood',
         name: 'Prophet Hood',
         description: 'Supplications of Prophet Hood (AS)',
         icon: 'person-outline',
@@ -1371,7 +1191,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-ibrahim',
+        id: '3-ibrahim',
         name: 'Prophet Ibrahim (Abraham)',
         description: 'Supplications of Prophet Abraham (AS)',
         icon: 'star',
@@ -1379,7 +1199,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-lot',
+        id: '3-lot',
         name: 'Prophet Lot (Lut)',
         description: 'Supplications of Prophet Lot (AS)',
         icon: 'person-outline',
@@ -1387,7 +1207,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-shuaib',
+        id: '3-shuaib',
         name: 'Prophet Shuaib (Jethro)',
         description: 'Supplications of Prophet Shuaib (AS)',
         icon: 'person-outline',
@@ -1395,7 +1215,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-yaqub',
+        id: '3-yaqub',
         name: 'Prophet Yaqub (Jacob)',
         description: 'Supplications of Prophet Jacob (AS)',
         icon: 'person-outline',
@@ -1403,7 +1223,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-yusuf',
+        id: '3-yusuf',
         name: 'Prophet Yusuf (Joseph)',
         description: 'Supplications of Prophet Joseph (AS)',
         icon: 'person-outline',
@@ -1411,7 +1231,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-ayyub',
+        id: '3-ayyub',
         name: 'Prophet Ayyub (Job)',
         description: 'Supplications of Prophet Job (AS)',
         icon: 'medical',
@@ -1419,7 +1239,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-yunus',
+        id: '3-yunus',
         name: 'Prophet Yunus (Jonah)',
         description: 'Supplications of Prophet Jonah (AS)',
         icon: 'fish',
@@ -1427,7 +1247,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-musa',
+        id: '3-musa',
         name: 'Prophet Musa (Moses)',
         description: 'Supplications of Prophet Moses (AS)',
         icon: 'flash',
@@ -1435,7 +1255,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-dawud',
+        id: '3-dawud',
         name: 'Prophet Dawud (David)',
         description: 'Supplications of Prophet David (AS)',
         icon: 'musical-notes',
@@ -1443,7 +1263,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-sulaiman',
+        id: '3-sulaiman',
         name: 'Prophet Sulaiman (Solomon)',
         description: 'Supplications of Prophet Solomon (AS)',
         icon: 'diamond',
@@ -1451,7 +1271,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-zakariya',
+        id: '3-zakariya',
         name: 'Prophet Zakariya (Zechariah)',
         description: 'Supplications of Prophet Zechariah (AS)',
         icon: 'person-outline',
@@ -1459,7 +1279,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-isa',
+        id: '3-isa',
         name: 'Prophet Isa (Jesus)',
         description: 'Supplications of Prophet Jesus (AS)',
         icon: 'star-outline',
@@ -1467,7 +1287,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-muhammad',
+        id: '3-muhammad',
         name: 'Prophet Muhammad ﷺ',
         description: 'Supplications of Prophet Muhammad (SAW)',
         icon: 'star',
@@ -1475,7 +1295,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '21-believers',
+        id: '3-believers',
         name: 'The Supplication of the Believers',
         description: 'General supplications mentioned in the Quran',
         icon: 'people',
