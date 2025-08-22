@@ -498,42 +498,45 @@ export default function SupplicationsScreen() {
             )}
 
             {/* Islamic Counter */}
-            <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
-              {/* Counter Info Row */}
-              <View style={styles.counterInfoRow}>
-                <View style={[styles.counterLabelContainer, {
-                  backgroundColor: manuscriptColors.parchment + '80',
-                  borderColor: manuscriptColors.border
-                }]}>
-                  <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
-                  </Text>
-                </View>
-
-                <TouchableOpacity
-                  style={styles.islamicCounterButton}
-                  onPress={incrementCount}
-                >
-                  <LinearGradient
-                    colors={[manuscriptColors.gold, manuscriptColors.darkGold]}
-                    style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
-                  >
-                    <Text style={[styles.counterButtonText, { color: manuscriptColors.ink }]}>
-                      {currentCount + 1}
+            {/* Islamic Counter - Only show for non-importance sections */}
+            {selectedSubcategory && !selectedSubcategory.name.toLowerCase().includes('importance') && (
+              <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
+                {/* Counter Info Row */}
+                <View style={styles.counterInfoRow}>
+                  <View style={[styles.counterLabelContainer, {
+                    backgroundColor: manuscriptColors.parchment + '80',
+                    borderColor: manuscriptColors.border
+                  }]}>
+                    <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
+                      Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
                     </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                  </View>
 
-                <View style={[styles.counterLabelContainer, {
-                  backgroundColor: manuscriptColors.parchment + '80',
-                  borderColor: manuscriptColors.border
-                }]}>
-                  <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
-                  </Text>
+                  <TouchableOpacity
+                    style={styles.islamicCounterButton}
+                    onPress={incrementCount}
+                  >
+                    <LinearGradient
+                      colors={[manuscriptColors.gold, manuscriptColors.darkGold]}
+                      style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
+                    >
+                      <Text style={[styles.counterButtonText, { color: manuscriptColors.ink }]}>
+                        {currentCount + 1}
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  <View style={[styles.counterLabelContainer, {
+                    backgroundColor: manuscriptColors.parchment + '80',
+                    borderColor: manuscriptColors.border
+                  }]}>
+                    <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
+                      {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            )}
           </SafeAreaView>
         </LinearGradient>
       </Modal>
