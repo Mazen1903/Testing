@@ -9,10 +9,9 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
-import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeInRight, SlideInUp, FadeIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
 
 import { Colors } from '@/shared/constants/Colors';
@@ -53,24 +52,37 @@ const isMixedSeries = (series: ZikrSeries): boolean => {
   return hasSubcategories(series) && hasDirectDuas(series);
 };
 
-// Helper function to get manuscript-style colors based on theme
-const getManuscriptColors = (isDark: boolean, themeColors: any) => ({
-  parchment: isDark ? themeColors.background : '#F5F1E8',
-  darkParchment: isDark ? themeColors.card : '#E8E0D0',
-  brown: themeColors.primary,
-  darkBrown: isDark ? themeColors.primary : themeColors.primary + 'CC',
-  gold: themeColors.primary,
-  darkGold: isDark ? themeColors.primary : themeColors.primary + 'DD',
-  ink: themeColors.text,
-  lightInk: themeColors.secondaryText,
-  border: isDark ? themeColors.border : '#D2B48C',
-  spiralBinding: themeColors.primary
+// Helper function to get elegant Islamic colors based on theme
+const getIslamicColors = (isDark: boolean, themeColors: any) => ({
+  // Primary Islamic colors
+  emerald: isDark ? '#10B981' : '#059669',
+  gold: isDark ? '#F59E0B' : '#D97706',
+  sapphire: isDark ? '#3B82F6' : '#2563EB',
+  
+  // Elegant backgrounds
+  mosque: isDark ? '#1F2937' : '#F8FAFC',
+  prayer: isDark ? '#374151' : '#F1F5F9',
+  sacred: isDark ? '#4B5563' : '#E2E8F0',
+  
+  // Text colors
+  verse: isDark ? '#F9FAFB' : '#1F2937',
+  translation: isDark ? '#D1D5DB' : '#4B5563',
+  reference: isDark ? '#9CA3AF' : '#6B7280',
+  
+  // Accent colors
+  crescent: isDark ? '#FBBF24' : '#F59E0B',
+  minaret: isDark ? '#34D399' : '#10B981',
+  
+  // Gradients
+  dawn: isDark ? ['#1F2937', '#374151'] : ['#FEF3C7', '#FDE68A'],
+  dusk: isDark ? ['#374151', '#4B5563'] : ['#DBEAFE', '#BFDBFE'],
+  night: isDark ? ['#111827', '#1F2937'] : ['#F3F4F6', '#E5E7EB'],
 });
 
 export default function SupplicationsScreen() {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
-  const manuscriptColors = getManuscriptColors(isDark, colors);
+  const islamicColors = getIslamicColors(isDark, colors);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSeries, setSelectedSeries] = useState<ZikrSeries | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<DuaSubcategory | null>(null);
@@ -79,7 +91,6 @@ export default function SupplicationsScreen() {
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
   const horizontalScrollRef = useRef<ScrollView>(null);
-
 
   const filteredSeries = ZIKR_SERIES.filter((series: ZikrSeries) => {
     const matchesCategory = selectedCategory === 'all' || series.categories.includes(selectedCategory);
@@ -92,11 +103,8 @@ export default function SupplicationsScreen() {
 
   const handleSeriesSelect = (series: ZikrSeries) => {
     if (hasSubcategories(series) || isMixedSeries(series)) {
-      // Complex or mixed series - show subcategories (and direct duas if mixed)
       setSelectedSeries(series);
       setShowSubcategories(true);
-    } else {
-      
     }
   };
 
@@ -126,35 +134,18 @@ export default function SupplicationsScreen() {
     const newCount = currentCount + 1;
 
     if (newCount >= (currentDua.repetitions || 1)) {
-      // Move to next dua
       if (currentDuaIndex < selectedSubcategory.duas.length - 1) {
-        // Completed current dhikr, moving to next
-        if (Platform.OS !== 'web') {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        }
         const nextIndex = currentDuaIndex + 1;
         setCurrentDuaIndex(nextIndex);
         setCurrentCount(0);
-        // Auto-scroll to next page
         horizontalScrollRef.current?.scrollTo({
           x: nextIndex * width,
           animated: true
         });
       } else {
-        // Session complete - stronger celebration feedback
-        if (Platform.OS !== 'web') {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          setTimeout(() => {
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          }, 200);
-        }
         closeZikrSession();
       }
     } else {
-      // Regular count increment - light tap feedback
-      if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      }
       setCurrentCount(newCount);
     }
   };
@@ -163,202 +154,288 @@ export default function SupplicationsScreen() {
     const pageIndex = Math.round(event.nativeEvent.contentOffset.x / width);
     if (pageIndex !== currentDuaIndex && pageIndex >= 0 && pageIndex < (selectedSubcategory?.duas.length || 0)) {
       setCurrentDuaIndex(pageIndex);
-      setCurrentCount(0); // Reset counter when manually swiping to different dua
-      // Light haptic feedback for manual swipe
-      if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      }
+      setCurrentCount(0);
     }
   };
 
-  const CategoryButton = ({ category, isSelected }: { category: ZikrCategory, isSelected: boolean }) => (
-    <TouchableOpacity
-      style={[
-        styles.categoryButton,
-        {
-          backgroundColor: isSelected ? manuscriptColors.brown : manuscriptColors.parchment,
-          borderColor: manuscriptColors.border,
-          borderWidth: 1
-        }
-      ]}
-      onPress={() => handleCategorySelect(category.id)}
-    >
-      <Ionicons
-        name={category.icon as any}
-        size={20}
-        color={isSelected ? manuscriptColors.parchment : manuscriptColors.brown}
-      />
-      <Text style={[
-        styles.categoryText,
-        { color: isSelected ? manuscriptColors.parchment : manuscriptColors.brown }
-      ]}>
-        {category.name}
-      </Text>
-    </TouchableOpacity>
+  // Elegant Islamic decorative elements
+  const IslamicPattern = ({ size = 24, color = islamicColors.gold }) => (
+    <View style={[styles.islamicPattern, { width: size, height: size }]}>
+      <View style={[styles.patternDot, { backgroundColor: color }]} />
+      <View style={[styles.patternDot, { backgroundColor: color, opacity: 0.6 }]} />
+      <View style={[styles.patternDot, { backgroundColor: color, opacity: 0.3 }]} />
+    </View>
   );
 
-  const SeriesCard = ({ series }: { series: ZikrSeries }) => {
+  const CategoryButton = ({ category, isSelected }: { category: ZikrCategory, isSelected: boolean }) => (
+    <Animated.View entering={FadeInRight.delay(300)}>
+      <TouchableOpacity
+        style={[
+          styles.elegantCategoryButton,
+          {
+            backgroundColor: isSelected ? islamicColors.emerald : islamicColors.mosque,
+            borderColor: isSelected ? islamicColors.emerald : islamicColors.sacred,
+            shadowColor: isSelected ? islamicColors.emerald : '#000',
+          }
+        ]}
+        onPress={() => handleCategorySelect(category.id)}
+      >
+        <LinearGradient
+          colors={isSelected ? [islamicColors.emerald, islamicColors.minaret] : [islamicColors.mosque, islamicColors.prayer]}
+          style={styles.categoryGradient}
+        >
+          <View style={[styles.categoryIconContainer, { backgroundColor: isSelected ? 'rgba(255,255,255,0.2)' : islamicColors.sacred }]}>
+            <Ionicons
+              name={category.icon as any}
+              size={20}
+              color={isSelected ? '#FFFFFF' : islamicColors.emerald}
+            />
+          </View>
+          <Text style={[
+            styles.elegantCategoryText,
+            { color: isSelected ? '#FFFFFF' : islamicColors.verse }
+          ]}>
+            {category.name}
+          </Text>
+          {isSelected && <IslamicPattern size={16} color="rgba(255,255,255,0.4)" />}
+        </LinearGradient>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+
+  const SeriesCard = ({ series, index }: { series: ZikrSeries, index: number }) => {
     const totalDuas = getAllDuasFromSeries(series).length;
     const hasSubcats = hasSubcategories(series);
     
     return (
+      <Animated.View entering={FadeInDown.delay(400 + index * 100)}>
+        <TouchableOpacity
+          style={styles.elegantSeriesCard}
+          onPress={() => handleSeriesSelect(series)}
+        >
+          <LinearGradient
+            colors={islamicColors.dawn}
+            style={styles.seriesCardGradient}
+          >
+            <View style={[styles.seriesCardBorder, { borderColor: islamicColors.sacred }]}>
+              {/* Decorative header */}
+              <View style={styles.seriesCardHeader}>
+                <IslamicPattern size={20} color={islamicColors.gold} />
+                <View style={[styles.seriesIconContainer, { backgroundColor: islamicColors.emerald + '20' }]}>
+                  <Ionicons name={series.icon as any} size={24} color={islamicColors.emerald} />
+                </View>
+                <IslamicPattern size={20} color={islamicColors.gold} />
+              </View>
+
+              {/* Content */}
+              <View style={styles.seriesCardContent}>
+                <Text style={[styles.elegantSeriesTitle, { color: islamicColors.verse }]}>
+                  {series.title}
+                </Text>
+                <Text style={[styles.elegantSeriesDescription, { color: islamicColors.translation }]} numberOfLines={2}>
+                  {series.description}
+                </Text>
+                
+                {/* Stats */}
+                <View style={styles.seriesStats}>
+                  <View style={[styles.statBadge, { backgroundColor: islamicColors.emerald + '15' }]}>
+                    <Ionicons name="book" size={12} color={islamicColors.emerald} />
+                    <Text style={[styles.statText, { color: islamicColors.emerald }]}>
+                      {hasSubcats 
+                        ? `${series.subcategories?.length || 0} categories`
+                        : `${totalDuas} duas`
+                      }
+                    </Text>
+                  </View>
+                  <View style={[styles.statBadge, { backgroundColor: islamicColors.gold + '15' }]}>
+                    <Ionicons name="time" size={12} color={islamicColors.gold} />
+                    <Text style={[styles.statText, { color: islamicColors.gold }]}>
+                      {totalDuas} duas
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Footer with arrow */}
+              <View style={styles.seriesCardFooter}>
+                <View style={[styles.decorativeLine, { backgroundColor: islamicColors.sacred }]} />
+                <View style={[styles.arrowContainer, { backgroundColor: islamicColors.emerald }]}>
+                  <Ionicons name="chevron-forward" size={16} color="#FFFFFF" />
+                </View>
+              </View>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  };
+
+  const SubcategoryCard = ({ subcategory, index }: { subcategory: DuaSubcategory, index: number }) => (
+    <Animated.View entering={FadeInDown.delay(300 + index * 100)}>
       <TouchableOpacity
-        style={styles.manuscriptCard}
-        onPress={() => handleSeriesSelect(series)}
+        style={styles.elegantSubcategoryCard}
+        onPress={() => startZikrSession(subcategory)}
       >
         <LinearGradient
-          colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
-          style={styles.cardGradient}
+          colors={islamicColors.dusk}
+          style={styles.subcategoryGradient}
         >
-          <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
-            <View style={styles.duaHeader}>
-              <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{series.title}</Text>
-              <Ionicons name={series.icon as any} size={20} color={manuscriptColors.brown} />
-            </View>
-            <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
-              {series.description}
-            </Text>
-            <View style={styles.duaFooter}>
-              <View style={styles.duaFooterLeft}>
-                <Ionicons name="book" size={12} color={manuscriptColors.brown} />
-                <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
-                  {hasSubcats 
-                    ? `${series.subcategories?.length || 0} categories • ${totalDuas} duas`
-                    : `${totalDuas} duas`
-                  }
+          <View style={[styles.subcategoryBorder, { borderColor: islamicColors.sacred }]}>
+            <View style={styles.subcategoryHeader}>
+              <View style={[styles.subcategoryIconContainer, { backgroundColor: islamicColors.sapphire + '20' }]}>
+                <Ionicons name={subcategory.icon as any} size={20} color={islamicColors.sapphire} />
+              </View>
+              <View style={styles.subcategoryTitleContainer}>
+                <Text style={[styles.elegantSubcategoryTitle, { color: islamicColors.verse }]}>
+                  {subcategory.name}
+                </Text>
+                <Text style={[styles.elegantSubcategoryDescription, { color: islamicColors.translation }]} numberOfLines={1}>
+                  {subcategory.description}
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
+              <View style={[styles.duaCountBadge, { backgroundColor: islamicColors.sapphire }]}>
+                <Text style={styles.duaCountText}>{subcategory.duas.length}</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.subcategoryDivider, { backgroundColor: islamicColors.sacred }]} />
+            
+            <View style={styles.subcategoryFooter}>
+              <Text style={[styles.subcategoryHint, { color: islamicColors.reference }]}>
+                Tap to begin dhikr session
+              </Text>
+              <Ionicons name="arrow-forward" size={14} color={islamicColors.sapphire} />
             </View>
           </View>
         </LinearGradient>
       </TouchableOpacity>
-    );
-  };
-
-  const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => (
-    <TouchableOpacity
-      style={styles.manuscriptCard}
-      onPress={() => startZikrSession(subcategory)}
-    >
-      <LinearGradient
-        colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
-        style={styles.cardGradient}
-      >
-        <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
-          <View style={styles.duaHeader}>
-            <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{subcategory.name}</Text>
-            <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
-          </View>
-          <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
-            {subcategory.description}
-          </Text>
-          <View style={styles.duaFooter}>
-            <View style={styles.duaFooterLeft}>
-              <Ionicons name="book" size={12} color={manuscriptColors.brown} />
-              <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
-                {subcategory.duas.length} duas
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
-          </View>
-        </View>
-      </LinearGradient>
-    </TouchableOpacity>
+    </Animated.View>
   );
 
-  // Spiral binding component
-  const SpiralBinding = () => (
-    <View style={styles.spiralContainer}>
-      {Array.from({ length: 18 }, (_, i) => (
-        <View key={i} style={[styles.spiralHole, { backgroundColor: manuscriptColors.spiralBinding }]} />
+  // Elegant Islamic geometric pattern for background
+  const GeometricPattern = () => (
+    <View style={styles.geometricPattern}>
+      {Array.from({ length: 8 }, (_, i) => (
+        <View key={i} style={[styles.geometricShape, { 
+          backgroundColor: islamicColors.sacred + '10',
+          transform: [{ rotate: `${i * 45}deg` }]
+        }]} />
       ))}
     </View>
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: manuscriptColors.parchment }]}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 100 }}>
-        {/* Header */}
-        <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
-          <View>
-            <View style={styles.greetingContainer}>
-              <View style={[styles.greetingBadge, {
-                backgroundColor: manuscriptColors.brown + '20',
-                borderColor: manuscriptColors.border
-              }]}>
-                <Ionicons name="moon" size={16} color={manuscriptColors.brown} style={styles.greetingIcon} />
-                <Text style={[styles.greeting, { color: manuscriptColors.brown }]}>Islamic Supplications</Text>
-              </View>
+    <SafeAreaView style={[styles.container, { backgroundColor: islamicColors.mosque }]}>
+      <LinearGradient
+        colors={[islamicColors.mosque, islamicColors.prayer]}
+        style={styles.backgroundGradient}
+      >
+        <GeometricPattern />
+        
+        <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 120 }}>
+          {/* Elegant Header */}
+          <Animated.View entering={FadeInDown.delay(100)} style={styles.elegantHeader}>
+            <View style={styles.headerDecoration}>
+              <IslamicPattern size={32} color={islamicColors.gold} />
             </View>
-            <Text style={[styles.title, { color: manuscriptColors.lightInk }]}>Dua & Dhikr</Text>
-          </View>
-        </Animated.View>
+            <View style={styles.headerContent}>
+              <Text style={[styles.arabicTitle, { color: islamicColors.verse }]}>الأدعية والأذكار</Text>
+              <Text style={[styles.englishTitle, { color: islamicColors.translation }]}>Supplications & Remembrance</Text>
+              <View style={[styles.titleUnderline, { backgroundColor: islamicColors.gold }]} />
+            </View>
+            <View style={styles.headerDecoration}>
+              <IslamicPattern size={32} color={islamicColors.gold} />
+            </View>
+          </Animated.View>
 
-        {/* Categories */}
-        <Animated.View entering={FadeInDown.delay(300)} style={styles.categoriesSection}>
-          <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>CATEGORIES</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
-            {ZIKR_CATEGORIES.map((category: ZikrCategory, index: number) => (
-              <Animated.View key={category.id} entering={FadeInRight.delay(300 + index * 100)}>
-                <CategoryButton
-                  category={category}
-                  isSelected={selectedCategory === category.id}
-                />
-              </Animated.View>
-            ))}
-          </ScrollView>
-        </Animated.View>
-
-        {/* Zikr Series List or Subcategories */}
-        {!showSubcategories ? (
-          <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
-            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-              ZIKR SERIES ({filteredSeries.length})
-            </Text>
-            {filteredSeries.map((series: ZikrSeries, index: number) => (
-              <Animated.View key={series.id} entering={FadeInDown.delay(700 + index * 100)}>
-                <SeriesCard series={series} />
-              </Animated.View>
-            ))}
-            {filteredSeries.length === 0 && (
-              <View style={styles.emptyState}>
-                <Ionicons name="book" size={48} color={manuscriptColors.lightInk} />
-                <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
-                  No zikr series in this category
-                </Text>
+          {/* Elegant Categories */}
+          <Animated.View entering={FadeInDown.delay(200)} style={styles.categoriesSection}>
+            <View style={styles.sectionHeaderContainer}>
+              <View style={[styles.sectionDivider, { backgroundColor: islamicColors.sacred }]} />
+              <Text style={[styles.elegantSectionTitle, { color: islamicColors.emerald }]}>CATEGORIES</Text>
+              <View style={[styles.sectionDivider, { backgroundColor: islamicColors.sacred }]} />
+            </View>
+            
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+              <View style={styles.categoriesContainer}>
+                {ZIKR_CATEGORIES.map((category: ZikrCategory, index: number) => (
+                  <CategoryButton
+                    key={category.id}
+                    category={category}
+                    isSelected={selectedCategory === category.id}
+                  />
+                ))}
               </View>
-            )}
+            </ScrollView>
           </Animated.View>
-        ) : (
-          <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
-            {/* Back Button */}
-            <TouchableOpacity
-              style={[styles.backButton, {
-                backgroundColor: manuscriptColors.parchment,
-                borderColor: manuscriptColors.border
-              }]}
-              onPress={goBackToSeries}
-            >
-              <Ionicons name="chevron-back" size={20} color={manuscriptColors.brown} />
-              <Text style={[styles.backButtonText, { color: manuscriptColors.brown }]}>
-                Back to Series
-              </Text>
-            </TouchableOpacity>
 
-            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-              {selectedSeries?.title ? `${selectedSeries.title.toUpperCase()} CATEGORIES` : 'CATEGORIES'}
-            </Text>
-            {selectedSeries?.subcategories?.map((subcategory: DuaSubcategory, index: number) => (
-              <Animated.View key={subcategory.id} entering={FadeInDown.delay(400 + index * 100)}>
-                <SubcategoryCard subcategory={subcategory} />
-              </Animated.View>
-            ))}
-          </Animated.View>
-        )}
-      </ScrollView>
+          {/* Zikr Series List or Subcategories */}
+          {!showSubcategories ? (
+            <Animated.View entering={FadeInDown.delay(300)} style={styles.seriesSection}>
+              <View style={styles.sectionHeaderContainer}>
+                <View style={[styles.sectionDivider, { backgroundColor: islamicColors.sacred }]} />
+                <Text style={[styles.elegantSectionTitle, { color: islamicColors.emerald }]}>
+                  ZIKR COLLECTIONS ({filteredSeries.length})
+                </Text>
+                <View style={[styles.sectionDivider, { backgroundColor: islamicColors.sacred }]} />
+              </View>
+              
+              {filteredSeries.map((series: ZikrSeries, index: number) => (
+                <SeriesCard key={series.id} series={series} index={index} />
+              ))}
+              
+              {filteredSeries.length === 0 && (
+                <Animated.View entering={FadeIn.delay(500)} style={styles.elegantEmptyState}>
+                  <View style={[styles.emptyStateIcon, { backgroundColor: islamicColors.sacred }]}>
+                    <Ionicons name="book" size={48} color={islamicColors.translation} />
+                  </View>
+                  <Text style={[styles.emptyStateTitle, { color: islamicColors.verse }]}>
+                    No collections found
+                  </Text>
+                  <Text style={[styles.emptyStateText, { color: islamicColors.translation }]}>
+                    Try selecting a different category
+                  </Text>
+                </Animated.View>
+              )}
+            </Animated.View>
+          ) : (
+            <Animated.View entering={FadeInDown.delay(200)} style={styles.subcategoriesSection}>
+              {/* Elegant Back Button */}
+              <TouchableOpacity
+                style={[styles.elegantBackButton, {
+                  backgroundColor: islamicColors.mosque,
+                  borderColor: islamicColors.sacred
+                }]}
+                onPress={goBackToSeries}
+              >
+                <LinearGradient
+                  colors={[islamicColors.mosque, islamicColors.prayer]}
+                  style={styles.backButtonGradient}
+                >
+                  <Ionicons name="chevron-back" size={20} color={islamicColors.emerald} />
+                  <Text style={[styles.elegantBackButtonText, { color: islamicColors.emerald }]}>
+                    Back to Collections
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
 
-      {/* Zikr Session Modal - Islamic Manuscript Style */}
+              <View style={styles.sectionHeaderContainer}>
+                <View style={[styles.sectionDivider, { backgroundColor: islamicColors.sacred }]} />
+                <Text style={[styles.elegantSectionTitle, { color: islamicColors.emerald }]}>
+                  {selectedSeries?.title?.toUpperCase() || 'SUBCATEGORIES'}
+                </Text>
+                <View style={[styles.sectionDivider, { backgroundColor: islamicColors.sacred }]} />
+              </View>
+              
+              {selectedSeries?.subcategories?.map((subcategory: DuaSubcategory, index: number) => (
+                <SubcategoryCard key={subcategory.id} subcategory={subcategory} index={index} />
+              ))}
+            </Animated.View>
+          )}
+        </ScrollView>
+      </LinearGradient>
+
+      {/* Elegant Zikr Session Modal */}
       <Modal
         animationType="slide"
         transparent={false}
@@ -366,36 +443,43 @@ export default function SupplicationsScreen() {
         onRequestClose={closeZikrSession}
       >
         <LinearGradient
-          colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
-          style={styles.manuscriptContainer}
+          colors={islamicColors.night}
+          style={styles.modalContainer}
         >
-          <SafeAreaView style={styles.manuscriptSafeArea}>
-            {/* Spiral Binding */}
-            <SpiralBinding />
-
-            {/* Manuscript Header */}
-            <View style={[styles.manuscriptHeader, { borderBottomColor: manuscriptColors.border }]}>
+          <SafeAreaView style={styles.modalSafeArea}>
+            {/* Elegant Modal Header */}
+            <Animated.View entering={SlideInUp.delay(100)} style={[styles.elegantModalHeader, { borderBottomColor: islamicColors.sacred }]}>
               <TouchableOpacity
-                style={[styles.closeButton, {
-                  backgroundColor: manuscriptColors.parchment,
-                  borderColor: manuscriptColors.border
+                style={[styles.elegantCloseButton, {
+                  backgroundColor: islamicColors.mosque,
+                  borderColor: islamicColors.sacred
                 }]}
                 onPress={closeZikrSession}
               >
-                <Ionicons name="chevron-back" size={24} color={manuscriptColors.brown} />
+                <Ionicons name="chevron-back" size={24} color={islamicColors.emerald} />
               </TouchableOpacity>
 
-              <View style={styles.titleContainer}>
-                <Text style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}>
+              <View style={styles.modalTitleContainer}>
+                <Text style={[styles.elegantModalTitle, { color: islamicColors.verse }]}>
                   {selectedSubcategory?.name || 'دعاء'}
                 </Text>
-                <Text style={[styles.manuscriptSubtitle, { color: manuscriptColors.lightInk }]}>
+                <Text style={[styles.elegantModalSubtitle, { color: islamicColors.translation }]}>
                   {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
                 </Text>
+                <View style={[styles.modalTitleUnderline, { backgroundColor: islamicColors.gold }]} />
               </View>
-            </View>
 
-            {/* Manuscript Content - Horizontal Swiping */}
+              <View style={[styles.progressIndicator, { 
+                backgroundColor: islamicColors.emerald + '20',
+                borderColor: islamicColors.emerald
+              }]}>
+                <Text style={[styles.progressText, { color: islamicColors.emerald }]}>
+                  {currentDuaIndex + 1}/{selectedSubcategory?.duas.length || 1}
+                </Text>
+              </View>
+            </Animated.View>
+
+            {/* Elegant Content - Horizontal Swiping */}
             {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
               <ScrollView
                 ref={horizontalScrollRef}
@@ -409,131 +493,168 @@ export default function SupplicationsScreen() {
                 {selectedSubcategory.duas.map((dua, index) => (
                   <ScrollView
                     key={index}
-                    style={[styles.manuscriptScrollView, { width }]}
-                    contentContainerStyle={styles.manuscriptContent}
+                    style={[styles.duaScrollView, { width }]}
+                    contentContainerStyle={styles.duaContent}
                     showsVerticalScrollIndicator={false}
                   >
                     <TouchableOpacity
                       style={styles.tappableContent}
                       onPress={index === currentDuaIndex ? incrementCount : undefined}
-                      activeOpacity={index === currentDuaIndex ? 0.8 : 1}
+                      activeOpacity={index === currentDuaIndex ? 0.9 : 1}
                     >
-                      {/* Arabic Text */}
-                      <View style={styles.arabicSection}>
-                        <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
-                          {dua.arabic || ''}
-                        </Text>
-                      </View>
+                      <Animated.View entering={FadeIn.delay(200)} style={styles.duaContainer}>
+                        {/* Decorative top border */}
+                        <View style={styles.duaTopDecoration}>
+                          <IslamicPattern size={24} color={islamicColors.gold} />
+                          <View style={[styles.decorativeLine, { backgroundColor: islamicColors.gold }]} />
+                          <IslamicPattern size={24} color={islamicColors.gold} />
+                        </View>
 
-                      {/* Divider */}
-                      <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
-
-                      {/* Transliteration */}
-                      <View style={styles.textSection}>
-                        <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
-                          {dua.transliteration || ''}
-                        </Text>
-                      </View>
-
-                      {/* Translation */}
-                      <View style={styles.textSection}>
-                        <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
-                          {dua.translation || ''}
-                        </Text>
-                      </View>
-
-                      {/* Reference */}
-                      <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
-                        {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
-                          <ExpandableText
-                            text={`Reference: ${dua.reference || ''}\n\n${dua.fullReference}`}
-                            numberOfLines={2}
-                            style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                            expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                            buttonStyle={[styles.learnMoreButton, {
-                              backgroundColor: manuscriptColors.brown + '15',
-                              borderColor: manuscriptColors.brown + '30'
-                            }]}
-                            textAlign="left"
-                          />
-                        ) : (
-                          <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
-                            {dua.reference || ''}
+                        {/* Arabic Text */}
+                        <View style={[styles.arabicContainer, { backgroundColor: islamicColors.sacred + '10' }]}>
+                          <Text style={[styles.elegantArabic, { color: islamicColors.verse }]}>
+                            {dua.arabic || ''}
                           </Text>
-                        )}
-                      </View>
+                        </View>
+
+                        {/* Elegant Divider */}
+                        <View style={styles.elegantDivider}>
+                          <View style={[styles.dividerLine, { backgroundColor: islamicColors.sacred }]} />
+                          <View style={[styles.dividerCenter, { backgroundColor: islamicColors.gold }]} />
+                          <View style={[styles.dividerLine, { backgroundColor: islamicColors.sacred }]} />
+                        </View>
+
+                        {/* Transliteration */}
+                        <View style={styles.textContainer}>
+                          <Text style={[styles.elegantTransliteration, { color: islamicColors.translation }]}>
+                            {dua.transliteration || ''}
+                          </Text>
+                        </View>
+
+                        {/* Translation */}
+                        <View style={styles.textContainer}>
+                          <Text style={[styles.elegantTranslation, { color: islamicColors.verse }]}>
+                            {dua.translation || ''}
+                          </Text>
+                        </View>
+
+                        {/* Reference */}
+                        <View style={[styles.referenceContainer, { 
+                          backgroundColor: islamicColors.sacred + '10',
+                          borderTopColor: islamicColors.sacred 
+                        }]}>
+                          {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
+                            <ExpandableText
+                              text={`Reference: ${dua.reference || ''}\n\n${dua.fullReference}`}
+                              numberOfLines={2}
+                              style={[styles.elegantReference, { color: islamicColors.reference }]}
+                              expandStyle={[styles.elegantReference, { color: islamicColors.reference }]}
+                              buttonStyle={[styles.expandButton, {
+                                backgroundColor: islamicColors.emerald + '15',
+                                borderColor: islamicColors.emerald + '30'
+                              }]}
+                              textAlign="center"
+                            />
+                          ) : (
+                            <Text style={[styles.elegantReference, { color: islamicColors.reference }]}>
+                              {dua.reference || ''}
+                            </Text>
+                          )}
+                        </View>
+
+                        {/* Decorative bottom border */}
+                        <View style={styles.duaBottomDecoration}>
+                          <IslamicPattern size={20} color={islamicColors.gold} />
+                          <View style={[styles.decorativeLine, { backgroundColor: islamicColors.gold }]} />
+                          <IslamicPattern size={20} color={islamicColors.gold} />
+                        </View>
+                      </Animated.View>
                     </TouchableOpacity>
                   </ScrollView>
                 ))}
               </ScrollView>
             )}
 
-            {/* Navigation Indicator */}
+            {/* Elegant Navigation Indicator */}
             {selectedSubcategory && (
-              <View style={styles.swipeIndicatorContainer}>
+              <Animated.View entering={FadeIn.delay(300)} style={styles.navigationContainer}>
                 {selectedSubcategory.duas.length > 1 && (
-                  <View style={styles.swipeDotsContainer}>
+                  <View style={styles.elegantDotsContainer}>
                     {selectedSubcategory.duas.map((_, index) => (
-                      <View
+                      <Animated.View
                         key={index}
                         style={[
-                          styles.swipeDot,
+                          styles.elegantDot,
                           {
                             backgroundColor: index === currentDuaIndex
-                              ? manuscriptColors.brown
-                              : manuscriptColors.border
+                              ? islamicColors.gold
+                              : islamicColors.sacred,
+                            transform: [{ scale: index === currentDuaIndex ? 1.2 : 1 }]
                           }
                         ]}
                       />
                     ))}
                   </View>
                 )}
-                <Text style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}>
+                <Text style={[styles.elegantHint, { color: islamicColors.translation }]}>
                   {selectedSubcategory.duas.length > 1
-                    ? 'Swipe left/right to navigate • Tap anywhere to count'
-                    : 'Tap anywhere on the screen to count'
+                    ? 'Swipe to navigate • Tap to count dhikr'
+                    : 'Tap anywhere to count dhikr'
                   }
                 </Text>
-              </View>
+              </Animated.View>
             )}
 
-            {/* Islamic Counter */}
-            <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
-              {/* Counter Info Row */}
-              <View style={styles.counterInfoRow}>
+            {/* Elegant Islamic Counter */}
+            <Animated.View entering={SlideInUp.delay(400)} style={[styles.elegantCounterContainer, { 
+              backgroundColor: islamicColors.prayer,
+              borderTopColor: islamicColors.sacred 
+            }]}>
+              <View style={styles.counterDecoration}>
+                <IslamicPattern size={28} color={islamicColors.gold} />
+              </View>
+              
+              <View style={styles.counterContent}>
                 <View style={[styles.counterLabelContainer, {
-                  backgroundColor: manuscriptColors.parchment + '80',
-                  borderColor: manuscriptColors.border
+                  backgroundColor: islamicColors.mosque,
+                  borderColor: islamicColors.sacred
                 }]}>
-                  <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
+                  <Text style={[styles.counterLabel, { color: islamicColors.emerald }]}>
+                    Dhikr {currentDuaIndex + 1}
                   </Text>
                 </View>
 
                 <TouchableOpacity
-                  style={styles.islamicCounterButton}
+                  style={styles.elegantCounterButton}
                   onPress={incrementCount}
                 >
                   <LinearGradient
-                    colors={[manuscriptColors.gold, manuscriptColors.darkGold]}
-                    style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
+                    colors={[islamicColors.gold, islamicColors.crescent]}
+                    style={[styles.counterButtonGradient, { borderColor: islamicColors.emerald }]}
                   >
-                    <Text style={[styles.counterButtonText, { color: manuscriptColors.ink }]}>
-                      {currentCount + 1}
-                    </Text>
+                    <View style={styles.counterButtonInner}>
+                      <Text style={[styles.elegantCounterText, { color: islamicColors.verse }]}>
+                        {currentCount + 1}
+                      </Text>
+                      <View style={[styles.counterRing, { borderColor: islamicColors.emerald + '40' }]} />
+                    </View>
                   </LinearGradient>
                 </TouchableOpacity>
 
                 <View style={[styles.counterLabelContainer, {
-                  backgroundColor: manuscriptColors.parchment + '80',
-                  borderColor: manuscriptColors.border
+                  backgroundColor: islamicColors.mosque,
+                  borderColor: islamicColors.sacred
                 }]}>
-                  <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
+                  <Text style={[styles.counterLabel, { color: islamicColors.emerald }]}>
+                    of {selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1}
                   </Text>
                 </View>
               </View>
-            </View>
+              
+              <View style={styles.counterDecoration}>
+                <IslamicPattern size={28} color={islamicColors.gold} />
+              </View>
+            </Animated.View>
           </SafeAreaView>
         </LinearGradient>
       </Modal>
@@ -545,236 +666,399 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollView: {
+  backgroundGradient: {
     flex: 1,
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-  },
-  greetingContainer: {
-    marginBottom: 8,
-  },
-  greetingBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  greetingIcon: {
-    marginRight: 6,
-  },
-  greeting: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontFamily: 'System',
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-    marginTop: 4,
-  },
-  categoriesSection: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    marginHorizontal: 20,
-    marginBottom: 12,
-  },
-  categoriesScroll: {
-    paddingLeft: 20,
-  },
-  categoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  categoryText: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginLeft: 8,
-  },
-  subCategoriesSection: {
-    marginBottom: 20,
-  },
-  subCategoriesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    paddingHorizontal: 20,
-  },
-  subCategoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    marginVertical: 8,
-    marginHorizontal: 8,
-    width: '45%', // Adjust as needed for grid layout
-    aspectRatio: 1.2, // Make buttons slightly taller than wide
-  },
-  subCategoryIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  subCategoryContent: {
-    flex: 1,
-  },
-  subCategoryName: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  subCategoryDescription: {
-    fontSize: 12,
-    lineHeight: 18,
-  },
-  supplicationsSection: {
-    paddingHorizontal: 20,
-  },
-  manuscriptCard: {
-    marginBottom: 12,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  cardGradient: {
-    flex: 1,
-  },
-  cardBorder: {
-    padding: 16,
-    borderWidth: 1,
-    borderRadius: 12,
-  },
-  duaHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  duaTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    flex: 1,
-  },
-  duaTranslation: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 8,
-  },
-  duaFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  duaFooterLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  duaReference: {
-    fontSize: 11,
-    fontWeight: '500',
-    marginLeft: 4,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 40,
-  },
-  emptyStateText: {
-    fontSize: 16,
-    marginTop: 12,
-  },
-
-  // Manuscript Modal Styles
-  manuscriptContainer: {
-    flex: 1,
-  },
-  manuscriptSafeArea: {
-    flex: 1,
-  },
-  spiralContainer: {
+  geometricPattern: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    bottom: 0,
     alignItems: 'center',
-    paddingHorizontal: 20,
-    zIndex: 10,
+    justifyContent: 'center',
+    opacity: 0.03,
   },
-  spiralHole: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+  geometricShape: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: 'currentColor',
   },
-  manuscriptHeader: {
+  scrollView: {
+    flex: 1,
+  },
+  
+  // Elegant Header Styles
+  elegantHeader: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+  },
+  headerDecoration: {
+    flex: 0.2,
+    alignItems: 'center',
+  },
+  headerContent: {
+    flex: 0.6,
+    alignItems: 'center',
+  },
+  arabicTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  englishTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+    letterSpacing: 1,
+  },
+  titleUnderline: {
+    width: 60,
+    height: 2,
+    marginTop: 8,
+    borderRadius: 1,
+  },
+  
+  // Islamic Pattern Styles
+  islamicPattern: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  patternDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    marginHorizontal: 1,
+  },
+  
+  // Section Header Styles
+  sectionHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+  sectionDivider: {
+    flex: 1,
+    height: 1,
+  },
+  elegantSectionTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 2,
+    marginHorizontal: 16,
+    textAlign: 'center',
+  },
+  
+  // Categories Styles
+  categoriesSection: {
+    marginBottom: 30,
+  },
+  categoriesScroll: {
+    paddingLeft: 20,
+  },
+  categoriesContainer: {
+    flexDirection: 'row',
+    paddingRight: 20,
+  },
+  elegantCategoryButton: {
+    borderRadius: 20,
+    marginRight: 12,
+    borderWidth: 1,
+    overflow: 'hidden',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  categoryGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  categoryIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  elegantCategoryText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginRight: 8,
+  },
+  
+  // Series Card Styles
+  seriesSection: {
+    paddingHorizontal: 20,
+  },
+  elegantSeriesCard: {
+    marginBottom: 16,
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  seriesCardGradient: {
+    flex: 1,
+  },
+  seriesCardBorder: {
+    padding: 20,
+    borderWidth: 1,
+    borderRadius: 20,
+  },
+  seriesCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  seriesIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  seriesCardContent: {
+    marginBottom: 16,
+  },
+  elegantSeriesTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 8,
+    letterSpacing: 0.5,
+  },
+  elegantSeriesDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  seriesStats: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  statBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    gap: 4,
+  },
+  statText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  seriesCardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  decorativeLine: {
+    flex: 1,
+    height: 1,
+  },
+  arrowContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 12,
+  },
+  
+  // Subcategory Styles
+  subcategoriesSection: {
+    paddingHorizontal: 20,
+  },
+  elegantBackButton: {
+    borderRadius: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    overflow: 'hidden',
+    alignSelf: 'flex-start',
+  },
+  backButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  elegantBackButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  elegantSubcategoryCard: {
+    marginBottom: 12,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  subcategoryGradient: {
+    flex: 1,
+  },
+  subcategoryBorder: {
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 16,
+  },
+  subcategoryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subcategoryIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  subcategoryTitleContainer: {
+    flex: 1,
+  },
+  elegantSubcategoryTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  elegantSubcategoryDescription: {
+    fontSize: 12,
+  },
+  duaCountBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  duaCountText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  subcategoryDivider: {
+    height: 1,
+    marginVertical: 12,
+  },
+  subcategoryFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  subcategoryHint: {
+    fontSize: 12,
+    fontStyle: 'italic',
+  },
+  
+  // Empty State Styles
+  elegantEmptyState: {
+    alignItems: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 40,
+  },
+  emptyStateIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  emptyStateTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyStateText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+
+  // Modal Styles
+  modalContainer: {
+    flex: 1,
+  },
+  modalSafeArea: {
+    flex: 1,
+  },
+  elegantModalHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 20,
-    borderBottomWidth: 2,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
   },
-  closeButton: {
-    padding: 8,
+  elegantCloseButton: {
+    padding: 12,
     borderRadius: 20,
     borderWidth: 1,
   },
-  titleContainer: {
+  modalTitleContainer: {
     flex: 1,
     alignItems: 'center',
     marginHorizontal: 16,
   },
-  manuscriptTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+  elegantModalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
     textAlign: 'center',
+    marginBottom: 4,
   },
-  manuscriptSubtitle: {
+  elegantModalSubtitle: {
     fontSize: 14,
-    fontWeight: '400',
     textAlign: 'center',
-    marginTop: 2,
+    marginBottom: 8,
+  },
+  modalTitleUnderline: {
+    width: 40,
+    height: 2,
+    borderRadius: 1,
   },
   progressIndicator: {
-    padding: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 16,
     borderWidth: 1,
   },
   progressText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
+  
+  // Dua Content Styles
   horizontalScrollView: {
     flex: 1,
   },
-  manuscriptScrollView: {
+  duaScrollView: {
     flex: 1,
   },
-  manuscriptContent: {
+  duaContent: {
     padding: 20,
     paddingTop: 30,
     minHeight: height * 0.6,
@@ -783,134 +1067,171 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: height * 0.6,
   },
-  arabicSection: {
-    marginBottom: 20,
-    paddingHorizontal: 10,
+  duaContainer: {
+    flex: 1,
   },
-  manuscriptArabic: {
-    fontSize: 24,
-    fontWeight: '400',
-    lineHeight: 40,
-    textAlign: 'right',
-    writingDirection: 'rtl',
-    fontFamily: 'System',
-  },
-  manuscriptDivider: {
-    height: 2,
-    marginVertical: 20,
-    marginHorizontal: width * 0.25,
-  },
-  textSection: {
-    marginBottom: 16,
-    paddingHorizontal: 10,
-  },
-  manuscriptTransliteration: {
-    fontSize: 16,
-    fontStyle: 'italic',
-    lineHeight: 24,
-    textAlign: 'justify',
-  },
-  manuscriptTranslation: {
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'justify',
-  },
-  referenceSection: {
-    marginTop: 20,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    paddingHorizontal: 10,
-  },
-  manuscriptReference: {
-    fontSize: 12,
-    lineHeight: 18,
-    textAlign: 'justify',
-    fontWeight: '500',
-  },
-  swipeIndicatorContainer: {
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-  },
-  swipeDotsContainer: {
+  duaTopDecoration: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 24,
   },
-  swipeDot: {
+  duaBottomDecoration: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  arabicContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  elegantArabic: {
+    fontSize: 26,
+    fontWeight: '400',
+    lineHeight: 42,
+    textAlign: 'right',
+    writingDirection: 'rtl',
+  },
+  elegantDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+  },
+  dividerCenter: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    marginHorizontal: 4,
+    marginHorizontal: 12,
   },
-  swipeHint: {
-    fontSize: 12,
-    textAlign: 'center',
+  textContainer: {
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  elegantTransliteration: {
+    fontSize: 16,
     fontStyle: 'italic',
-  },
-  islamicCounterContainer: {
-    alignItems: 'center',
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    borderTopWidth: 2,
-  },
-  counterInfoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 20,
-  },
-  counterLabelContainer: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    minWidth: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  counterLabelText: {
-    fontSize: 12,
-    fontWeight: '600',
+    lineHeight: 26,
     textAlign: 'center',
   },
-  islamicCounterButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+  elegantTranslation: {
+    fontSize: 16,
+    lineHeight: 26,
+    textAlign: 'center',
+    fontWeight: '400',
   },
-  counterButtonGradient: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 3,
+  referenceContainer: {
+    marginTop: 20,
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    borderTopWidth: 1,
+    borderRadius: 12,
   },
-  counterButtonText: {
-    fontSize: 32,
-    fontWeight: 'bold',
+  elegantReference: {
+    fontSize: 12,
+    lineHeight: 18,
+    textAlign: 'center',
+    fontWeight: '500',
   },
-  learnMoreButton: {
+  expandButton: {
     borderWidth: 1,
     borderRadius: 12,
     marginTop: 10,
-    right: 10,
   },
-  backButton: {
+  
+  // Navigation Styles
+  navigationContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+  },
+  elegantDotsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 12,
+    gap: 8,
+  },
+  elegantDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  elegantHint: {
+    fontSize: 12,
+    textAlign: 'center',
+    fontStyle: 'italic',
+    letterSpacing: 0.5,
+  },
+  
+  // Counter Styles
+  elegantCounterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+  },
+  counterDecoration: {
+    flex: 0.15,
+    alignItems: 'center',
+  },
+  counterContent: {
+    flex: 0.7,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  counterLabelContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
+    paddingVertical: 10,
+    borderRadius: 16,
     borderWidth: 1,
-    marginBottom: 20,
-    alignSelf: 'flex-start',
+    minWidth: 80,
+    alignItems: 'center',
   },
-  backButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 8,
+  counterLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    textAlign: 'center',
+    letterSpacing: 0.5,
   },
-}); 
+  elegantCounterButton: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+  },
+  counterButtonGradient: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  counterButtonInner: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  elegantCounterText: {
+    fontSize: 28,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  counterRing: {
+    position: 'absolute',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 2,
+  },
+});
