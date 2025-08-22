@@ -1567,11 +1567,19 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             arabic: '',
             transliteration: '',
             translation: '',
+            category: 'hadith',
+            occasion: 'Hajj',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
         id: '2-19',
         name: 'Miscellaneous Situations',
         description: 'Various other supplications for different situations',
         icon: 'ellipsis-horizontal',
-          }
+        category: 'hadith',
         duas: [
           {
             id: '2-19-1',
