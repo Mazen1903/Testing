@@ -155,7 +155,7 @@ export default function SupplicationsScreen() {
       setSelectedSeries(series);
       setShowSubcategories(true);
     } else {
-      // Simple series - start session directly
+      
     }
   };
 
@@ -566,16 +566,12 @@ export default function SupplicationsScreen() {
 
             {/* Navigation Indicator */}
             {selectedSubcategory && (
-              <Animated.View 
-                entering={FadeInUp.delay(300)}
-                style={styles.swipeIndicatorContainer}
-              >
+              <View style={styles.swipeIndicatorContainer}>
                 {selectedSubcategory.duas.length > 1 && (
-                  <Animated.View entering={BounceIn.delay(400)} style={styles.swipeDotsContainer}>
+                  <View style={styles.swipeDotsContainer}>
                     {selectedSubcategory.duas.map((_, index) => (
-                      <Animated.View
+                      <View
                         key={index}
-                        entering={ZoomIn.delay(500 + index * 50)}
                         style={[
                           styles.swipeDot,
                           {
@@ -586,18 +582,15 @@ export default function SupplicationsScreen() {
                         ]}
                       />
                     ))}
-                  </Animated.View>
+                  </View>
                 )}
-                <Animated.Text 
-                  entering={FadeInDown.delay(600)}
-                  style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}
-                >
+                <Text style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}>
                   {selectedSubcategory.duas.length > 1
                     ? 'Swipe left/right to navigate • Tap anywhere to count'
                     : 'Tap anywhere on the screen to count'
                   }
-                </Animated.Text>
-              </Animated.View>
+                </Text>
+              </View>
             )}
 
             {/* Islamic Counter */}
