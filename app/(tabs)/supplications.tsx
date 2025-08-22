@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -9,7 +9,6 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
-import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import Animated, { 
   FadeInDown, 
   FadeInRight, 
@@ -144,6 +143,9 @@ export default function SupplicationsScreen() {
     });
   };
 
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+  };
 
   const filteredSeries = ZIKR_SERIES;
 
@@ -153,7 +155,7 @@ export default function SupplicationsScreen() {
       setSelectedSeries(series);
       setShowSubcategories(true);
     } else {
-      
+      // Simple series - start session directly
     }
   };
 
@@ -485,6 +487,9 @@ export default function SupplicationsScreen() {
                   style={[styles.manuscriptSubtitle, { color: manuscriptColors.lightInk }]}
                 >
                   {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
+                </Animated.Text>
+              </Animated.View>
+            </Animated.View>
 
             {/* Manuscript Content - Horizontal Swiping */}
             {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
@@ -561,12 +566,16 @@ export default function SupplicationsScreen() {
 
             {/* Navigation Indicator */}
             {selectedSubcategory && (
-              <View style={styles.swipeIndicatorContainer}>
+              <Animated.View 
+                entering={FadeInUp.delay(300)}
+                style={styles.swipeIndicatorContainer}
+              >
                 {selectedSubcategory.duas.length > 1 && (
-                  <View style={styles.swipeDotsContainer}>
+                  <Animated.View entering={BounceIn.delay(400)} style={styles.swipeDotsContainer}>
                     {selectedSubcategory.duas.map((_, index) => (
-                      <View
+                      <Animated.View
                         key={index}
+                        entering={ZoomIn.delay(500 + index * 50)}
                         style={[
                           styles.swipeDot,
                           {
@@ -577,49 +586,39 @@ export default function SupplicationsScreen() {
                         ]}
                       />
                     ))}
-                  </View>
+                  </Animated.View>
                 )}
-                <Text style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}>
+                <Animated.Text 
+                  entering={FadeInDown.delay(600)}
+                  style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}
+                >
                   {selectedSubcategory.duas.length > 1
                     ? 'Swipe left/right to navigate • Tap anywhere to count'
                     : 'Tap anywhere on the screen to count'
                   }
-                </Text>
-              </View>
+                </Animated.Text>
+              </Animated.View>
             )}
 
             {/* Islamic Counter */}
             {/* Islamic Counter - Only show for non-importance sections */}
             {selectedSubcategory && !selectedSubcategory.name.toLowerCase().includes('importance') && (
-              <Animated.View 
-                entering={SlideInLeft.delay(400).springify()}
-                style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}
-              >
+              <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
                 {/* Counter Info Row */}
-                <Animated.View entering={FadeInLeft.delay(500)} style={styles.counterInfoRow}>
-                  <Animated.View 
-                    entering={SlideInLeft.delay(600)}
-                    style={[styles.counterLabelContainer, {
+                <View style={styles.counterInfoRow}>
+                  <View style={[styles.counterLabelContainer, {
                     backgroundColor: manuscriptColors.parchment + '80',
                     borderColor: manuscriptColors.border
-                  }]}
-                  >
+                  }]}>
                     <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
                       Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
                     </Text>
-                  </Animated.View>
+                  </View>
 
-                  <Animated.View 
-                    entering={BounceIn.delay(700)}
-                    style={[styles.islamicCounterButton, counterAnimatedStyle]}
-                  >
-                    <TouchableOpacity
+                  <TouchableOpacity
                     style={styles.islamicCounterButton}
-                      onPress={() => {
-                        animateCounterPress();
-                        setTimeout(() => incrementCount(), 50);
-                      }}
-                    >
+                    onPress={incrementCount}
+                  >
                     <LinearGradient
                       colors={[manuscriptColors.gold, manuscriptColors.darkGold]}
                       style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
@@ -628,22 +627,18 @@ export default function SupplicationsScreen() {
                         {currentCount + 1}
                       </Text>
                     </LinearGradient>
-                    </TouchableOpacity>
-                  </Animated.View>
+                  </TouchableOpacity>
 
-                  <Animated.View 
-                    entering={SlideInRight.delay(600)}
-                    style={[styles.counterLabelContainer, {
+                  <View style={[styles.counterLabelContainer, {
                     backgroundColor: manuscriptColors.parchment + '80',
                     borderColor: manuscriptColors.border
-                  }]}
-                  >
+                  }]}>
                     <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
                       {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
                     </Text>
-                  </Animated.View>
-                </Animated.View>
-              </Animated.View>
+                  </View>
+                </View>
+              </View>
             )}
           </SafeAreaView>
         </LinearGradient>
