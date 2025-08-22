@@ -591,22 +591,35 @@ export default function SupplicationsScreen() {
             {/* Islamic Counter */}
             {/* Islamic Counter - Only show for non-importance sections */}
             {selectedSubcategory && !selectedSubcategory.name.toLowerCase().includes('importance') && (
-              <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
+              <Animated.View 
+                entering={SlideInLeft.delay(400).springify()}
+                style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}
+              >
                 {/* Counter Info Row */}
-                <View style={styles.counterInfoRow}>
-                  <View style={[styles.counterLabelContainer, {
+                <Animated.View entering={FadeInLeft.delay(500)} style={styles.counterInfoRow}>
+                  <Animated.View 
+                    entering={SlideInLeft.delay(600)}
+                    style={[styles.counterLabelContainer, {
                     backgroundColor: manuscriptColors.parchment + '80',
                     borderColor: manuscriptColors.border
-                  }]}>
+                  }]}
+                  >
                     <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
                       Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
                     </Text>
-                  </View>
+                  </Animated.View>
 
-                  <TouchableOpacity
-                    style={styles.islamicCounterButton}
-                    onPress={incrementCount}
+                  <Animated.View 
+                    entering={BounceIn.delay(700)}
+                    style={[styles.islamicCounterButton, counterAnimatedStyle]}
                   >
+                    <TouchableOpacity
+                    style={styles.islamicCounterButton}
+                      onPress={() => {
+                        animateCounterPress();
+                        setTimeout(() => incrementCount(), 50);
+                      }}
+                    >
                     <LinearGradient
                       colors={[manuscriptColors.gold, manuscriptColors.darkGold]}
                       style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
@@ -615,18 +628,22 @@ export default function SupplicationsScreen() {
                         {currentCount + 1}
                       </Text>
                     </LinearGradient>
-                  </TouchableOpacity>
+                    </TouchableOpacity>
+                  </Animated.View>
 
-                  <View style={[styles.counterLabelContainer, {
+                  <Animated.View 
+                    entering={SlideInRight.delay(600)}
+                    style={[styles.counterLabelContainer, {
                     backgroundColor: manuscriptColors.parchment + '80',
                     borderColor: manuscriptColors.border
-                  }]}>
+                  }]}
+                  >
                     <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
                       {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
                     </Text>
-                  </View>
-                </View>
-              </View>
+                  </Animated.View>
+                </Animated.View>
+              </Animated.View>
             )}
           </SafeAreaView>
         </LinearGradient>
