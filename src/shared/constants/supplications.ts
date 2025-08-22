@@ -96,7 +96,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
     icon: 'book',
     subcategories: [
       {
-        id: '2-importance',
+        id: '2-1',
         name: 'The Importance of Hadith-based Supplications',
         description: 'Understanding the significance of prophetic supplications',
         icon: 'information-circle',
@@ -104,124 +104,1262 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '2-virtue',
-        name: 'The Virtue of Remembering Allah',
-        description: 'Understanding the importance of dhikr',
+        id: '2-2',
+        name: 'Virtues & General Remembrance',
+        description: 'The virtue and excellence of remembering Allah',
         icon: 'heart',
         category: 'hadith',
-        duas: []
+        duas: [
+          {
+            id: '2-2-1',
+            title: 'The Virtue of Remembering Allah',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'General remembrance',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-2-2',
+            title: 'The excellence of remembering Allah',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'General remembrance',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-2-3',
+            title: 'The excellence of asking for Allah\'s blessings upon the Prophet (ﷺ)',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'General remembrance',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-2-4',
+            title: 'How the Prophet (ﷺ) glorified Allah',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'General remembrance',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-2-5',
+            title: 'Types of goodness and good etiquette for community life',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'General remembrance',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-2-6',
+            title: 'For seeking Allah\'s counsel (Istikharah)',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'General remembrance',
+            reference: '',
+            repetitions: 1
+          }
+        ]
       },
       {
-        id: '2-excellence',
-        name: 'The excellence of remembering Allah',
-        description: 'The benefits and rewards of constant remembrance',
-        icon: 'star',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-blessings',
-        name: 'The excellence of asking for Allah\'s blessings upon the Prophet (ﷺ)',
-        description: 'The importance of sending salawat',
-        icon: 'heart-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-glorification',
-        name: 'How the Prophet (ﷺ) glorified Allah',
-        description: 'Learning from the Prophet\'s way of praising Allah',
-        icon: 'star-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-goodness',
-        name: 'Types of goodness and good etiquette for community life',
-        description: 'Islamic manners and community ethics',
-        icon: 'people',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-istikharah',
-        name: 'For seeking Allah\'s counsel (Istikharah)',
-        description: 'Prayer for guidance in decision making',
-        icon: 'compass',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-dressing',
-        name: 'When getting dressed',
-        description: 'Prayers when putting on clothes',
+        id: '2-3',
+        name: 'Clothing',
+        description: 'Supplications related to dressing and clothing',
         icon: 'shirt',
         category: 'hadith',
-        duas: []
+        duas: [
+          {
+            id: '2-3-1',
+            title: 'When getting dressed',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Clothing',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-3-2',
+            title: 'When putting on new clothes',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Clothing',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-3-3',
+            title: 'For someone who has put on new clothes',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Clothing',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-3-4',
+            title: 'Before undressing',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Clothing',
+            reference: '',
+            repetitions: 1
+          }
+        ]
       },
       {
-        id: '2-new-clothes',
-        name: 'When putting on new clothes',
-        description: 'Supplications for new garments',
-        icon: 'gift',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-for-others',
-        name: 'For someone who has put on new clothes',
-        description: 'Prayers for others wearing new clothes',
-        icon: 'people',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-undressing',
-        name: 'Before undressing',
-        description: 'Supplications before removing clothes',
-        icon: 'eye-off',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-entering-restroom',
-        name: 'Before entering the restroom',
-        description: 'Prayer before entering the toilet',
-        icon: 'enter',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-leaving-restroom',
-        name: 'After leaving the restroom',
-        description: 'Prayer after leaving the toilet',
-        icon: 'exit',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-before-wudu',
-        name: 'Before performing ablution',
-        description: 'Supplications before wudu',
+        id: '2-4',
+        name: 'Restroom & Purification',
+        description: 'Supplications for restroom and purification',
         icon: 'water',
         category: 'hadith',
-        duas: []
+        duas: [
+          {
+            id: '2-4-1',
+            title: 'Before entering the restroom',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Restroom',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-4-2',
+            title: 'After leaving the restroom',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Restroom',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-4-3',
+            title: 'Before performing ablution',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Purification',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-4-4',
+            title: 'Upon completing ablution',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Purification',
+            reference: '',
+            repetitions: 1
+          }
+        ]
       },
       {
-        id: '2-after-wudu',
-        name: 'Upon completing ablution',
-        description: 'Prayers after completing wudu',
-        icon: 'checkmark-circle',
+        id: '2-5',
+        name: 'Home',
+        description: 'Supplications for entering and leaving home',
+        icon: 'home',
         category: 'hadith',
-        duas: []
+        duas: [
+          {
+            id: '2-5-1',
+            title: 'When leaving the home',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Home',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-5-2',
+            title: 'Upon entering the home',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Home',
+            reference: '',
+            repetitions: 1
+          }
+        ]
       },
       {
-        id: '2-leaving-home',
-        name: 'When leaving the home',
-        description: 'Prayers when going out',
-        icon: 'exit',
+        id: '2-6',
+        name: 'Mosque & Prayer Call (Athan)',
+        description: 'Supplications related to mosque and prayer call',
+        icon: 'star',
         category: 'hadith',
-        duas: []
+        duas: [
+          {
+            id: '2-6-1',
+            title: 'When going to the mosque',
+            arabic: 'اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُوراً، وَفِي لِسَانِي نُوراً، وَفِي سَمْعِي نُوراً، وَفِي بَصَرِي نُوراً، وَمِنْ فَوقِي نُوراً، وَمِنْ تَحْتِِي نُوراً، وَعَنْ يَمِينِي نُوراً، وَعَنْ شِمَالِي نُوراً، وَمِن أَمَامِي نُوراً، وَمِنْ خَلْفِِي نُوراً، وَاجْعَلْ فِي نَفْسِي نُوراً، وَأَعْظِمْ لِي نُوراً، وَعَظِّمْ لِي نُوراً، وِاجْعَلْ لِي نُوراً، وَاجْعَلْنِي نُوراً، اللَّهُمَّ أَعْطِنِي نُوراً، وَاجْعَلْ فِي عَصَبِي نُوراً، وَفِي لَحْمِي نُوراً، وَفِي دَمِي نُوراً، وَفِي شَعْرِي نُوراً، وَفِي بَشَرِي نُوراً،" ["اللَّهُمَّ اجْعَلْ لِي نُوراً فِي قَبْرِي.. وَنُوراً فِي عِظَامِي"] ["وَزِدْنِي نُوراً، وَزِدْنِي نُوراً، وَزِدْنِي نُوراً"] ["وَهَبْ لِي نُوراً عَلَى نُورٍ"].',
+            transliteration: "Allaahummaj'al fee qalbee nooran, wa fee lisaaanee nooran, wa fee sam'ee nooran, wa fee basaree nooran, wa min fawqee nooran, wa min tahtee nooran, wa 'an yameenee nooran, wa 'an shimaalee nooran, wa min 'amaamee nooran, wa min khalfee nooran, waj'al fee nafsee nooran, wa 'a'dhim lee nooran, wa 'adhdhim lee nooran, waj'al lee nooran, waj'alnee nooran, Allaahumma 'a'tinee nooran, waj'al fee 'asabee nooran, wa fee lahmee nooran, wa fee damee nooran, wa fee sha'ree nooran, wa fee basharee nooran. [Allaahummaj'al lee nooran fee qabree wa nooran fee 'idhaamee.] [Wa zidnee nooran, wa zidnee nooran, wa zidnee nooran.] [Wa hab lee nooran 'alaa noor.]",
+            translation: 'O Allah, place light in my heart, and on my tongue light, and in my ears light and in my sight light, and above me light, and below me light, and to my right light, and to my left light, and before me light and behind me light. Place in my soul light. Magnify for me light, and amplify for me light. Make for me light and make me a light. O Allah, grant me light, and place light in my nerves, and in my body light and in my blood light and in my hair light and in my skin light. [O Allah, make for me a light in my grave... and a light in my bones.] [Increase me in light, increase me in light, increase me in light.] [Grant me light upon light.]',
+            category: 'hadith',
+            occasion: 'Going to the mosque',
+            reference: 'Al-Bukhari 11/116, Muslim 1/526, 529-530',
+            fullReference: 'This supplication is reported in Al-Bukhari 11/116 (Hadith no. 6316) and Muslim 1/526, 529-530 (Hadith no. 763) on the authority of Ibn Abbas (may Allah be pleased with him). The Prophet (peace be upon him) would recite this dua when going to the mosque, asking Allah for light in every aspect of his being and surroundings. Additional narrations are found in At-Tirmithi 5/483 (Hadith no. 3419), Al-Bukhari in Al-Adab Al-Mufrad (Hadith no. 695), and authenticated by Al-Albani in Sahih Al-Adab Al-Mufrad (no. 536). This invocation emphasizes seeking Allah\'s guidance, protection, and spiritual illumination in all matters.',
+            repetitions: 1
+          },
+          {
+            id: '2-6-2',
+            title: 'Upon entering the mosque',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Mosque',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-6-3',
+            title: 'Upon leaving the mosque',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Mosque',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-6-4',
+            title: 'When hearing the Athan',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Athan',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-7',
+        name: 'Inside the Prayer (Salah)',
+        description: 'Supplications during different positions of prayer',
+        icon: 'pray',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-7-1',
+            title: 'At beginning of the prayer (after takbeer)',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-2',
+            title: 'While bowing (Ruku)',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-3',
+            title: 'Upon rising from the bowing position',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-4',
+            title: 'During prostration (Sujood)',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-5',
+            title: 'While sitting between two prostrations',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-6',
+            title: 'The Tashahhud (sitting in prayer)',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-7',
+            title: 'Prayers upon the Prophet ﷺ after the tashahhud',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-8',
+            title: 'After the final Tashahhud and before ending the prayer',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-9',
+            title: 'When afflicted by Satan whisperings in prayer or Quran recitation',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-10',
+            title: 'What to say after completing the prayer',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-11',
+            title: 'Invocations for Qunut in Witr (Night Prayer)',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-7-12',
+            title: 'Immediately following the Witr prayer',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Prayer',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-8',
+        name: 'Sleep Issues',
+        description: 'Supplications for sleep-related difficulties',
+        icon: 'moon',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-8-1',
+            title: 'When tossing and turning during the night',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Sleep',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-8-2',
+            title: 'Upon experiencing unrest, fear, apprehensiveness before or during sleep',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Sleep',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-8-3',
+            title: 'Upon seeing a good dream or a bad dream',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Sleep',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-9',
+        name: 'Distress, Trials & Protection',
+        description: 'Supplications for times of difficulty and seeking protection',
+        icon: 'shield',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-9-1',
+            title: 'In times of worry and grief',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Distress',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-2',
+            title: 'In times of distress',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Distress',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-3',
+            title: 'When tragedy strikes',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Distress',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-4',
+            title: 'When you find something becoming difficult for you',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Distress',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-5',
+            title: 'Upon committing a sin',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Distress',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-6',
+            title: 'For expelling the devil and his whisperings',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Protection',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-7',
+            title: 'For fear of Shirk',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Protection',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-8',
+            title: 'When something you dislike happens or when you fail to achieve something',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Distress',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-9',
+            title: 'When angry',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Distress',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-10',
+            title: 'When startled',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Distress',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-11',
+            title: 'When in fear of afflicting something with evil eye',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Protection',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-12',
+            title: 'To ward off the plot of the rebellious devils',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Protection',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-13',
+            title: 'Repentance and seeking forgiveness',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Repentance',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-9-14',
+            title: 'When having doubts about the faith',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Protection',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-10',
+        name: 'Enemies, Oppression & Harm',
+        description: 'Protection from enemies and harmful people',
+        icon: 'warning',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-10-1',
+            title: 'Upon encountering an enemy or those of authority',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Enemies',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-10-2',
+            title: 'When afraid of the ruler\'s injustice',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Enemies',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-10-3',
+            title: 'Against enemies',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Enemies',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-10-4',
+            title: 'What to say if you fear people may harm you',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Enemies',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-11',
+        name: 'Debts & Worldly Difficulties',
+        description: 'Supplications for financial and worldly problems',
+        icon: 'card',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-11-1',
+            title: 'For the settling of a debt',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Debts',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-12',
+        name: 'Family, Marriage & Intimacy',
+        description: 'Supplications for family life and marriage',
+        icon: 'people',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-12-1',
+            title: 'Congratulation on the occasion of a birth and its reply',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Family',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-12-2',
+            title: 'How to seek Allah\'s protection for children',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Family',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-12-3',
+            title: 'To the newlywed',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Family',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-12-4',
+            title: 'On the wedding night or when buying an animal',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Family',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-12-5',
+            title: 'Before intercourse',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Family',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-13',
+        name: 'Illness, Death & Funeral Rites',
+        description: 'Supplications for illness, death, and funeral rites',
+        icon: 'medical',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-13-1',
+            title: 'When visiting the sick',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Illness',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-2',
+            title: 'The reward for visiting the sick',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Illness',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-3',
+            title: 'When having terminal illness',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Illness',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-4',
+            title: 'Instruction for the one nearing death',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Death',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-5',
+            title: 'When closing the eyes of the deceased',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Death',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-6',
+            title: 'For the deceased at the funeral prayer',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Death',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-7',
+            title: 'For the deceased child in the funeral prayer',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Death',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-8',
+            title: 'Condolence',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Death',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-9',
+            title: 'When placing the deceased in the grave',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Death',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-10',
+            title: 'After burying the deceased',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Death',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-13-11',
+            title: 'When visiting the graves',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Death',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-14',
+        name: 'Weather & Celestial Phenomena',
+        description: 'Supplications for weather and celestial events',
+        icon: 'cloud',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-14-1',
+            title: 'When the wind blows',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Weather',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-14-2',
+            title: 'When it thunders',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Weather',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-14-3',
+            title: 'For rainfall',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Weather',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-14-4',
+            title: 'During rainfall',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Weather',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-14-5',
+            title: 'After rainfall',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Weather',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-14-6',
+            title: 'Asking for clear skies',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Weather',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-14-7',
+            title: 'Upon sighting the crescent moon',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Weather',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-15',
+        name: 'Eating, Drinking & Fasting',
+        description: 'Supplications for meals and fasting',
+        icon: 'restaurant',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-15-1',
+            title: 'Before eating',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Eating',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-15-2',
+            title: 'After eating',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Eating',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-15-3',
+            title: 'Of the guest for the host',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Eating',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-15-4',
+            title: 'When someone gives you food or drink',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Eating',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-15-5',
+            title: 'When breaking fast in someone\'s home',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Fasting',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-15-6',
+            title: 'When someone offers you food when you are fasting (which you decline)',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Fasting',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-15-7',
+            title: 'Upon breaking fast',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Fasting',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-15-8',
+            title: 'When insulted while fasting',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Fasting',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-15-9',
+            title: 'Upon seeing the early or premature fruit',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Eating',
+            reference: '',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: '2-16',
+        name: 'Social Etiquette & Interactions',
+        description: 'Islamic manners and social interactions',
+        icon: 'chatbubbles',
+        category: 'hadith',
+        duas: [
+          {
+            id: '2-16-1',
+            title: 'Upon sneezing',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-2',
+            title: 'When a disbeliever praises Allah after sneezing',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-3',
+            title: 'The excellence of spreading the Islamic greeting',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-4',
+            title: 'Returning a greeting to a disbeliever',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-5',
+            title: 'Returning an invocation of forgiveness',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-6',
+            title: 'When someone does good to you',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-7',
+            title: 'To one who pronounces their love for you, for Allah\'s sake',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-8',
+            title: 'To one who has offered you some of their wealth',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-9',
+            title: 'To the debtor when his debt is settled',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-10',
+            title: 'To someone who says "May Allah bless you"',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-11',
+            title: 'At a sitting or gathering',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-12',
+            title: 'For the expiation of sins, said at the conclusion of a sitting or gathering',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-13',
+            title: 'For one you have insulted',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-14',
+            title: 'The etiquette of praising a fellow Muslim',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-15',
+            title: 'For the one that have been praised',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-16-16',
+            title: 'Upon seeing someone in trial or tribulation',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Social',
+            reference: '',
+            repetitions: 1
+          }
+        ]
       },
       {
         id: '2-entering-home',
@@ -232,921 +1370,320 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: []
       },
       {
-        id: '2-going-mosque',
-        name: 'When going to the mosque',
-        description: 'Prayers while traveling to the mosque',
-        icon: 'walk',
+        id: '2-17',
+        name: 'Travel, Riding & Commerce',
+        description: 'Supplications for travel and transportation',
+        icon: 'car',
         category: 'hadith',
         duas: [
           {
-            id: '2-1-1',
-            title: 'Invocation',
-            arabic: 'اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُوراً، وَفِي لِسَانِي نُوراً، وَفِي سَمْعِي نُوراً، وَفِي بَصَرِي نُوراً، وَمِنْ فَوقِي نُوراً، وَمِنْ تَحْتِِي نُوراً، وَعَنْ يَمِينِي نُوراً، وَعَنْ شِمَالِي نُوراً، وَمِن أَمَامِي نُوراً، وَمِنْ خَلْفِِي نُوراً، وَاجْعَلْ فِي نَفْسِي نُوراً، وَأَعْظِمْ لِي نُوراً، وَعَظِّمْ لِي نُوراً، وِاجْعَلْ لِي نُوراً، وَاجْعَلْنِي نُوراً، اللَّهُمَّ أَعْطِنِي نُوراً، وَاجْعَلْ فِي عَصَبِي نُوراً، وَفِي لَحْمِي نُوراً، وَفِي دَمِي نُوراً، وَفِي شَعْرِي نُوراً، وَفِي بَشَرِي نُوراً،" ["اللَّهُمَّ اجْعَلْ لِي نُوراً فِي قَبْرِي.. وَنُوراً فِي عِظَامِي"] ["وَزِدْنِي نُوراً، وَزِدْنِي نُوراً، وَزِدْنِي نُوراً"] ["وَهَبْ لِي نُوراً عَلَى نُورٍ"].',
-            transliteration: "Allaahummaj'al fee qalbee nooran, wa fee lisaaanee nooran, wa fee sam'ee nooran, wa fee basaree nooran, wa min fawqee nooran, wa min tahtee nooran, wa 'an yameenee nooran, wa 'an shimaalee nooran, wa min 'amaamee nooran, wa min khalfee nooran, waj'al fee nafsee nooran, wa 'a'dhim lee nooran, wa 'adhdhim lee nooran, waj'al lee nooran, waj'alnee nooran, Allaahumma 'a'tinee nooran, waj'al fee 'asabee nooran, wa fee lahmee nooran, wa fee damee nooran, wa fee sha'ree nooran, wa fee basharee nooran. [Allaahummaj'al lee nooran fee qabree wa nooran fee 'idhaamee.] [Wa zidnee nooran, wa zidnee nooran, wa zidnee nooran.] [Wa hab lee nooran 'alaa noor.]",
-            translation: 'O Allah, place light in my heart, and on my tongue light, and in my ears light and in my sight light, and above me light, and below me light, and to my right light, and to my left light, and before me light and behind me light. Place in my soul light. Magnify for me light, and amplify for me light. Make for me light and make me a light. O Allah, grant me light, and place light in my nerves, and in my body light and in my blood light and in my hair light and in my skin light. [O Allah, make for me a light in my grave... and a light in my bones.] [Increase me in light, increase me in light, increase me in light.] [Grant me light upon light.]',
+            id: '2-17-1',
+            title: 'When mounting an animal or any means of transport',
+            arabic: '',
+            transliteration: '',
+            translation: '',
             category: 'all',
-            occasion: 'Going to the mosque',
-            reference: 'Al-Bukhari 11/116, Muslim 1/526, 529-530',
-            fullReference: 'This supplication is reported in Al-Bukhari 11/116 (Hadith no. 6316) and Muslim 1/526, 529-530 (Hadith no. 763) on the authority of Ibn Abbas (may Allah be pleased with him). The Prophet (peace be upon him) would recite this dua when going to the mosque, asking Allah for light in every aspect of his being and surroundings. Additional narrations are found in At-Tirmithi 5/483 (Hadith no. 3419), Al-Bukhari in Al-Adab Al-Mufrad (Hadith no. 695), and authenticated by Al-Albani in Sahih Al-Adab Al-Mufrad (no. 536). This invocation emphasizes seeking Allah\'s guidance, protection, and spiritual illumination in all matters.',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-2',
+            title: 'For travel',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-3',
+            title: 'Upon entering a town or village',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-4',
+            title: 'When your vehicle stumbles',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-5',
+            title: 'The traveler for the resident',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-6',
+            title: 'The resident for the traveler',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-7',
+            title: 'Glorifying and magnifying Allah during travel',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-8',
+            title: 'The traveler as dawn approaches',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-9',
+            title: 'Stopping along the way of a travel',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-17-10',
+            title: 'Upon returning from travel',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Travel',
+            reference: '',
             repetitions: 1
           }
         ]
       },
       {
-        id: '2-entering-mosque',
-        name: 'Upon entering the mosque',
-        description: 'Prayers when entering the mosque',
-        icon: 'enter',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-leaving-mosque',
-        name: 'Upon leaving the mosque',
-        description: 'Supplications when leaving the mosque',
-        icon: 'exit',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-athan',
-        name: 'When hearing the Athan',
-        description: 'Responses to the call to prayer',
-        icon: 'volume-high',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-prayer-beginning',
-        name: 'At beginning of the prayer (after takbeer)',
-        description: 'Opening supplications in prayer',
-        icon: 'play',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-ruku',
-        name: 'While bowing (Ruku)',
-        description: 'Dhikr during ruku position',
-        icon: 'arrow-down',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-rising',
-        name: 'Upon rising from the bowing position',
-        description: 'Supplications when standing from ruku',
-        icon: 'arrow-up',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-sujood',
-        name: 'During prostration (Sujood)',
-        description: 'Dhikr during prostration',
-        icon: 'arrow-down-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-sitting',
-        name: 'While sitting between two prostrations',
-        description: 'Supplications between sujood',
-        icon: 'pause',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-tashahhud',
-        name: 'The Tashahhud (sitting in prayer)',
-        description: 'The testimony recited while sitting',
-        icon: 'hand-right',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-salawat',
-        name: 'Prayers upon the Prophet ﷺ after the tashahhud',
-        description: 'Sending blessings upon the Prophet',
-        icon: 'heart',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-final',
-        name: 'After the final Tashahhud and before ending the prayer',
-        description: 'Final supplications before salam',
-        icon: 'checkmark-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-whispers',
-        name: 'When afflicted by Satan whisperings in prayer or Quran recitation',
-        description: 'Protection from satanic whispers',
-        icon: 'shield',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-after-prayer',
-        name: 'What to say after completing the prayer',
-        description: 'Post-prayer supplications',
-        icon: 'checkmark-done',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-qunut',
-        name: 'Invocations for Qunut in Witr (Night Prayer)',
-        description: 'Special supplications for witr prayer',
-        icon: 'moon',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-witr',
-        name: 'Immediately following the Witr prayer',
-        description: 'After witr prayer supplications',
-        icon: 'moon-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-tossing',
-        name: 'When tossing and turning during the night',
-        description: 'For restless nights',
-        icon: 'refresh',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-unrest',
-        name: 'Upon experiencing unrest, fear, apprehensiveness before or during sleep',
-        description: 'For anxiety and fear at bedtime',
-        icon: 'shield',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-dreams',
-        name: 'Upon seeing a good dream or a bad dream',
-        description: 'Responses to dreams',
-        icon: 'cloud',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-worry',
-        name: 'In times of worry and grief',
-        description: 'For anxiety and sadness',
-        icon: 'sad',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-distress',
-        name: 'In times of distress',
-        description: 'For overwhelming difficulties',
-        icon: 'alert-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-tragedy',
-        name: 'When tragedy strikes',
-        description: 'For major calamities',
-        icon: 'warning',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-difficulty',
-        name: 'When you find something becoming difficult for you',
-        description: 'For challenging situations',
-        icon: 'help-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-sin',
-        name: 'Upon committing a sin',
-        description: 'Seeking forgiveness after wrongdoing',
-        icon: 'heart-dislike',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-devil',
-        name: 'For expelling the devil and his whisperings',
-        description: 'Protection from satanic influence',
-        icon: 'shield-checkmark',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-shirk',
-        name: 'For fear of Shirk',
-        description: 'Protection from associating partners with Allah',
-        icon: 'warning-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-dislike',
-        name: 'When something you dislike happens or when you fail to achieve something',
-        description: 'Accepting Allah\'s decree',
-        icon: 'thumbs-down',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-anger',
-        name: 'When angry',
-        description: 'Controlling anger through prayer',
-        icon: 'flame',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-startled',
-        name: 'When startled',
-        description: 'For sudden fear or shock',
-        icon: 'flash',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-evil-eye',
-        name: 'When in fear of afflicting something with evil eye',
-        description: 'Protection from evil eye',
-        icon: 'eye',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-devils',
-        name: 'To ward off the plot of the rebellious devils',
-        description: 'Protection from evil plots',
-        icon: 'shield',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-repentance',
-        name: 'Repentance and seeking forgiveness',
-        description: 'Tawbah and istighfar',
-        icon: 'heart',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-doubts',
-        name: 'When having doubts about the faith',
-        description: 'Strengthening faith and certainty',
-        icon: 'help',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-enemy',
-        name: 'Upon encountering an enemy or those of authority',
-        description: 'When facing hostile people',
-        icon: 'people',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-ruler',
-        name: 'When afraid of the ruler\'s injustice',
-        description: 'Protection from unjust authority',
-        icon: 'shield',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-against',
-        name: 'Against enemies',
-        description: 'General protection from enemies',
-        icon: 'shield-checkmark',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-harm',
-        name: 'What to say if you fear people may harm you',
-        description: 'Protection from potential harm',
-        icon: 'warning-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-debt',
-        name: 'For the settling of a debt',
-        description: 'Prayers for financial relief',
-        icon: 'card',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-birth',
-        name: 'Congratulation on the occasion of a birth and its reply',
-        description: 'Prayers for newborns',
-        icon: 'happy',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-children',
-        name: 'How to seek Allah\'s protection for children',
-        description: 'Protecting children through prayer',
-        icon: 'shield',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-newlywed',
-        name: 'To the newlywed',
-        description: 'Blessings for newly married couples',
-        icon: 'heart',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-wedding',
-        name: 'On the wedding night or when buying an animal',
-        description: 'Special occasion prayers',
-        icon: 'gift',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-intimacy',
-        name: 'Before intercourse',
-        description: 'Prayers for marital intimacy',
-        icon: 'heart-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-visiting',
-        name: 'When visiting the sick',
-        description: 'Prayers when visiting ill people',
-        icon: 'medical',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-reward',
-        name: 'The reward for visiting the sick',
-        description: 'Understanding the benefits of visiting the sick',
-        icon: 'star',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-terminal',
-        name: 'When having terminal illness',
-        description: 'Prayers for serious illness',
-        icon: 'sad',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-dying',
-        name: 'Instruction for the one nearing death',
-        description: 'Guidance for the dying person',
-        icon: 'information',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-closing-eyes',
-        name: 'When closing the eyes of the deceased',
-        description: 'Prayer when someone passes away',
-        icon: 'eye-off',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-funeral',
-        name: 'For the deceased at the funeral prayer',
-        description: 'Janazah prayer supplications',
-        icon: 'flower',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-child',
-        name: 'For the deceased child in the funeral prayer',
-        description: 'Special prayers for deceased children',
-        icon: 'heart-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-condolence',
-        name: 'Condolence',
-        description: 'Offering condolences to the bereaved',
-        icon: 'hand-left',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-grave',
-        name: 'When placing the deceased in the grave',
-        description: 'Prayers during burial',
+        id: '2-18',
+        name: 'Hajj & Umrah Rites',
+        description: 'Supplications for pilgrimage rituals',
         icon: 'location',
         category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-after-burial',
-        name: 'After burying the deceased',
-        description: 'Post-burial supplications',
-        icon: 'checkmark',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-visiting-graves',
-        name: 'When visiting the graves',
-        description: 'Prayers when visiting cemetery',
-        icon: 'flower-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-wind',
-        name: 'When the wind blows',
-        description: 'Prayers during windy weather',
-        icon: 'leaf',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-thunder',
-        name: 'When it thunders',
-        description: 'Supplications during thunderstorms',
-        icon: 'flash',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-rain-request',
-        name: 'For rainfall',
-        description: 'Asking Allah for rain',
-        icon: 'cloud-upload',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-during-rain',
-        name: 'During rainfall',
-        description: 'Prayers while it\'s raining',
-        icon: 'rainy',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-after-rain',
-        name: 'After rainfall',
-        description: 'Gratitude after rain',
-        icon: 'checkmark-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-clear-skies',
-        name: 'Asking for clear skies',
-        description: 'Requesting good weather',
-        icon: 'sunny',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-moon',
-        name: 'Upon sighting the crescent moon',
-        description: 'Prayers when seeing the new moon',
-        icon: 'moon',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-before-eating',
-        name: 'Before eating',
-        description: 'Prayers before meals',
-        icon: 'restaurant',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-after-eating',
-        name: 'After eating',
-        description: 'Gratitude after meals',
-        icon: 'checkmark-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-guest',
-        name: 'Of the guest for the host',
-        description: 'Guest\'s prayer for the host',
-        icon: 'people',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-given-food',
-        name: 'When someone gives you food or drink',
-        description: 'Gratitude for offered food',
-        icon: 'gift',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-breaking-fast',
-        name: 'When breaking fast in someone\'s home',
-        description: 'Iftar prayers at others\' homes',
-        icon: 'home',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-offered-while-fasting',
-        name: 'When someone offers you food when you are fasting (which you decline)',
-        description: 'Polite decline while fasting',
-        icon: 'hand-left',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-iftar',
-        name: 'Upon breaking fast',
-        description: 'Prayers when ending the fast',
-        icon: 'time',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-insulted-fasting',
-        name: 'When insulted while fasting',
-        description: 'Response to provocation while fasting',
-        icon: 'shield',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-early-fruit',
-        name: 'Upon seeing the early or premature fruit',
-        description: 'Gratitude for seasonal fruits',
-        icon: 'leaf',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-sneezing',
-        name: 'Upon sneezing',
-        description: 'Prayers when sneezing',
-        icon: 'medical',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-disbeliever-sneeze',
-        name: 'When a disbeliever praises Allah after sneezing',
-        description: 'Response to non-Muslim\'s praise',
-        icon: 'people',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-greeting',
-        name: 'The excellence of spreading the Islamic greeting',
-        description: 'Importance of saying Salam',
-        icon: 'hand-right',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-greeting-disbeliever',
-        name: 'Returning a greeting to a disbeliever',
-        description: 'How to respond to non-Muslim greetings',
-        icon: 'people-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-forgiveness',
-        name: 'Returning an invocation of forgiveness',
-        description: 'Responding to requests for forgiveness',
-        icon: 'heart',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-good-deed',
-        name: 'When someone does good to you',
-        description: 'Gratitude for kindness',
-        icon: 'thumbs-up',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-love',
-        name: 'To one who pronounces their love for you, for Allah\'s sake',
-        description: 'Response to expressions of love for Allah\'s sake',
-        icon: 'heart',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-wealth',
-        name: 'To one who has offered you some of their wealth',
-        description: 'Response to financial generosity',
-        icon: 'gift',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-debt-settled',
-        name: 'To the debtor when his debt is settled',
-        description: 'Prayer when debt is paid off',
-        icon: 'checkmark-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-blessing',
-        name: 'To someone who says "May Allah bless you"',
-        description: 'Response to blessings',
-        icon: 'star',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-sitting',
-        name: 'At a sitting or gathering',
-        description: 'Prayers during gatherings',
-        icon: 'people',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-conclusion',
-        name: 'For the expiation of sins, said at the conclusion of a sitting or gathering',
-        description: 'Closing prayers for gatherings',
-        icon: 'checkmark-done',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-insulted',
-        name: 'For one you have insulted',
-        description: 'Seeking forgiveness after insulting someone',
-        icon: 'sad',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-praising',
-        name: 'The etiquette of praising a fellow Muslim',
-        description: 'How to properly praise others',
-        icon: 'thumbs-up',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-praised',
-        name: 'For the one that have been praised',
-        description: 'Response when being praised',
-        icon: 'star-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-trial',
-        name: 'Upon seeing someone in trial or tribulation',
-        description: 'Prayer when seeing others in difficulty',
-        icon: 'sad-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-mounting',
-        name: 'When mounting an animal or any means of transport',
-        description: 'Prayers before traveling',
-        icon: 'car',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-travel',
-        name: 'For travel',
-        description: 'General travel supplications',
-        icon: 'airplane',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-entering-town',
-        name: 'Upon entering a town or village',
-        description: 'Prayers when arriving at destination',
-        icon: 'location',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-stumble',
-        name: 'When your vehicle stumbles',
-        description: 'Prayers during travel difficulties',
-        icon: 'warning',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-traveler-resident',
-        name: 'The traveler for the resident',
-        description: 'Traveler\'s prayer for those at home',
-        icon: 'home',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-resident-traveler',
-        name: 'The resident for the traveler',
-        description: 'Home dweller\'s prayer for travelers',
-        icon: 'airplane-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-glorifying',
-        name: 'Glorifying and magnifying Allah during travel',
-        description: 'Dhikr while traveling',
-        icon: 'star',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-dawn',
-        name: 'The traveler as dawn approaches',
-        description: 'Morning prayers while traveling',
-        icon: 'sunny',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-stopping',
-        name: 'Stopping along the way of a travel',
-        description: 'Prayers during travel breaks',
-        icon: 'pause',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-returning',
-        name: 'Upon returning from travel',
-        description: 'Gratitude when returning home',
-        icon: 'home',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-announcement',
-        name: 'The pilgrim\'s announcement of his arrival for Hajj or \'Umrah',
-        description: 'Talbiyah and arrival prayers',
-        icon: 'megaphone',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-black-stone',
-        name: 'Saying "Allahu Akbar" when passing the Black Stone',
-        description: 'Takbir at the Black Stone',
-        icon: 'star',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-corners',
-        name: 'Between the Yemeni Corner and the Black Stone',
-        description: 'Prayers during tawaf',
-        icon: 'refresh',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-safa-marwah',
-        name: 'While standing at Safa and Marwah',
-        description: 'Supplications during sa\'i',
-        icon: 'walk',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-arafah',
-        name: 'The Day of \'Arafah',
-        description: 'Special prayers on the Day of Arafah',
-        icon: 'sunny',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-muzdalifah',
-        name: 'At the sacred area of Muzdalifah',
-        description: 'Prayers at Muzdalifah',
-        icon: 'location-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-stoning',
-        name: 'Saying "Allahu Akbar" while stoning the three pillars at Mina',
-        description: 'Takbir during stoning ritual',
-        icon: 'star-outline',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-prostration',
-        name: 'When prostrating due to recitation of the Quran',
-        description: 'Sujood at-tilawah supplications',
-        icon: 'book',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-amazement',
-        name: 'At times of amazement and that which delights',
-        description: 'Expressions of wonder and joy',
-        icon: 'happy',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-pleasant-news',
-        name: 'Upon receiving pleasant news',
-        description: 'Gratitude for good news',
-        icon: 'checkmark-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-any-news',
-        name: 'Upon receiving pleasing or displeasing news',
-        description: 'Response to any type of news',
-        icon: 'information-circle',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-pain',
-        name: 'What to say when you feel a pain in your body',
-        description: 'Prayers for physical discomfort',
-        icon: 'medical',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-sacrifice',
-        name: 'When slaughtering or offering a sacrifice',
-        description: 'Prayers during sacrifice',
-        icon: 'cut',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-omens',
-        name: 'Against evil omens',
-        description: 'Protection from superstitions',
-        icon: 'shield',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-false-messiah',
-        name: 'For Allah\'s protection from the False Messiah',
-        description: 'Protection from Dajjal',
-        icon: 'shield-checkmark',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-cock-crow',
-        name: 'Upon hearing the cock\'s crow or the bray of a donkey',
-        description: 'Responses to animal sounds',
-        icon: 'volume-high',
-        category: 'hadith',
-        duas: []
-      },
-      {
-        id: '2-dog-bark',
-        name: 'Upon hearing a dog barking at night',
-        description: 'Prayer when hearing dogs at night',
-        icon: 'moon',
-        category: 'hadith',
-        duas: []
+        duas: [
+          {
+            id: '2-18-1',
+            title: 'The pilgrim\'s announcement of his arrival for Hajj or Umrah',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Hajj',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-18-2',
+            title: 'Saying "Allahu Akbar" when passing the Black Stone',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Hajj',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-18-3',
+            title: 'Between the Yemeni Corner and the Black Stone',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Hajj',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-18-4',
+            title: 'While standing at Safa and Marwah',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Hajj',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-18-5',
+            title: 'The Day of Arafah',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Hajj',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-18-6',
+            title: 'At the sacred area of Muzdalifah',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Hajj',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-18-7',
+            title: 'Saying "Allahu Akbar" while stoning the three pillars at Mina',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+        id: '2-19',
+        name: 'Miscellaneous Situations',
+        description: 'Various other supplications for different situations',
+        icon: 'ellipsis-horizontal',
+          }
+        duas: [
+          {
+            id: '2-19-1',
+            title: 'When prostrating due to recitation of the Quran',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-2',
+            title: 'At times of amazement and that which delights',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-3',
+            title: 'Upon receiving pleasant news',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-4',
+            title: 'Upon receiving pleasing or displeasing news',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-5',
+            title: 'What to say when you feel a pain in your body',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-6',
+            title: 'When slaughtering or offering a sacrifice',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-7',
+            title: 'Against evil omens',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-8',
+            title: 'For Allah\'s protection from the False Messiah',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-9',
+            title: 'Upon hearing the cock\'s crow or the bray of a donkey',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          },
+          {
+            id: '2-19-10',
+            title: 'Upon hearing a dog barking at night',
+            arabic: '',
+            transliteration: '',
+            translation: '',
+            category: 'hadith',
+            occasion: 'Miscellaneous',
+            reference: '',
+            repetitions: 1
+          }
+        ]
       }
     ]
   },
