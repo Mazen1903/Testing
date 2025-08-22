@@ -81,14 +81,7 @@ export default function SupplicationsScreen() {
   const horizontalScrollRef = useRef<ScrollView>(null);
 
 
-  const filteredSeries = ZIKR_SERIES.filter((series: ZikrSeries) => {
-    const matchesCategory = selectedCategory === 'all' || series.categories.includes(selectedCategory);
-    return matchesCategory;
-  });
-
-  const handleCategorySelect = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-  };
+  const filteredSeries = ZIKR_SERIES;
 
   const handleSeriesSelect = (series: ZikrSeries) => {
     if (hasSubcategories(series) || isMixedSeries(series)) {
@@ -295,26 +288,11 @@ export default function SupplicationsScreen() {
           </View>
         </Animated.View>
 
-        {/* Categories */}
-        <Animated.View entering={FadeInDown.delay(300)} style={styles.categoriesSection}>
-          <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>CATEGORIES</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
-            {ZIKR_CATEGORIES.map((category: ZikrCategory, index: number) => (
-              <Animated.View key={category.id} entering={FadeInRight.delay(300 + index * 100)}>
-                <CategoryButton
-                  category={category}
-                  isSelected={selectedCategory === category.id}
-                />
-              </Animated.View>
-            ))}
-          </ScrollView>
-        </Animated.View>
-
         {/* Zikr Series List or Subcategories */}
         {!showSubcategories ? (
           <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
             <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-              ZIKR SERIES ({filteredSeries.length})
+              SUPPLICATIONS ({filteredSeries.length})
             </Text>
             {filteredSeries.map((series: ZikrSeries, index: number) => (
               <Animated.View key={series.id} entering={FadeInDown.delay(700 + index * 100)}>
