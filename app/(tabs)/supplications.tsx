@@ -119,6 +119,9 @@ export default function SupplicationsScreen() {
   const [reminders, setReminders] = useState<ReminderSettings[]>([]);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [selectedSupplicationForReminder, setSelectedSupplicationForReminder] = useState<{id: string, title: string} | null>(null);
+  const [selectedReminderCategory, setSelectedReminderCategory] = useState<string>('');
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(new Date());
   const horizontalScrollRef = useRef<ScrollView>(null);
 
   // Request notification permissions on mount
@@ -173,6 +176,11 @@ export default function SupplicationsScreen() {
     }
   };
 
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedReminderCategory(categoryId);
+    setShowReminderModal(true);
+  };
+
   const loadBookmarks = async () => {
     try {
       const [duasData, subcategoriesData] = await Promise.all([
@@ -209,8 +217,10 @@ export default function SupplicationsScreen() {
             body: `Remember to recite: ${reminder.supplicationTitle}`,
             sound: true,
             priority: Notifications.AndroidNotificationPriority.HIGH,
+            data: { reminderType: 'supplication', categoryId: reminder.supplicationId },
           },
           trigger: {
+            type: 'calendar',
             weekday: dayNumber + 1, // Expo uses 1-7 for Sunday-Saturday
             hour: hours,
             minute: minutes,
@@ -2278,307 +2288,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 16,
-    gap: 4,
-  },
-  addReminderText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  emptyReminders: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 60,
-    paddingHorizontal: 40,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginTop: 16,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  emptyText: {
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  remindersList: {
-    gap: 12,
-    paddingHorizontal: 20,
-  },
-  reminderCard: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  reminderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  reminderInfo: {
-    flex: 1,
-  },
-  reminderTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  reminderTime: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  reminderDays: {
-    flexDirection: 'row',
-    gap: 6,
-    marginBottom: 12,
-  },
-  dayChip: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  dayText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  deleteReminderButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: 4,
-  },
-  deleteReminderText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  // Reminder modal styles
-  modalContainer: {
-    flex: 1,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  modalContent: {
-    flex: 1,
-    padding: 20,
-  },
-  supplicationInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 24,
-    gap: 12,
-  },
-  supplicationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    flex: 1,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  reminderTypeButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  typeButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  typeButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  timeOptions: {
-    gap: 8,
-  },
-  timeOption: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  timeOptionText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  daysGrid: {
-    flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
-  },
-  dayButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    minWidth: 44,
-    alignItems: 'center',
-  },
-  dayButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  reminderPreview: {
-    flexDirection: 'row',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    gap: 12,
-  },
-  previewContent: {
-    flex: 1,
-  },
-  previewTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  saveButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 16,
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  reminderModalContent: {
-    maxHeight: '80%',
-  },
-  timePickerButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 20,
-  },
-  timePickerText: {
-    fontSize: 18,
-    fontWeight: '600',
-    flex: 1,
-    textAlign: 'center',
-  },
-  timePickerOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  timePickerModal: {
-    width: '90%',
-    maxWidth: 400,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  timePickerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-  },
-  timePickerCancel: {
-    fontSize: 16,
-  },
-  timePickerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  timePickerDone: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  timePickerContent: {
-    padding: 20,
-  },
-  timePickerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  timePickerColumn: {
-    alignItems: 'center',
-  },
-  timePickerLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  timePickerScroll: {
-    height: 120,
-    width: 60,
-  },
-  timePickerOption: {
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    marginVertical: 2,
-  },
-  timePickerOptionText: {
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  timePickerSeparator: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginHorizontal: 20,
-  },
-  quickTimePresets: {
-    marginTop: 20,
-  },
-  quickTimeLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  quickTimeButtons: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  quickTimeButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-  },
-  quickTimeButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  reminderItem: {
-  },
-});
+    borderRadius:
