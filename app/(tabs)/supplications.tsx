@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -582,6 +582,295 @@ export default function SupplicationsScreen() {
               </TouchableOpacity>
             </View>
 
+            {/* Display Controls Modal */}
+            <Modal
+              visible={showDisplayControls}
+              animationType="slide"
+              presentationStyle="pageSheet"
+            >
+              <LinearGradient
+                colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
+                style={styles.controlsModalContainer}
+              >
+                <SafeAreaView style={{ flex: 1 }}>
+                  {/* Controls Header */}
+                  <View style={[styles.controlsHeader, { borderBottomColor: manuscriptColors.border }]}>
+                    <TouchableOpacity onPress={() => setShowDisplayControls(false)}>
+                      <Ionicons name="close" size={24} color={manuscriptColors.brown} />
+                    </TouchableOpacity>
+                    <Text style={[styles.controlsTitle, { color: manuscriptColors.ink }]}>
+                      Display Settings
+                    </Text>
+                    <View style={{ width: 24 }} />
+                  </View>
+
+                  <ScrollView style={styles.controlsContent} showsVerticalScrollIndicator={false}>
+                    {/* Font Size */}
+                    <View style={styles.controlSection}>
+                      <Text style={[styles.controlLabel, { color: manuscriptColors.ink }]}>
+                        Font Size
+                      </Text>
+                      <View style={styles.sliderContainer}>
+                        <Text style={[styles.sliderLabel, { color: manuscriptColors.brown }]}>A</Text>
+                        <Slider
+                          style={styles.slider}
+                          minimumValue={12}
+                          maximumValue={28}
+                          value={fontSize}
+                          onValueChange={setFontSize}
+                          minimumTrackTintColor={manuscriptColors.brown}
+                          maximumTrackTintColor={manuscriptColors.border}
+                          thumbStyle={{ backgroundColor: manuscriptColors.brown }}
+                        />
+                        <Text style={[styles.sliderLabel, { color: manuscriptColors.brown, fontSize: 20 }]}>A</Text>
+                      </View>
+                      <Text style={[styles.controlValue, { color: manuscriptColors.lightInk }]}>
+                        {fontSize.toFixed(0)}px
+                      </Text>
+                    </View>
+
+                    {/* Line Spacing */}
+                    <View style={styles.controlSection}>
+                      <Text style={[styles.controlLabel, { color: manuscriptColors.ink }]}>
+                        Line Spacing
+                      </Text>
+                      <View style={styles.sliderContainer}>
+                        <Text style={[styles.sliderLabel, { color: manuscriptColors.brown }]}>1.0</Text>
+                        <Slider
+                          style={styles.slider}
+                          minimumValue={1.0}
+                          maximumValue={2.5}
+                          value={lineSpacing}
+                          onValueChange={setLineSpacing}
+                          minimumTrackTintColor={manuscriptColors.brown}
+                          maximumTrackTintColor={manuscriptColors.border}
+                          thumbStyle={{ backgroundColor: manuscriptColors.brown }}
+                        />
+                        <Text style={[styles.sliderLabel, { color: manuscriptColors.brown }]}>2.5</Text>
+                      </View>
+                      <Text style={[styles.controlValue, { color: manuscriptColors.lightInk }]}>
+                        {lineSpacing.toFixed(1)}x
+                      </Text>
+                    </View>
+
+                    {/* Font Family */}
+                    <View style={styles.controlSection}>
+                      <Text style={[styles.controlLabel, { color: manuscriptColors.ink }]}>
+                        Font Family
+                      </Text>
+                      <View style={styles.fontFamilyButtons}>
+                        {(['System', 'Serif', 'Monospace'] as const).map((family) => (
+                          <TouchableOpacity
+                            key={family}
+                            style={[
+                              styles.fontFamilyButton,
+                              {
+                                backgroundColor: fontFamily === family ? manuscriptColors.brown : manuscriptColors.parchment,
+                                borderColor: manuscriptColors.border
+                              }
+                            ]}
+                            onPress={() => setFontFamily(family)}
+                          >
+                            <Text style={[
+                              styles.fontFamilyText,
+                              { color: fontFamily === family ? manuscriptColors.parchment : manuscriptColors.brown }
+                            ]}>
+                              {family}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+
+                    {/* Arabic Text Alignment */}
+                    <View style={styles.controlSection}>
+                      <Text style={[styles.controlLabel, { color: manuscriptColors.ink }]}>
+                        Arabic Text Alignment
+                      </Text>
+                      <View style={styles.alignmentButtons}>
+                        <TouchableOpacity
+                          style={[
+                            styles.alignmentButton,
+                            {
+                              backgroundColor: arabicTextAlign === 'right' ? manuscriptColors.brown : manuscriptColors.parchment,
+                              borderColor: manuscriptColors.border
+                            }
+                          ]}
+                          onPress={() => setArabicTextAlign('right')}
+                        >
+                          <Ionicons 
+                            name="text" 
+                            size={16} 
+                            color={arabicTextAlign === 'right' ? manuscriptColors.parchment : manuscriptColors.brown} 
+                          />
+                          <Text style={[
+                            styles.alignmentText,
+                            { color: arabicTextAlign === 'right' ? manuscriptColors.parchment : manuscriptColors.brown }
+                          ]}>
+                            Right
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[
+                            styles.alignmentButton,
+                            {
+                              backgroundColor: arabicTextAlign === 'center' ? manuscriptColors.brown : manuscriptColors.parchment,
+                              borderColor: manuscriptColors.border
+                            }
+                          ]}
+                          onPress={() => setArabicTextAlign('center')}
+                        >
+                          <Ionicons 
+                            name="text" 
+                            size={16} 
+                            color={arabicTextAlign === 'center' ? manuscriptColors.parchment : manuscriptColors.brown} 
+                          />
+                          <Text style={[
+                            styles.alignmentText,
+                            { color: arabicTextAlign === 'center' ? manuscriptColors.parchment : manuscriptColors.brown }
+                          ]}>
+                            Center
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+
+                    {/* Text Display Toggles */}
+                    <View style={styles.controlSection}>
+                      <Text style={[styles.controlLabel, { color: manuscriptColors.ink }]}>
+                        Text Display
+                      </Text>
+                      
+                      <View style={styles.toggleRow}>
+                        <View style={styles.toggleInfo}>
+                          <Text style={[styles.toggleLabel, { color: manuscriptColors.ink }]}>
+                            Show Arabic
+                          </Text>
+                          <Text style={[styles.toggleDescription, { color: manuscriptColors.lightInk }]}>
+                            Display original Arabic text
+                          </Text>
+                        </View>
+                        <TouchableOpacity
+                          style={[
+                            styles.toggle,
+                            { backgroundColor: showArabic ? manuscriptColors.brown : manuscriptColors.border }
+                          ]}
+                          onPress={() => setShowArabic(!showArabic)}
+                        >
+                          <View
+                            style={[
+                              styles.toggleHandle,
+                              { 
+                                backgroundColor: manuscriptColors.parchment,
+                                transform: [{ translateX: showArabic ? 20 : 0 }]
+                              }
+                            ]}
+                          />
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={styles.toggleRow}>
+                        <View style={styles.toggleInfo}>
+                          <Text style={[styles.toggleLabel, { color: manuscriptColors.ink }]}>
+                            Show Transliteration
+                          </Text>
+                          <Text style={[styles.toggleDescription, { color: manuscriptColors.lightInk }]}>
+                            Display pronunciation guide
+                          </Text>
+                        </View>
+                        <TouchableOpacity
+                          style={[
+                            styles.toggle,
+                            { backgroundColor: showTransliteration ? manuscriptColors.brown : manuscriptColors.border }
+                          ]}
+                          onPress={() => setShowTransliteration(!showTransliteration)}
+                        >
+                          <View
+                            style={[
+                              styles.toggleHandle,
+                              { 
+                                backgroundColor: manuscriptColors.parchment,
+                                transform: [{ translateX: showTransliteration ? 20 : 0 }]
+                              }
+                            ]}
+                          />
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={styles.toggleRow}>
+                        <View style={styles.toggleInfo}>
+                          <Text style={[styles.toggleLabel, { color: manuscriptColors.ink }]}>
+                            Show Translation
+                          </Text>
+                          <Text style={[styles.toggleDescription, { color: manuscriptColors.lightInk }]}>
+                            Display English meaning
+                          </Text>
+                        </View>
+                        <TouchableOpacity
+                          style={[
+                            styles.toggle,
+                            { backgroundColor: showTranslation ? manuscriptColors.brown : manuscriptColors.border }
+                          ]}
+                          onPress={() => setShowTranslation(!showTranslation)}
+                        >
+                          <View
+                            style={[
+                              styles.toggleHandle,
+                              { 
+                                backgroundColor: manuscriptColors.parchment,
+                                transform: [{ translateX: showTranslation ? 20 : 0 }]
+                              }
+                            ]}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    
+                    {/* Preview */}
+                    <View style={styles.controlSection}>
+                      <Text style={[styles.controlLabel, { color: manuscriptColors.ink }]}>
+                        Preview
+                      </Text>
+                      <View style={[styles.previewContainer, { backgroundColor: manuscriptColors.parchment, borderColor: manuscriptColors.border }]}>
+                        {showArabic && (
+                          <Text style={[styles.previewArabic, { 
+                            fontSize: fontSize,
+                            lineHeight: fontSize * lineSpacing,
+                            textAlign: arabicTextAlign,
+                            fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace',
+                            color: manuscriptColors.ink
+                          }]}>
+                            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                          </Text>
+                        )}
+                        {showTransliteration && (
+                          <Text style={[styles.previewText, { 
+                            fontSize: fontSize * 0.9,
+                            lineHeight: fontSize * 0.9 * lineSpacing,
+                            fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace',
+                            color: manuscriptColors.lightInk,
+                            fontStyle: 'italic'
+                          }]}>
+                            Bismillahi'r-rahmani'r-raheem
+                          </Text>
+                        )}
+                        {showTranslation && (
+                          <Text style={[styles.previewText, { 
+                            fontSize: fontSize * 0.9,
+                            lineHeight: fontSize * 0.9 * lineSpacing,
+                            fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace',
+                            color: manuscriptColors.lightInk
+                          }]}>
+                            In the name of Allah, the Most Gracious, the Most Merciful
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                  </ScrollView>
+                </SafeAreaView>
+              </LinearGradient>
+            </Modal>
+
             {/* Manuscript Content - Horizontal Swiping */}
             {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
               <ScrollView
@@ -606,61 +895,28 @@ export default function SupplicationsScreen() {
                       activeOpacity={index === currentDuaIndex ? 0.8 : 1}
                     >
                       {/* Arabic Text */}
-                      {showArabic && (
-                        <View style={styles.arabicSection}>
-                          <Text style={[
-                            styles.manuscriptArabic, 
-                            { 
-                              color: manuscriptColors.ink,
-                              fontSize: fontSize * 1.5,
-                              lineHeight: fontSize * 1.5 * lineSpacing,
-                              textAlign: arabicTextAlign,
-                              fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
-                            }
-                          ]}>
-                            {dua.arabic || ''}
-                          </Text>
-                        </View>
-                      )}
+                      <View style={styles.arabicSection}>
+                        <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
+                          {dua.arabic || ''}
+                        </Text>
+                      </View>
 
-                      {/* Divider - only show if there are sections above and below */}
-                      {(showArabic && (showTransliteration || showTranslation)) && (
-                        <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
-                      )}
+                      {/* Divider */}
+                      <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
 
                       {/* Transliteration */}
-                      {showTransliteration && (
-                        <View style={styles.textSection}>
-                          <Text style={[
-                            styles.manuscriptTransliteration, 
-                            { 
-                              color: manuscriptColors.lightInk,
-                              fontSize: fontSize,
-                              lineHeight: fontSize * lineSpacing,
-                              fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
-                            }
-                          ]}>
-                            {dua.transliteration || ''}
-                          </Text>
-                        </View>
-                      )}
+                      <View style={styles.textSection}>
+                        <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
+                          {dua.transliteration || ''}
+                        </Text>
+                      </View>
 
                       {/* Translation */}
-                      {showTranslation && (
-                        <View style={styles.textSection}>
-                          <Text style={[
-                            styles.manuscriptTranslation, 
-                            { 
-                              color: manuscriptColors.lightInk,
-                              fontSize: fontSize,
-                              lineHeight: fontSize * lineSpacing,
-                              fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
-                            }
-                          ]}>
-                            {dua.translation || ''}
-                          </Text>
-                        </View>
-                      )}
+                      <View style={styles.textSection}>
+                        <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
+                          {dua.translation || ''}
+                        </Text>
+                      </View>
 
                       {/* Reference */}
                       <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
@@ -1328,4 +1584,4 @@ const styles = StyleSheet.create({
   previewText: {
     marginBottom: 8,
   },
-}); 
+});
