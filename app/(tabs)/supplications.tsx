@@ -526,6 +526,29 @@ export default function SupplicationsScreen() {
       </Text>
     </TouchableOpacity>
   );
+  const getDayName = (dayIndex: number): string => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return days[dayIndex];
+  };
+
+  const toggleDay = (dayIndex: number) => {
+    setReminderDays(prev => 
+      prev.includes(dayIndex) 
+        ? prev.filter(d => d !== dayIndex)
+        : [...prev, dayIndex].sort()
+    );
+  };
+
+  // Check if a category should have reminder functionality disabled
+  const isReminderDisabled = (categoryName: string): boolean => {
+    const disabledCategories = [
+      'The Importance of Daily Supplications',
+      'The Importance of Hadith-based Supplications', 
+      'The importance of Quranic Supplications'
+    ];
+    return disabledCategories.includes(categoryName);
+  };
+
 
   const SeriesCard = ({ series }: { series: ZikrSeries }) => {
     const totalDuas = getAllDuasFromSeries(series).length;
@@ -552,12 +575,14 @@ export default function SupplicationsScreen() {
               <View style={styles.duaFooterLeft}>
                 <Ionicons name="book" size={12} color={manuscriptColors.brown} />
                 <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
-                  {hasSubcats 
-                    ? `${series.subcategories?.length || 0} categories • ${totalDuas} duas`
-                    : `${totalDuas} duas`
-                  }
-                </Text>
-              </View>
+          {!isReminderDisabled(subcategory.name) && (
+            <TouchableOpacity
+              style={[styles.reminderButton, { backgroundColor: colors.primary + '15' }]}
+              onPress={() => handleCategorySelect(subcategory)}
+            >
+              <Ionicons name="notifications-outline" size={16} color={colors.primary} />
+            </TouchableOpacity>
+          )}
               <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
             </View>
           </View>
