@@ -1662,6 +1662,17 @@ function ReminderModal({
                     key={day}
                     style={[
                       styles.dayButton,
+                      { backgroundColor: colors.card, borderColor: colors.border },
+                      selectedDays.includes(day) && { backgroundColor: colors.primary + '20', borderColor: colors.primary }
+                    ]}
+                    onPress={() => toggleDay(day)}
+                  >
+                    <Text style={[
+                      styles.dayButtonText,
+                      { color: colors.text },
+                      selectedDays.includes(day) && { color: colors.primary }
+                    ]}>
+                      {day}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -2579,6 +2590,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   reminderItem: {
+  },
+  reminderIconButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
   },
 });
 
