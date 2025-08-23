@@ -21,6 +21,7 @@ import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplic
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Slider } from '@react-native-community/slider';
 
 const { width, height } = Dimensions.get('window');
 
@@ -83,11 +84,20 @@ export default function SupplicationsScreen() {
   const [currentCount, setCurrentCount] = useState(0);
   const [bookmarkedDuas, setBookmarkedDuas] = useState<Set<string>>(new Set());
   const [bookmarkedSubcategories, setBookmarkedSubcategories] = useState<Set<string>>(new Set());
+  const [showDisplayControls, setShowDisplayControls] = useState(false);
+  const [fontSize, setFontSize] = useState(16);
+  const [fontFamily, setFontFamily] = useState<'System' | 'Serif' | 'Monospace'>('System');
+  const [showArabic, setShowArabic] = useState(true);
+  const [showTransliteration, setShowTransliteration] = useState(true);
+  const [showTranslation, setShowTranslation] = useState(true);
+  const [arabicTextAlign, setArabicTextAlign] = useState<'right' | 'center'>('right');
+  const [lineSpacing, setLineSpacing] = useState(1.5);
   const horizontalScrollRef = useRef<ScrollView>(null);
 
   // Load bookmarks on component mount
   useEffect(() => {
     loadBookmarks();
+    loadDisplaySettings();
   }, []);
 
   const loadBookmarks = async () => {
@@ -107,6 +117,59 @@ export default function SupplicationsScreen() {
       console.error('Error loading bookmarks:', error);
     }
   };
+
+  const loadDisplaySettings = async () => {
+    try {
+      const [
+        fontSizeData,
+        fontFamilyData,
+        showArabicData,
+        showTransliterationData,
+        showTranslationData,
+        arabicAlignData,
+        lineSpacingData
+      ] = await Promise.all([
+        AsyncStorage.getItem('supplication_font_size'),
+        AsyncStorage.getItem('supplication_font_family'),
+        AsyncStorage.getItem('supplication_show_arabic'),
+        AsyncStorage.getItem('supplication_show_transliteration'),
+        AsyncStorage.getItem('supplication_show_translation'),
+        AsyncStorage.getItem('supplication_arabic_align'),
+        AsyncStorage.getItem('supplication_line_spacing')
+      ]);
+      
+      if (fontSizeData) setFontSize(JSON.parse(fontSizeData));
+      if (fontFamilyData) setFontFamily(JSON.parse(fontFamilyData));
+      if (showArabicData) setShowArabic(JSON.parse(showArabicData));
+      if (showTransliterationData) setShowTransliteration(JSON.parse(showTransliterationData));
+      if (showTranslationData) setShowTranslation(JSON.parse(showTranslationData));
+      if (arabicAlignData) setArabicTextAlign(JSON.parse(arabicAlignData));
+      if (lineSpacingData) setLineSpacing(JSON.parse(lineSpacingData));
+    } catch (error) {
+      console.error('Error loading display settings:', error);
+    }
+  };
+
+  const saveDisplaySettings = async () => {
+    try {
+      await Promise.all([
+        AsyncStorage.setItem('supplication_font_size', JSON.stringify(fontSize)),
+        AsyncStorage.setItem('supplication_font_family', JSON.stringify(fontFamily)),
+        AsyncStorage.setItem('supplication_show_arabic', JSON.stringify(showArabic)),
+        AsyncStorage.setItem('supplication_show_transliteration', JSON.stringify(showTransliteration)),
+        AsyncStorage.setItem('supplication_show_translation', JSON.stringify(showTranslation)),
+        AsyncStorage.setItem('supplication_arabic_align', JSON.stringify(arabicTextAlign)),
+        AsyncStorage.setItem('supplication_line_spacing', JSON.stringify(lineSpacing))
+      ]);
+    } catch (error) {
+      console.error('Error saving display settings:', error);
+    }
+  };
+
+  // Save settings whenever they change
+  useEffect(() => {
+    saveDisplaySettings();
+  }, [fontSize, fontFamily, showArabic, showTransliteration, showTranslation, arabicTextAlign, lineSpacing]);
 
   const saveBookmarks = async (duas: Set<string>, subcategories: Set<string>) => {
     try {
@@ -507,6 +570,16 @@ export default function SupplicationsScreen() {
                   {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
                 </Text>
               </View>
+
+              <TouchableOpacity
+                style={[styles.displayControlsButton, {
+                  backgroundColor: manuscriptColors.parchment,
+                  borderColor: manuscriptColors.border
+                }]}
+                onPress={() => setShowDisplayControls(true)}
+              >
+                <Ionicons name="options" size={24} color={manuscriptColors.brown} />
+              </TouchableOpacity>
             </View>
 
             {/* Manuscript Content - Horizontal Swiping */}
