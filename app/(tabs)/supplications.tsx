@@ -895,28 +895,52 @@ export default function SupplicationsScreen() {
                       activeOpacity={index === currentDuaIndex ? 0.8 : 1}
                     >
                       {/* Arabic Text */}
-                      <View style={styles.arabicSection}>
-                        <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
-                          {dua.arabic || ''}
-                        </Text>
-                      </View>
+                      {showArabic && (
+                        <View style={styles.arabicSection}>
+                          <Text style={[styles.manuscriptArabic, { 
+                            color: manuscriptColors.ink,
+                            fontSize: fontSize,
+                            lineHeight: fontSize * lineSpacing,
+                            textAlign: arabicTextAlign,
+                            fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
+                          }]}>
+                            {dua.arabic || ''}
+                          </Text>
+                        </View>
+                      )}
 
                       {/* Divider */}
-                      <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
+                      {((showArabic && (showTransliteration || showTranslation)) || (showTransliteration && showTranslation)) && (
+                        <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
+                      )}
 
                       {/* Transliteration */}
-                      <View style={styles.textSection}>
-                        <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
-                          {dua.transliteration || ''}
-                        </Text>
-                      </View>
+                      {showTransliteration && (
+                        <View style={styles.textSection}>
+                          <Text style={[styles.manuscriptTransliteration, { 
+                            color: manuscriptColors.lightInk,
+                            fontSize: fontSize * 0.9,
+                            lineHeight: fontSize * 0.9 * lineSpacing,
+                            fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
+                          }]}>
+                            {dua.transliteration || ''}
+                          </Text>
+                        </View>
+                      )}
 
                       {/* Translation */}
-                      <View style={styles.textSection}>
-                        <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
-                          {dua.translation || ''}
-                        </Text>
-                      </View>
+                      {showTranslation && (
+                        <View style={styles.textSection}>
+                          <Text style={[styles.manuscriptTranslation, { 
+                            color: manuscriptColors.lightInk,
+                            fontSize: fontSize * 0.95,
+                            lineHeight: fontSize * 0.95 * lineSpacing,
+                            fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
+                          }]}>
+                            {dua.translation || ''}
+                          </Text>
+                        </View>
+                      )}
 
                       {/* Reference */}
                       <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
@@ -973,7 +997,6 @@ export default function SupplicationsScreen() {
               </View>
             )}
 
-            {/* Islamic Counter */}
             {/* Islamic Counter - Only show for non-importance sections */}
             {selectedSubcategory && !selectedSubcategory.name.toLowerCase().includes('importance') && (
               <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
@@ -997,63 +1020,11 @@ export default function SupplicationsScreen() {
                       style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
                     >
                       <Text style={[styles.counterButtonText, { color: manuscriptColors.ink }]}>
-                {/* Arabic Text */}
-                {showArabic && (
-                  <View style={styles.duaSection}>
-                    <Text style={[
-                      styles.duaArabic, 
-                      { 
-                        color: colors.text,
-                        fontSize: fontSize,
-                        lineHeight: fontSize * lineSpacing,
-                        fontFamily: fontFamily === 'serif' ? 'serif' : fontFamily === 'monospace' ? 'monospace' : 'system',
-                        textAlign: arabicAlignment
-                      }
-                    ]}>
-                      {dua.arabic}
-                    </Text>
-                  </View>
-                )}
-                
-                {/* Transliteration */}
-                {showTransliteration && (
-                  <View style={styles.duaSection}>
-                    <Text style={[
-                      styles.duaTransliteration, 
-                      { 
-                        color: colors.secondaryText,
-                        fontSize: fontSize * 0.9,
-                        lineHeight: fontSize * 0.9 * lineSpacing,
-                        fontFamily: fontFamily === 'serif' ? 'serif' : fontFamily === 'monospace' ? 'monospace' : 'system',
-                      }
-                    ]}>
-                      {dua.transliteration}
-                    </Text>
-                  </View>
-                )}
-                
-                {/* Translation */}
-                {showTranslation && (
-                  <View style={styles.duaSection}>
-                    <Text style={[
-                      styles.duaTranslation, 
-                      { 
-                        color: colors.text,
-                        fontSize: fontSize * 0.95,
-                        lineHeight: fontSize * 0.95 * lineSpacing,
-                        fontFamily: fontFamily === 'serif' ? 'serif' : fontFamily === 'monospace' ? 'monospace' : 'system',
-                      }
-                    ]}>
-                      {dua.translation}
-                    </Text>
-                  </View>
-                )}
-                
-                {/* Smart Divider - only show if there are sections above and below */}
-                {((showArabic || showTransliteration || showTranslation) && 
-                  (dua.reference || dua.repetitions)) && (
-                  <View style={[styles.divider, { backgroundColor: colors.border }]} />
-                )}
+                        {currentCount + 1}
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           </SafeAreaView>
