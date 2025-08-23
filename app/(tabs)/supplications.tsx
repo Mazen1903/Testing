@@ -114,9 +114,6 @@ export default function SupplicationsScreen() {
   const [showDisplayControls, setShowDisplayControls] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [fontFamily, setFontFamily] = useState<'System' | 'Serif' | 'Monospace'>('System');
-  const [showCustomTimePicker, setShowCustomTimePicker] = useState(false);
-  const [customHour, setCustomHour] = useState(9);
-  const [customMinute, setCustomMinute] = useState(0);
   const [showArabic, setShowArabic] = useState(true);
   const [showTransliteration, setShowTransliteration] = useState(true);
   const [showTranslation, setShowTranslation] = useState(true);
@@ -852,16 +849,16 @@ export default function SupplicationsScreen() {
         ) : showSubcategories ? (
           <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
             {/* Back Button */}
-            <TouchableOpacity 
-              style={[styles.timeButton, { backgroundColor: colors.card, borderColor: colors.border }]}
-              onPress={() => setShowCustomTimePicker(true)}
+            <TouchableOpacity
+              style={[styles.backButton, {
+                backgroundColor: manuscriptColors.parchment,
+                borderColor: manuscriptColors.border
+              }]}
+              onPress={goBackToSeries}
             >
-              <Ionicons name="time-outline" size={20} color={colors.primary} />
-              <Text style={[styles.timeButtonText, { color: colors.text }]}>
-                {customHour.toString().padStart(2, '0')}:{customMinute.toString().padStart(2, '0')}
-              </Text>
-              <Text style={[styles.timeButtonAmPm, { color: colors.secondaryText }]}>
-                {customHour >= 12 ? 'PM' : 'AM'}
+              <Ionicons name="chevron-back" size={20} color={manuscriptColors.brown} />
+              <Text style={[styles.backButtonText, { color: manuscriptColors.brown }]}>
+                Back to Series
               </Text>
             </TouchableOpacity>
 
@@ -1373,28 +1370,25 @@ export default function SupplicationsScreen() {
         </LinearGradient>
       </Modal>
 
-      {/* Custom Time Picker Modal */}
+      {/* Time Picker Modal */}
       <Modal
-        visible={showCustomTimePicker}
+        visible={showTimePicker}
         transparent={true}
         animationType="fade"
       >
         <View style={styles.timePickerOverlay}>
           <View style={[styles.timePickerModal, { backgroundColor: colors.card }]}>
             <View style={[styles.timePickerHeader, { borderBottomColor: colors.border }]}>
-              <TouchableOpacity onPress={() => setShowCustomTimePicker(false)}>
-                <Text style={[styles.timePickerCancel, { color: colors.text }]}>Cancel</Text>
+              <TouchableOpacity onPress={() => setShowTimePicker(false)}>
+                <Text style={[styles.timePickerCancel, { color: colors.secondaryText }]}>Cancel</Text>
               </TouchableOpacity>
               <Text style={[styles.timePickerTitle, { color: colors.text }]}>Select Time</Text>
-              <TouchableOpacity 
-                onPress={() => {
-                  setShowCustomTimePicker(false);
-                }}
-              >
+              <TouchableOpacity onPress={() => setShowTimePicker(false)}>
                 <Text style={[styles.timePickerDone, { color: colors.primary }]}>Done</Text>
               </TouchableOpacity>
             </View>
             
+            {/* Custom Time Picker Implementation */}
             <View style={styles.timePickerContent}>
               <View style={styles.timePickerRow}>
                 {/* Hour Picker */}
@@ -1411,14 +1405,17 @@ export default function SupplicationsScreen() {
                         key={i}
                         style={[
                           styles.timePickerOption,
-                          customHour === i && { backgroundColor: colors.primary + '20' }
+                          selectedTime.getHours() === i && { backgroundColor: colors.primary + '20' }
                         ]}
-                        onPress={() => setCustomHour(i)}
+                        onPress={() => {
+                          const newTime = new Date(selectedTime);
+                          newTime.setHours(i);
+                          setSelectedTime(newTime);
+                        }}
                       >
                         <Text style={[
                           styles.timePickerOptionText,
-                          { color: colors.text },
-                          customHour === i && { color: colors.primary, fontWeight: '600' }
+                          { color: selectedTime.getHours() === i ? colors.primary : colors.text }
                         ]}>
                           {i.toString().padStart(2, '0')}
                         </Text>
@@ -1443,14 +1440,17 @@ export default function SupplicationsScreen() {
                         key={i}
                         style={[
                           styles.timePickerOption,
-                          customMinute === i && { backgroundColor: colors.primary + '20' }
+                          selectedTime.getMinutes() === i && { backgroundColor: colors.primary + '20' }
                         ]}
-                        onPress={() => setCustomMinute(i)}
+                        onPress={() => {
+                          const newTime = new Date(selectedTime);
+                          newTime.setMinutes(i);
+                          setSelectedTime(newTime);
+                        }}
                       >
                         <Text style={[
                           styles.timePickerOptionText,
-                          { color: colors.text },
-                          customMinute === i && { color: colors.primary, fontWeight: '600' }
+                          { color: selectedTime.getMinutes() === i ? colors.primary : colors.text }
                         ]}>
                           {i.toString().padStart(2, '0')}
                         </Text>
@@ -1475,8 +1475,9 @@ export default function SupplicationsScreen() {
                       key={preset.label}
                       style={[styles.quickTimeButton, { backgroundColor: colors.background, borderColor: colors.border }]}
                       onPress={() => {
-                        setCustomHour(preset.hour);
-                        setCustomMinute(preset.minute);
+                        const newTime = new Date(selectedTime);
+                        newTime.setHours(preset.hour, preset.minute, 0, 0);
+                        setSelectedTime(newTime);
                       }}
                     >
                       <Text style={[styles.quickTimeButtonText, { color: colors.primary }]}>
@@ -2586,25 +2587,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   reminderItem: {
-  },
-  timeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 20,
-    alignSelf: 'flex-start',
-    gap: 8,
-  },
-  timeButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  timeButtonAmPm: {
-    fontSize: 12,
-    fontWeight: '500',
   },
 });
 
