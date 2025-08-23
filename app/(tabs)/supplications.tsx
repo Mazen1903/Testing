@@ -1395,6 +1395,8 @@ function ReminderModal({
   const [selectedTime, setSelectedTime] = useState('07:00');
   const [selectedDays, setSelectedDays] = useState<string[]>(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
   const [reminderType, setReminderType] = useState<'daily' | 'custom'>('daily');
+  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const commonTimes = [
