@@ -84,16 +84,10 @@ export default function SupplicationsScreen() {
   const [bookmarkedDuas, setBookmarkedDuas] = useState<Set<string>>(new Set());
   const [bookmarkedSubcategories, setBookmarkedSubcategories] = useState<Set<string>>(new Set());
   const horizontalScrollRef = useRef<ScrollView>(null);
-  
-  // Text display toggles
-  const [showArabic, setShowArabic] = useState(true);
-  const [showTransliteration, setShowTransliteration] = useState(true);
-  const [showTranslation, setShowTranslation] = useState(true);
 
   // Load bookmarks on component mount
   useEffect(() => {
     loadBookmarks();
-    loadTextPreferences();
   }, []);
 
   const loadBookmarks = async () => {
@@ -112,52 +106,6 @@ export default function SupplicationsScreen() {
     } catch (error) {
       console.error('Error loading bookmarks:', error);
     }
-  };
-
-  const loadTextPreferences = async () => {
-    try {
-      const [arabicData, transliterationData, translationData] = await Promise.all([
-        AsyncStorage.getItem('show_arabic'),
-        AsyncStorage.getItem('show_transliteration'),
-        AsyncStorage.getItem('show_translation')
-      ]);
-      
-      if (arabicData !== null) setShowArabic(JSON.parse(arabicData));
-      if (transliterationData !== null) setShowTransliteration(JSON.parse(transliterationData));
-      if (translationData !== null) setShowTranslation(JSON.parse(translationData));
-    } catch (error) {
-      console.error('Error loading text preferences:', error);
-    }
-  };
-
-  const saveTextPreferences = async (arabic: boolean, transliteration: boolean, translation: boolean) => {
-    try {
-      await Promise.all([
-        AsyncStorage.setItem('show_arabic', JSON.stringify(arabic)),
-        AsyncStorage.setItem('show_transliteration', JSON.stringify(transliteration)),
-        AsyncStorage.setItem('show_translation', JSON.stringify(translation))
-      ]);
-    } catch (error) {
-      console.error('Error saving text preferences:', error);
-    }
-  };
-
-  const toggleArabic = async () => {
-    const newValue = !showArabic;
-    setShowArabic(newValue);
-    await saveTextPreferences(newValue, showTransliteration, showTranslation);
-  };
-
-  const toggleTransliteration = async () => {
-    const newValue = !showTransliteration;
-    setShowTransliteration(newValue);
-    await saveTextPreferences(showArabic, newValue, showTranslation);
-  };
-
-  const toggleTranslation = async () => {
-    const newValue = !showTranslation;
-    setShowTranslation(newValue);
-    await saveTextPreferences(showArabic, showTransliteration, newValue);
   };
 
   const saveBookmarks = async (duas: Set<string>, subcategories: Set<string>) => {
@@ -385,45 +333,6 @@ export default function SupplicationsScreen() {
                 {subcategory.duas.length} duas
               </Text>
             </View>
-
-            {/* Text Display Toggles */}
-            <View style={styles.textTogglesContainer}>
-              <TouchableOpacity
-                style={[styles.textToggle, {
-                  backgroundColor: showArabic ? manuscriptColors.brown : manuscriptColors.parchment,
-                  borderColor: manuscriptColors.border
-                }]}
-                onPress={toggleArabic}
-              >
-                <Text style={[styles.textToggleLabel, {
-                  color: showArabic ? manuscriptColors.parchment : manuscriptColors.brown
-                }]}>ع</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                style={[styles.textToggle, {
-                  backgroundColor: showTransliteration ? manuscriptColors.brown : manuscriptColors.parchment,
-                  borderColor: manuscriptColors.border
-                }]}
-                onPress={toggleTransliteration}
-              >
-                <Text style={[styles.textToggleLabel, {
-                  color: showTransliteration ? manuscriptColors.parchment : manuscriptColors.brown
-                }]}>A</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                style={[styles.textToggle, {
-                  backgroundColor: showTranslation ? manuscriptColors.brown : manuscriptColors.parchment,
-                  borderColor: manuscriptColors.border
-                }]}
-                onPress={toggleTranslation}
-              >
-                <Text style={[styles.textToggleLabel, {
-                  color: showTranslation ? manuscriptColors.parchment : manuscriptColors.brown
-                }]}>EN</Text>
-              </TouchableOpacity>
-            </View>
             <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
           </View>
         </View>
@@ -624,60 +533,49 @@ export default function SupplicationsScreen() {
                       activeOpacity={index === currentDuaIndex ? 0.8 : 1}
                     >
                       {/* Arabic Text */}
-                      {showArabic && (
-                        <View style={styles.arabicSection}>
-                          <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
-                            {dua.arabic || ''}
-                          </Text>
-                        </View>
-                      )}
+                      <View style={styles.arabicSection}>
+                        <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
+                          {dua.arabic || ''}
+                        </Text>
+                      </View>
 
-                      {/* Divider - only show if we have content above and below */}
-                      {((showArabic && (showTransliteration || showTranslation)) || 
-                        (showTransliteration && showTranslation)) && (
-                        <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
-                      )}
+                      {/* Divider */}
+                      <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
 
                       {/* Transliteration */}
-                      {showTransliteration && (
-                        <View style={styles.textSection}>
-                          <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
-                            {dua.transliteration || ''}
-                          </Text>
-                        </View>
-                      )}
+                      <View style={styles.textSection}>
+                        <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
+                          {dua.transliteration || ''}
+                        </Text>
+                      </View>
 
                       {/* Translation */}
-                      {showTranslation && (
-                        <View style={styles.textSection}>
-                          <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
-                            {dua.translation || ''}
-                          </Text>
-                        </View>
-                      )}
+                      <View style={styles.textSection}>
+                        <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
+                          {dua.translation || ''}
+                        </Text>
+                      </View>
 
                       {/* Reference */}
-                      {(showArabic || showTransliteration || showTranslation) && (
-                        <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
-                          {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
-                            <ExpandableText
-                              text={`Reference: ${dua.reference || ''}\n\n${dua.fullReference}`}
-                              numberOfLines={2}
-                              style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                              expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                              buttonStyle={[styles.learnMoreButton, {
-                                backgroundColor: manuscriptColors.brown + '15',
-                                borderColor: manuscriptColors.brown + '30'
-                              }]}
-                              textAlign="left"
-                            />
-                          ) : (
-                            <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
-                              {dua.reference || ''}
-                            </Text>
-                          )}
-                        </View>
-                      )}
+                      <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
+                        {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
+                          <ExpandableText
+                            text={`Reference: ${dua.reference || ''}\n\n${dua.fullReference}`}
+                            numberOfLines={2}
+                            style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                            expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                            buttonStyle={[styles.learnMoreButton, {
+                              backgroundColor: manuscriptColors.brown + '15',
+                              borderColor: manuscriptColors.brown + '30'
+                            }]}
+                            textAlign="left"
+                          />
+                        ) : (
+                          <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
+                            {dua.reference || ''}
+                          </Text>
+                        )}
+                      </View>
                     </TouchableOpacity>
                   </ScrollView>
                 ))}
@@ -1193,22 +1091,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 8,
     paddingHorizontal: 20,
-  },
-  textTogglesContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: 4,
-  },
-  textToggle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-  },
-  textToggleLabel: {
-    fontSize: 12,
-    fontWeight: '600',
   },
 }); 
