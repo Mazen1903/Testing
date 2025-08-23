@@ -419,28 +419,6 @@ export default function SupplicationsScreen() {
     return bookmarked;
   };
 
-  const formatTime = (hour: number, minute: number): string => {
-    const period = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
-  };
-
-  const getScheduleText = (): string => {
-    if (selectedDays.length === 7) {
-      return 'Daily';
-    } else if (selectedDays.length === 5 && selectedDays.every(day => day >= 1 && day <= 5)) {
-      return 'Weekdays';
-    } else if (selectedDays.length === 2 && selectedDays.includes(0) && selectedDays.includes(6)) {
-      return 'Weekends';
-    } else if (selectedDays.length === 1) {
-      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      return dayNames[selectedDays[0]];
-    } else {
-      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      return selectedDays.map(day => dayNames[day]).join(', ');
-    }
-  };
-
   const filteredSeries = ZIKR_SERIES;
 
   const handleSeriesSelect = (series: ZikrSeries) => {
@@ -2626,6 +2604,54 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   reminderItem: {
+  },
+  timePickerContainer: {
+    marginBottom: 20,
+  },
+  timeDisplay: {
+    alignItems: 'center',
+    marginBottom: 16,
+    padding: 20,
+    borderRadius: 12,
+  },
+  timeDisplayText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+  },
+  timePickers: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  timePickerSection: {
+    flex: 1,
+  },
+  timePicker: {
+    height: 120,
+    borderRadius: 8,
+  },
+  daySelection: {
+    marginBottom: 20,
+  },
+  quickDayButtons: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  quickDayButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  quickDayButtonText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  dayButtons: {
+    flexDirection: 'row',
+    gap: 8,
   },
 });
 
