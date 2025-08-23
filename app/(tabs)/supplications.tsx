@@ -8,12 +8,17 @@ import {
   View,
   Modal,
   Dimensions,
+  TextInput,
+  Switch,
+  Alert,
+  FlatList,
 } from 'react-native';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
+import * as Notifications from 'expo-notifications';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
@@ -24,6 +29,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Slider } from '@react-native-community/slider';
 
 const { width, height } = Dimensions.get('window');
+
+// Configure notifications
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
+interface ReminderSettings {
+  id: string;
+  supplicationId: string;
+  supplicationTitle: string;
+  time: string; // HH:MM format
+  days: string[]; // Array of day names
+  isEnabled: boolean;
+  notificationId?: string;
+}
 
 // Helper functions for handling mixed series (subcategories + direct duas)
 const getAllDuasFromSeries = (series: ZikrSeries): any[] => {
@@ -69,7 +93,7 @@ const getManuscriptColors = (isDark: boolean, themeColors: any) => ({
   spiralBinding: themeColors.primary
 });
 
-type TabType = 'All' | 'Collections';
+type TabType = 'All' | 'Collections' | 'Reminders';
 
 export default function SupplicationsScreen() {
   const { isDark } = useTheme();
@@ -92,13 +116,62 @@ export default function SupplicationsScreen() {
   const [showTranslation, setShowTranslation] = useState(true);
   const [arabicTextAlign, setArabicTextAlign] = useState<'right' | 'center'>('right');
   const [lineSpacing, setLineSpacing] = useState(1.5);
+  const [reminders, setReminders] = useState<ReminderSettings[]>([]);
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [selectedSupplicationForReminder, setSelectedSupplicationForReminder] = useState<{id: string, title: string} | null>(null);
   const horizontalScrollRef = useRef<ScrollView>(null);
+
+  // Request notification permissions on mount
+  useEffect(() => {
+    requestNotificationPermissions();
+    loadReminders();
+  }, []);
+
+  const requestNotificationPermissions = async () => {
+    if (Platform.OS === 'web') return;
+    
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    
+    if (finalStatus !== 'granted') {
+      Alert.alert(
+        'Notification Permission',
+        'Please enable notifications to receive supplication reminders.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
 
   // Load bookmarks on component mount
   useEffect(() => {
     loadBookmarks();
     loadDisplaySettings();
   }, []);
+
+  const loadReminders = async () => {
+    try {
+      const stored = await AsyncStorage.getItem('supplication_reminders');
+      if (stored) {
+        setReminders(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Error loading reminders:', error);
+    }
+  };
+
+  const saveReminders = async (newReminders: ReminderSettings[]) => {
+    try {
+      await AsyncStorage.setItem('supplication_reminders', JSON.stringify(newReminders));
+      setReminders(newReminders);
+    } catch (error) {
+      console.error('Error saving reminders:', error);
+    }
+  };
 
   const loadBookmarks = async () => {
     try {
@@ -116,6 +189,134 @@ export default function SupplicationsScreen() {
     } catch (error) {
       console.error('Error loading bookmarks:', error);
     }
+  };
+
+  const scheduleNotification = async (reminder: ReminderSettings): Promise<string | null> => {
+    if (Platform.OS === 'web') return null;
+    
+    try {
+      const [hours, minutes] = reminder.time.split(':').map(Number);
+      
+      // Schedule for each selected day
+      const notificationIds: string[] = [];
+      
+      for (const day of reminder.days) {
+        const dayNumber = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(day);
+        
+        const notificationId = await Notifications.scheduleNotificationAsync({
+          content: {
+            title: '🤲 Time for Supplication',
+            body: `Remember to recite: ${reminder.supplicationTitle}`,
+            sound: true,
+            priority: Notifications.AndroidNotificationPriority.HIGH,
+          },
+          trigger: {
+            weekday: dayNumber + 1, // Expo uses 1-7 for Sunday-Saturday
+            hour: hours,
+            minute: minutes,
+            repeats: true,
+          },
+        });
+        
+        notificationIds.push(notificationId);
+      }
+      
+      return notificationIds[0]; // Return first ID as reference
+    } catch (error) {
+      console.error('Error scheduling notification:', error);
+      return null;
+    }
+  };
+
+  const cancelNotification = async (notificationId: string) => {
+    if (Platform.OS === 'web') return;
+    
+    try {
+      await Notifications.cancelScheduledNotificationAsync(notificationId);
+    } catch (error) {
+      console.error('Error canceling notification:', error);
+    }
+  };
+
+  const handleCreateReminder = async (supplicationId: string, supplicationTitle: string, time: string, days: string[]) => {
+    if (days.length === 0) {
+      Alert.alert('Error', 'Please select at least one day for the reminder');
+      return;
+    }
+
+    const newReminder: ReminderSettings = {
+      id: Date.now().toString(),
+      supplicationId,
+      supplicationTitle,
+      time,
+      days,
+      isEnabled: true,
+    };
+
+    // Schedule notification
+    const notificationId = await scheduleNotification(newReminder);
+    if (notificationId) {
+      newReminder.notificationId = notificationId;
+    }
+
+    const updatedReminders = [...reminders, newReminder];
+    await saveReminders(updatedReminders);
+    
+    setShowReminderModal(false);
+    setSelectedSupplicationForReminder(null);
+    
+    Alert.alert('Success', 'Reminder created successfully!');
+  };
+
+  const handleToggleReminder = async (reminderId: string) => {
+    const updatedReminders = reminders.map(reminder => {
+      if (reminder.id === reminderId) {
+        const updated = { ...reminder, isEnabled: !reminder.isEnabled };
+        
+        // Handle notification scheduling
+        if (updated.isEnabled && !updated.notificationId) {
+          // Schedule notification
+          scheduleNotification(updated).then(notificationId => {
+            if (notificationId) {
+              updated.notificationId = notificationId;
+              saveReminders(reminders.map(r => r.id === reminderId ? updated : r));
+            }
+          });
+        } else if (!updated.isEnabled && updated.notificationId) {
+          // Cancel notification
+          cancelNotification(updated.notificationId);
+          updated.notificationId = undefined;
+        }
+        
+        return updated;
+      }
+      return reminder;
+    });
+    
+    await saveReminders(updatedReminders);
+  };
+
+  const handleDeleteReminder = async (reminderId: string) => {
+    Alert.alert(
+      'Delete Reminder',
+      'Are you sure you want to delete this reminder?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            const reminder = reminders.find(r => r.id === reminderId);
+            if (reminder?.notificationId) {
+              await cancelNotification(reminder.notificationId);
+            }
+            
+            const updatedReminders = reminders.filter(r => r.id !== reminderId);
+            await saveReminders(updatedReminders);
+          }
+        }
+      ]
+    );
   };
 
   const loadDisplaySettings = async () => {
@@ -372,19 +573,34 @@ export default function SupplicationsScreen() {
               <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{subcategory.name}</Text>
               <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
             </View>
-            <TouchableOpacity
-              style={styles.bookmarkButton}
-              onPress={(e) => {
-                e.stopPropagation();
-                toggleBookmarkSubcategory(subcategory.id);
-              }}
-            >
-              <Ionicons 
-                name={bookmarkedSubcategories.has(subcategory.id) ? "bookmark" : "bookmark-outline"} 
-                size={20} 
-                color={bookmarkedSubcategories.has(subcategory.id) ? manuscriptColors.gold : manuscriptColors.brown} 
-              />
-            </TouchableOpacity>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity
+                style={styles.bookmarkButton}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  toggleBookmarkSubcategory(subcategory.id);
+                }}
+              >
+                <Ionicons 
+                  name={bookmarkedSubcategories.has(subcategory.id) ? "bookmark" : "bookmark-outline"} 
+                  size={20} 
+                  color={bookmarkedSubcategories.has(subcategory.id) ? manuscriptColors.gold : manuscriptColors.brown} 
+                />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.reminderButton, { backgroundColor: colors.secondary + '15' }]}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  setSelectedSupplicationForReminder({
+                    id: subcategory.id,
+                    title: subcategory.name
+                  });
+                  setShowReminderModal(true);
+                }}
+              >
+                <Ionicons name="notifications-outline" size={16} color={colors.secondary} />
+              </TouchableOpacity>
+            </View>
           </View>
           <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
             {subcategory.description}
@@ -401,6 +617,115 @@ export default function SupplicationsScreen() {
         </View>
       </LinearGradient>
     </TouchableOpacity>
+  );
+
+  const renderRemindersTab = () => (
+    <ScrollView 
+      style={styles.tabContent} 
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 120 }}
+    >
+      <View style={styles.remindersHeader}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>PRAYER REMINDERS</Text>
+        <TouchableOpacity 
+          style={[styles.addReminderButton, { backgroundColor: colors.primary }]}
+          onPress={() => {
+            // Show supplication selection first
+            Alert.alert(
+              'Select Supplication',
+              'Choose a supplication to set a reminder for',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { 
+                  text: 'Choose', 
+                  onPress: () => {
+                    // For demo, use first supplication
+                    const firstSupplication = ZIKR_SERIES[0]?.subcategories?.[0];
+                    if (firstSupplication) {
+                      setSelectedSupplicationForReminder({
+                        id: firstSupplication.id,
+                        title: firstSupplication.name
+                      });
+                      setShowReminderModal(true);
+                    }
+                  }
+                }
+              ]
+            );
+          }}
+        >
+          <Ionicons name="add" size={16} color="#FFFFFF" />
+          <Text style={styles.addReminderText}>Add Reminder</Text>
+        </TouchableOpacity>
+      </View>
+
+      {reminders.length === 0 ? (
+        <View style={styles.emptyReminders}>
+          <Ionicons name="notifications-outline" size={64} color={colors.border} />
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>No Reminders Set</Text>
+          <Text style={[styles.emptyText, { color: colors.secondaryText }]}>
+            Set reminders to help you maintain consistent supplication practice
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.remindersList}>
+          {reminders.map((reminder) => (
+            <View key={reminder.id} style={[styles.reminderCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.reminderHeader}>
+                <View style={styles.reminderInfo}>
+                  <Text style={[styles.reminderTitle, { color: colors.text }]} numberOfLines={1}>
+                    {reminder.supplicationTitle}
+                  </Text>
+                  <Text style={[styles.reminderTime, { color: colors.primary }]}>
+                    {reminder.time}
+                  </Text>
+                </View>
+                <Switch
+                  value={reminder.isEnabled}
+                  onValueChange={() => handleToggleReminder(reminder.id)}
+                  trackColor={{ false: colors.border, true: colors.primary }}
+                  thumbColor={colors.card}
+                />
+              </View>
+              
+              <View style={styles.reminderDays}>
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => {
+                  const fullDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][index];
+                  const isSelected = reminder.days.includes(fullDay);
+                  return (
+                    <View 
+                      key={day}
+                      style={[
+                        styles.dayChip,
+                        { 
+                          backgroundColor: isSelected ? colors.primary + '20' : colors.background,
+                          borderColor: isSelected ? colors.primary : colors.border
+                        }
+                      ]}
+                    >
+                      <Text style={[
+                        styles.dayText,
+                        { color: isSelected ? colors.primary : colors.secondaryText }
+                      ]}>
+                        {day}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+              
+              <TouchableOpacity 
+                style={styles.deleteReminderButton}
+                onPress={() => handleDeleteReminder(reminder.id)}
+              >
+                <Ionicons name="trash-outline" size={16} color={colors.error} />
+                <Text style={[styles.deleteReminderText, { color: colors.error }]}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
+    </ScrollView>
   );
 
   // Spiral binding component
@@ -434,7 +759,7 @@ export default function SupplicationsScreen() {
         {/* Tab Navigation */}
         <Animated.View entering={FadeInDown.delay(500)} style={styles.tabContainer}>
           <View style={[styles.tabBar, { backgroundColor: manuscriptColors.parchment, borderColor: manuscriptColors.border }]}>
-            {(['All', 'Collections'] as TabType[]).map((tab) => (
+            {(['All', 'Collections', 'Reminders'] as TabType[]).map((tab) => (
               <TouchableOpacity
                 key={tab}
                 style={[
@@ -457,6 +782,11 @@ export default function SupplicationsScreen() {
                     <Text style={[styles.tabBadgeText, { color: manuscriptColors.parchment }]}>
                       {bookmarkedSubcategories.size}
                     </Text>
+                  </View>
+                )}
+                {tab === 'Reminders' && reminders.filter(r => r.isEnabled).length > 0 && (
+                  <View style={[styles.tabBadge, { backgroundColor: colors.success }]}>
+                    <Text style={styles.tabBadgeText}>{reminders.filter(r => r.isEnabled).length}</Text>
                   </View>
                 )}
               </TouchableOpacity>
@@ -507,6 +837,8 @@ export default function SupplicationsScreen() {
               ))
             )}
           </Animated.View>
+        ) : !showSubcategories && activeTab === 'Reminders' ? (
+          renderRemindersTab()
         ) : showSubcategories ? (
           <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
             {/* Back Button */}
@@ -1030,7 +1362,205 @@ export default function SupplicationsScreen() {
           </SafeAreaView>
         </LinearGradient>
       </Modal>
+
+      {/* Reminder Creation Modal */}
+      <ReminderModal
+        visible={showReminderModal}
+        onClose={() => {
+          setShowReminderModal(false);
+          setSelectedSupplicationForReminder(null);
+        }}
+        supplication={selectedSupplicationForReminder}
+        onCreateReminder={handleCreateReminder}
+      />
     </SafeAreaView>
+  );
+}
+
+// Reminder Modal Component
+function ReminderModal({ 
+  visible, 
+  onClose, 
+  supplication, 
+  onCreateReminder 
+}: {
+  visible: boolean;
+  onClose: () => void;
+  supplication: {id: string, title: string} | null;
+  onCreateReminder: (supplicationId: string, supplicationTitle: string, time: string, days: string[]) => void;
+}) {
+  const { isDark } = useTheme();
+  const colors = Colors[isDark ? 'dark' : 'light'];
+  
+  const [selectedTime, setSelectedTime] = useState('07:00');
+  const [selectedDays, setSelectedDays] = useState<string[]>(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+  const [reminderType, setReminderType] = useState<'daily' | 'custom'>('daily');
+
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const commonTimes = [
+    { label: 'Fajr (5:30 AM)', value: '05:30' },
+    { label: 'Morning (7:00 AM)', value: '07:00' },
+    { label: 'Dhuhr (12:30 PM)', value: '12:30' },
+    { label: 'Asr (4:00 PM)', value: '16:00' },
+    { label: 'Maghrib (6:30 PM)', value: '18:30' },
+    { label: 'Isha (8:00 PM)', value: '20:00' },
+    { label: 'Before Sleep (10:00 PM)', value: '22:00' },
+  ];
+
+  const toggleDay = (day: string) => {
+    setSelectedDays(prev => 
+      prev.includes(day) 
+        ? prev.filter(d => d !== day)
+        : [...prev, day]
+    );
+  };
+
+  const handleSubmit = () => {
+    if (!supplication) return;
+    onCreateReminder(supplication.id, supplication.title, selectedTime, selectedDays);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
+      <SafeAreaView style={[styles.modalContainer, { backgroundColor: colors.background }]}>
+        <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
+          <TouchableOpacity onPress={onClose}>
+            <Ionicons name="close" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <Text style={[styles.modalTitle, { color: colors.text }]}>Set Reminder</Text>
+          <TouchableOpacity 
+            style={[styles.saveButton, { backgroundColor: colors.primary }]}
+            onPress={handleSubmit}
+          >
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView style={styles.modalContent}>
+          {/* Supplication Info */}
+          <View style={[styles.supplicationInfo, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="book-outline" size={24} color={colors.primary} />
+            <Text style={[styles.supplicationTitle, { color: colors.text }]}>
+              {supplication?.title || 'Select Supplication'}
+            </Text>
+          </View>
+
+          {/* Reminder Type */}
+          <View style={styles.section}>
+            <Text style={[styles.sectionLabel, { color: colors.text }]}>Reminder Type</Text>
+            <View style={styles.reminderTypeButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.typeButton,
+                  { backgroundColor: colors.card, borderColor: colors.border },
+                  reminderType === 'daily' && { backgroundColor: colors.primary + '20', borderColor: colors.primary }
+                ]}
+                onPress={() => {
+                  setReminderType('daily');
+                  setSelectedDays(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
+                }}
+              >
+                <Text style={[
+                  styles.typeButtonText,
+                  { color: colors.text },
+                  reminderType === 'daily' && { color: colors.primary }
+                ]}>
+                  Daily
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.typeButton,
+                  { backgroundColor: colors.card, borderColor: colors.border },
+                  reminderType === 'custom' && { backgroundColor: colors.primary + '20', borderColor: colors.primary }
+                ]}
+                onPress={() => {
+                  setReminderType('custom');
+                  setSelectedDays(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+                }}
+              >
+                <Text style={[
+                  styles.typeButtonText,
+                  { color: colors.text },
+                  reminderType === 'custom' && { color: colors.primary }
+                ]}>
+                  Custom
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Time Selection */}
+          <View style={styles.section}>
+            <Text style={[styles.sectionLabel, { color: colors.text }]}>Reminder Time</Text>
+            <View style={styles.timeOptions}>
+              {commonTimes.map((timeOption) => (
+                <TouchableOpacity
+                  key={timeOption.value}
+                  style={[
+                    styles.timeOption,
+                    { backgroundColor: colors.card, borderColor: colors.border },
+                    selectedTime === timeOption.value && { backgroundColor: colors.primary + '20', borderColor: colors.primary }
+                  ]}
+                  onPress={() => setSelectedTime(timeOption.value)}
+                >
+                  <Text style={[
+                    styles.timeOptionText,
+                    { color: colors.text },
+                    selectedTime === timeOption.value && { color: colors.primary }
+                  ]}>
+                    {timeOption.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          {/* Days Selection */}
+          {reminderType === 'custom' && (
+            <View style={styles.section}>
+              <Text style={[styles.sectionLabel, { color: colors.text }]}>Reminder Days</Text>
+              <View style={styles.daysGrid}>
+                {days.map((day) => (
+                  <TouchableOpacity
+                    key={day}
+                    style={[
+                      styles.dayButton,
+                      { backgroundColor: colors.card, borderColor: colors.border },
+                      selectedDays.includes(day) && { backgroundColor: colors.primary + '20', borderColor: colors.primary }
+                    ]}
+                    onPress={() => toggleDay(day)}
+                  >
+                    <Text style={[
+                      styles.dayButtonText,
+                      { color: colors.text },
+                      selectedDays.includes(day) && { color: colors.primary }
+                    ]}>
+                      {day.slice(0, 3)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* Preview */}
+          <View style={[styles.reminderPreview, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="notifications" size={20} color={colors.primary} />
+            <View style={styles.previewContent}>
+              <Text style={[styles.previewTitle, { color: colors.text }]}>Reminder Preview</Text>
+              <Text style={[styles.previewText, { color: colors.secondaryText }]}>
+                You'll be reminded to recite "{supplication?.title}" at {selectedTime} on {selectedDays.join(', ')}
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </Modal>
   );
 }
 
@@ -1458,8 +1988,20 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 8,
   },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   bookmarkButton: {
     padding: 4,
+    marginLeft: 8,
+  },
+  reminderButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginLeft: 8,
   },
   emptyStateSubtext: {
@@ -1597,5 +2139,213 @@ const styles = StyleSheet.create({
   },
   previewText: {
     marginBottom: 8,
+  },
+  // Reminders styles
+  tabContent: {
+    flex: 1,
+  },
+  remindersHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+  addReminderButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+    gap: 4,
+  },
+  addReminderText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  emptyReminders: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 40,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  remindersList: {
+    gap: 12,
+    paddingHorizontal: 20,
+  },
+  reminderCard: {
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  reminderHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  reminderInfo: {
+    flex: 1,
+  },
+  reminderTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  reminderTime: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  reminderDays: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 12,
+  },
+  dayChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  dayText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  deleteReminderButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 4,
+  },
+  deleteReminderText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  // Reminder modal styles
+  modalContainer: {
+    flex: 1,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  modalContent: {
+    flex: 1,
+    padding: 20,
+  },
+  supplicationInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 24,
+    gap: 12,
+  },
+  supplicationTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  reminderTypeButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  typeButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  typeButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  timeOptions: {
+    gap: 8,
+  },
+  timeOption: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  timeOptionText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  daysGrid: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  dayButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    minWidth: 44,
+    alignItems: 'center',
+  },
+  dayButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  reminderPreview: {
+    flexDirection: 'row',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 12,
+  },
+  previewContent: {
+    flex: 1,
+  },
+  previewTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  saveButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
