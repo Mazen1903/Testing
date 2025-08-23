@@ -123,7 +123,7 @@ export default function SupplicationsScreen() {
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [selectedSupplicationForReminder, setSelectedSupplicationForReminder] = useState<{id: string, title: string} | null>(null);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<Date>(new Date());
+  const [selectedTime, setSelectedTime] = useState({ hour: 8, minute: 0 }); // Default time
 
   const horizontalScrollRef = useRef<ScrollView>(null);
 
