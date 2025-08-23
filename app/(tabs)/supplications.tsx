@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -9,22 +9,7 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
-import Animated, { 
-  FadeInDown, 
-  FadeInRight, 
-  FadeInUp,
-  SlideInLeft,
-  SlideInRight,
-  BounceIn,
-  ZoomIn,
-  FlipInEasyX,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withTiming,
-  interpolate,
-  runOnJS
-} from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
@@ -94,58 +79,7 @@ export default function SupplicationsScreen() {
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
   const horizontalScrollRef = useRef<ScrollView>(null);
-  
-  // Animation values
-  const headerScale = useSharedValue(1);
-  const cardScale = useSharedValue(1);
-  const counterScale = useSharedValue(1);
-  const spiralRotation = useSharedValue(0);
-  
-  // Animated styles
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: headerScale.value }]
-  }));
-  
-  const cardAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: cardScale.value }]
-  }));
-  
-  const counterAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: counterScale.value }]
-  }));
-  
-  const spiralAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${spiralRotation.value}deg` }]
-  }));
-  
-  useEffect(() => {
-    // Continuous spiral animation
-    spiralRotation.value = withTiming(360, { duration: 20000 }, () => {
-      spiralRotation.value = 0;
-    });
-  }, []);
 
-  const animateHeaderPress = () => {
-    headerScale.value = withSpring(0.95, { duration: 100 }, () => {
-      headerScale.value = withSpring(1, { duration: 100 });
-    });
-  };
-
-  const animateCardPress = () => {
-    cardScale.value = withSpring(0.98, { duration: 100 }, () => {
-      cardScale.value = withSpring(1, { duration: 150 });
-    });
-  };
-
-  const animateCounterPress = () => {
-    counterScale.value = withSpring(1.1, { duration: 100 }, () => {
-      counterScale.value = withSpring(1, { duration: 200 });
-    });
-  };
-
-  const handleCategorySelect = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-  };
 
   const filteredSeries = ZIKR_SERIES;
 
@@ -155,17 +89,7 @@ export default function SupplicationsScreen() {
       setSelectedSeries(series);
       setShowSubcategories(true);
     } else {
-      // Simple series - start session directly
-      if (series.duas && series.duas.length > 0) {
-        const subcategory: DuaSubcategory = {
-          id: series.id,
-          name: series.title,
-          description: series.description,
-          icon: series.icon,
-          duas: series.duas
-        };
-        startZikrSession(subcategory);
-      }
+      
     }
   };
 
@@ -273,10 +197,7 @@ export default function SupplicationsScreen() {
     return (
       <TouchableOpacity
         style={styles.manuscriptCard}
-        onPress={() => {
-          animateCardPress();
-          setTimeout(() => handleSeriesSelect(series), 100);
-        }}
+        onPress={() => handleSeriesSelect(series)}
       >
         <LinearGradient
           colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
@@ -311,10 +232,7 @@ export default function SupplicationsScreen() {
   const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => (
     <TouchableOpacity
       style={styles.manuscriptCard}
-      onPress={() => {
-        animateCardPress();
-        setTimeout(() => startZikrSession(subcategory), 100);
-      }}
+      onPress={() => startZikrSession(subcategory)}
     >
       <LinearGradient
         colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
@@ -344,107 +262,73 @@ export default function SupplicationsScreen() {
 
   // Spiral binding component
   const SpiralBinding = () => (
-    <Animated.View style={[styles.spiralContainer, spiralAnimatedStyle]}>
+    <View style={styles.spiralContainer}>
       {Array.from({ length: 18 }, (_, i) => (
-        <Animated.View 
-          key={i} 
-          entering={BounceIn.delay(i * 50)}
-          style={[styles.spiralHole, { backgroundColor: manuscriptColors.spiralBinding }]} 
-        />
+        <View key={i} style={[styles.spiralHole, { backgroundColor: manuscriptColors.spiralBinding }]} />
       ))}
-    </Animated.View>
+    </View>
   );
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: manuscriptColors.parchment }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 100 }}>
         {/* Header */}
-        <Animated.View 
-          entering={SlideInLeft.delay(100).springify()} 
-          style={[styles.header, headerAnimatedStyle]}
-        >
+        <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
           <View>
             <View style={styles.greetingContainer}>
-              <Animated.View 
-                entering={ZoomIn.delay(200)}
-                style={[styles.greetingBadge, {
+              <View style={[styles.greetingBadge, {
                 backgroundColor: manuscriptColors.brown + '20',
                 borderColor: manuscriptColors.border
-              }]}
-              >
+              }]}>
                 <Ionicons name="moon" size={16} color={manuscriptColors.brown} style={styles.greetingIcon} />
                 <Text style={[styles.greeting, { color: manuscriptColors.brown }]}>Islamic Supplications</Text>
-              </Animated.View>
+              </View>
             </View>
-            <Animated.Text 
-              entering={FadeInUp.delay(300)}
-              style={[styles.title, { color: manuscriptColors.lightInk }]}
-            >
-              Dua & Dhikr
-            </Animated.Text>
+            <Text style={[styles.title, { color: manuscriptColors.lightInk }]}>Dua & Dhikr</Text>
           </View>
         </Animated.View>
 
         {/* Zikr Series List or Subcategories */}
         {!showSubcategories ? (
-          <Animated.View entering={SlideInRight.delay(400).springify()} style={styles.supplicationsSection}>
-            <Animated.Text 
-              entering={FlipInEasyX.delay(500)}
-              style={[styles.sectionTitle, { color: manuscriptColors.brown }]}
-            >
+          <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
+            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
               SUPPLICATIONS ({filteredSeries.length})
-            </Animated.Text>
+            </Text>
             {filteredSeries.map((series: ZikrSeries, index: number) => (
-              <Animated.View 
-                key={series.id} 
-                entering={SlideInLeft.delay(600 + index * 150).springify()}
-                style={cardAnimatedStyle}
-              >
+              <Animated.View key={series.id} entering={FadeInDown.delay(700 + index * 100)}>
                 <SeriesCard series={series} />
               </Animated.View>
             ))}
             {filteredSeries.length === 0 && (
-              <Animated.View entering={FadeInDown.delay(800)} style={styles.emptyState}>
+              <View style={styles.emptyState}>
                 <Ionicons name="book" size={48} color={manuscriptColors.lightInk} />
                 <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
                   No zikr series in this category
                 </Text>
-              </Animated.View>
+              </View>
             )}
           </Animated.View>
         ) : (
-          <Animated.View entering={SlideInRight.delay(200).springify()} style={styles.supplicationsSection}>
+          <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
             {/* Back Button */}
-            <Animated.View entering={SlideInLeft.delay(100)}>
-              <TouchableOpacity
+            <TouchableOpacity
               style={[styles.backButton, {
                 backgroundColor: manuscriptColors.parchment,
                 borderColor: manuscriptColors.border
               }]}
-                onPress={() => {
-                  animateHeaderPress();
-                  setTimeout(() => goBackToSeries(), 100);
-                }}
-              >
+              onPress={goBackToSeries}
+            >
               <Ionicons name="chevron-back" size={20} color={manuscriptColors.brown} />
               <Text style={[styles.backButtonText, { color: manuscriptColors.brown }]}>
                 Back to Series
               </Text>
-              </TouchableOpacity>
-            </Animated.View>
+            </TouchableOpacity>
 
-            <Animated.Text 
-              entering={FlipInEasyX.delay(300)}
-              style={[styles.sectionTitle, { color: manuscriptColors.brown }]}
-            >
+            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
               {selectedSeries?.title ? `${selectedSeries.title.toUpperCase()} CATEGORIES` : 'CATEGORIES'}
-            </Animated.Text>
+            </Text>
             {selectedSeries?.subcategories?.map((subcategory: DuaSubcategory, index: number) => (
-              <Animated.View 
-                key={subcategory.id} 
-                entering={SlideInRight.delay(400 + index * 120).springify()}
-                style={cardAnimatedStyle}
-              >
+              <Animated.View key={subcategory.id} entering={FadeInDown.delay(400 + index * 100)}>
                 <SubcategoryCard subcategory={subcategory} />
               </Animated.View>
             ))}
@@ -468,50 +352,26 @@ export default function SupplicationsScreen() {
             <SpiralBinding />
 
             {/* Manuscript Header */}
-            <Animated.View 
-              entering={SlideInLeft.delay(100)}
-              style={[styles.manuscriptHeader, { borderBottomColor: manuscriptColors.border }]}
-            >
+            <View style={[styles.manuscriptHeader, { borderBottomColor: manuscriptColors.border }]}>
               <TouchableOpacity
                 style={[styles.closeButton, {
                   backgroundColor: manuscriptColors.parchment,
                   borderColor: manuscriptColors.border
                 }]}
-                onPress={() => {
-                  animateHeaderPress();
-                  setTimeout(() => closeZikrSession(), 100);
-                }}
+                onPress={closeZikrSession}
               >
                 <Ionicons name="chevron-back" size={24} color={manuscriptColors.brown} />
               </TouchableOpacity>
 
-              <Animated.View entering={FadeInUp.delay(200)} style={styles.titleContainer}>
-                <Animated.Text 
-                  entering={ZoomIn.delay(300)}
-                  style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}
-                >
+              <View style={styles.titleContainer}>
+                <Text style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}>
                   {selectedSubcategory?.name || 'دعاء'}
-                </Animated.Text>
-                <Animated.Text 
-                  entering={FadeInDown.delay(400)}
-                  style={[styles.manuscriptSubtitle, { color: manuscriptColors.lightInk }]}
-                >
-                  {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
-                </Animated.Text>
-              </Animated.View>
-
-              <Animated.View 
-                entering={BounceIn.delay(500)}
-                style={[styles.progressIndicator, {
-                backgroundColor: manuscriptColors.parchment,
-                borderColor: manuscriptColors.border
-              }]}
-              >
-                <Text style={[styles.progressText, { color: manuscriptColors.brown }]}>
-                  {currentDuaIndex + 1}/{selectedSubcategory?.duas.length || 1}
                 </Text>
-              </Animated.View>
-            </Animated.View>
+                <Text style={[styles.manuscriptSubtitle, { color: manuscriptColors.lightInk }]}>
+                  {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
+                </Text>
+              </View>
+            </View>
 
             {/* Manuscript Content - Horizontal Swiping */}
             {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
@@ -618,35 +478,22 @@ export default function SupplicationsScreen() {
             {/* Islamic Counter */}
             {/* Islamic Counter - Only show for non-importance sections */}
             {selectedSubcategory && !selectedSubcategory.name.toLowerCase().includes('importance') && (
-              <Animated.View 
-                entering={SlideInLeft.delay(400).springify()}
-                style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}
-              >
+              <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
                 {/* Counter Info Row */}
-                <Animated.View entering={FadeInLeft.delay(500)} style={styles.counterInfoRow}>
-                  <Animated.View 
-                    entering={SlideInLeft.delay(600)}
-                    style={[styles.counterLabelContainer, {
+                <View style={styles.counterInfoRow}>
+                  <View style={[styles.counterLabelContainer, {
                     backgroundColor: manuscriptColors.parchment + '80',
                     borderColor: manuscriptColors.border
-                  }]}
-                  >
+                  }]}>
                     <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
                       Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
                     </Text>
-                  </Animated.View>
+                  </View>
 
-                  <Animated.View 
-                    entering={BounceIn.delay(700)}
-                    style={[styles.islamicCounterButton, counterAnimatedStyle]}
-                  >
-                    <TouchableOpacity
+                  <TouchableOpacity
                     style={styles.islamicCounterButton}
-                      onPress={() => {
-                        animateCounterPress();
-                        setTimeout(() => incrementCount(), 50);
-                      }}
-                    >
+                    onPress={incrementCount}
+                  >
                     <LinearGradient
                       colors={[manuscriptColors.gold, manuscriptColors.darkGold]}
                       style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
@@ -655,22 +502,18 @@ export default function SupplicationsScreen() {
                         {currentCount + 1}
                       </Text>
                     </LinearGradient>
-                    </TouchableOpacity>
-                  </Animated.View>
+                  </TouchableOpacity>
 
-                  <Animated.View 
-                    entering={SlideInRight.delay(600)}
-                    style={[styles.counterLabelContainer, {
+                  <View style={[styles.counterLabelContainer, {
                     backgroundColor: manuscriptColors.parchment + '80',
                     borderColor: manuscriptColors.border
-                  }]}
-                  >
+                  }]}>
                     <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
                       {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
                     </Text>
-                  </Animated.View>
-                </Animated.View>
-              </Animated.View>
+                  </View>
+                </View>
+              </View>
             )}
           </SafeAreaView>
         </LinearGradient>
