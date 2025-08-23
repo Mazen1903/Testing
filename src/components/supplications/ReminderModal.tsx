@@ -100,7 +100,6 @@ export function ReminderModal({ visible, onClose, supplication, onReminderSet }:
             },
           },
           trigger: {
-            type: 'calendar',
             weekday: dayIndex + 1, // Expo uses 1-7 for Sunday-Saturday
             hour: selectedTime.hour,
             minute: selectedTime.minute,
