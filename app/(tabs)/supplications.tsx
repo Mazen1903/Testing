@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -606,28 +606,61 @@ export default function SupplicationsScreen() {
                       activeOpacity={index === currentDuaIndex ? 0.8 : 1}
                     >
                       {/* Arabic Text */}
-                      <View style={styles.arabicSection}>
-                        <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
-                          {dua.arabic || ''}
-                        </Text>
-                      </View>
+                      {showArabic && (
+                        <View style={styles.arabicSection}>
+                          <Text style={[
+                            styles.manuscriptArabic, 
+                            { 
+                              color: manuscriptColors.ink,
+                              fontSize: fontSize * 1.5,
+                              lineHeight: fontSize * 1.5 * lineSpacing,
+                              textAlign: arabicTextAlign,
+                              fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
+                            }
+                          ]}>
+                            {dua.arabic || ''}
+                          </Text>
+                        </View>
+                      )}
 
-                      {/* Divider */}
-                      <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
+                      {/* Divider - only show if there are sections above and below */}
+                      {(showArabic && (showTransliteration || showTranslation)) && (
+                        <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
+                      )}
 
                       {/* Transliteration */}
-                      <View style={styles.textSection}>
-                        <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
-                          {dua.transliteration || ''}
-                        </Text>
-                      </View>
+                      {showTransliteration && (
+                        <View style={styles.textSection}>
+                          <Text style={[
+                            styles.manuscriptTransliteration, 
+                            { 
+                              color: manuscriptColors.lightInk,
+                              fontSize: fontSize,
+                              lineHeight: fontSize * lineSpacing,
+                              fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
+                            }
+                          ]}>
+                            {dua.transliteration || ''}
+                          </Text>
+                        </View>
+                      )}
 
                       {/* Translation */}
-                      <View style={styles.textSection}>
-                        <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
-                          {dua.translation || ''}
-                        </Text>
-                      </View>
+                      {showTranslation && (
+                        <View style={styles.textSection}>
+                          <Text style={[
+                            styles.manuscriptTranslation, 
+                            { 
+                              color: manuscriptColors.lightInk,
+                              fontSize: fontSize,
+                              lineHeight: fontSize * lineSpacing,
+                              fontFamily: fontFamily === 'System' ? 'System' : fontFamily === 'Serif' ? 'serif' : 'monospace'
+                            }
+                          ]}>
+                            {dua.translation || ''}
+                          </Text>
+                        </View>
+                      )}
 
                       {/* Reference */}
                       <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
@@ -1295,4 +1328,4 @@ const styles = StyleSheet.create({
   previewText: {
     marginBottom: 8,
   },
-});
+}); 
