@@ -821,34 +821,8 @@ export default function SupplicationsScreen() {
               </View>
             )}
           </Animated.View>
-        ) : !showSubcategories && activeTab === 'Collections' ? (
-          <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
-            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-              MY COLLECTIONS ({bookmarkedSubcategories.size})
-            </Text>
-            {getBookmarkedSubcategories().length === 0 ? (
-              <View style={styles.emptyState}>
-                <Ionicons name="bookmark-outline" size={48} color={manuscriptColors.lightInk} />
-                <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
-                  No bookmarked supplications yet
-                </Text>
-                <Text style={[styles.emptyStateSubtext, { color: manuscriptColors.lightInk }]}>
-                  Tap the bookmark icon on any supplication to save it here
-                </Text>
-              </View>
-            ) : (
-              getBookmarkedSubcategories().map((subcategory: DuaSubcategory, index: number) => (
-                <Animated.View key={subcategory.id} entering={FadeInDown.delay(700 + index * 100)}>
-                  <SubcategoryCard subcategory={subcategory} />
-                </Animated.View>
-              ))
-            )}
-          </Animated.View>
-        ) : !showSubcategories && activeTab === 'Reminders' ? (
-          renderRemindersTab()
-        ) : showSubcategories ? (
-          <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
-            {/* Back Button */}
+        ) : showSubcategories && activeTab === 'All' ? (
+          <Animated.View entering={FadeInDown.delay(400)} style={styles.supplicationsSection}>
             <TouchableOpacity
               style={[styles.backButton, {
                 backgroundColor: manuscriptColors.parchment,
@@ -871,6 +845,31 @@ export default function SupplicationsScreen() {
               </Animated.View>
             ))}
           </Animated.View>
+        ) : activeTab === 'Collections' ? (
+          <Animated.View entering={FadeInDown.delay(400)} style={styles.supplicationsSection}>
+            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
+              BOOKMARKED SUPPLICATIONS ({bookmarkedSubcategories.size})
+            </Text>
+            {getBookmarkedSubcategories().length === 0 ? (
+              <View style={styles.emptyState}>
+                <Ionicons name="bookmark-outline" size={48} color={manuscriptColors.lightInk} />
+                <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
+                  No bookmarked supplications
+                </Text>
+                <Text style={[styles.emptyStateSubtext, { color: manuscriptColors.lightInk }]}>
+                  Bookmark your favorite duas to access them quickly
+                </Text>
+              </View>
+            ) : (
+              getBookmarkedSubcategories().map((subcategory: DuaSubcategory, index: number) => (
+                <Animated.View key={subcategory.id} entering={FadeInDown.delay(400 + index * 100)}>
+                  <SubcategoryCard subcategory={subcategory} />
+                </Animated.View>
+              ))
+            )}
+          </Animated.View>
+        ) : activeTab === 'Reminders' ? (
+          renderRemindersTab()
         ) : null}
       </ScrollView>
 
@@ -1405,17 +1404,15 @@ export default function SupplicationsScreen() {
                         key={i}
                         style={[
                           styles.timePickerOption,
-                          selectedTime.getHours() === i && { backgroundColor: colors.primary + '20' }
+                          selectedTime.hour === i && { backgroundColor: colors.primary + '20' }
                         ]}
                         onPress={() => {
-                          const newTime = new Date(selectedTime);
-                          newTime.setHours(i);
-                          setSelectedTime(newTime);
+                          setSelectedTime({ ...selectedTime, hour: i });
                         }}
                       >
                         <Text style={[
                           styles.timePickerOptionText,
-                          { color: selectedTime.getHours() === i ? colors.primary : colors.text }
+                          { color: selectedTime.hour === i ? colors.primary : colors.text }
                         ]}>
                           {i.toString().padStart(2, '0')}
                         </Text>
@@ -1440,17 +1437,15 @@ export default function SupplicationsScreen() {
                         key={i}
                         style={[
                           styles.timePickerOption,
-                          selectedTime.getMinutes() === i && { backgroundColor: colors.primary + '20' }
+                          selectedTime.minute === i && { backgroundColor: colors.primary + '20' }
                         ]}
                         onPress={() => {
-                          const newTime = new Date(selectedTime);
-                          newTime.setMinutes(i);
-                          setSelectedTime(newTime);
+                          setSelectedTime({ ...selectedTime, minute: i });
                         }}
                       >
                         <Text style={[
                           styles.timePickerOptionText,
-                          { color: selectedTime.getMinutes() === i ? colors.primary : colors.text }
+                          { color: selectedTime.minute === i ? colors.primary : colors.text }
                         ]}>
                           {i.toString().padStart(2, '0')}
                         </Text>
@@ -1475,9 +1470,7 @@ export default function SupplicationsScreen() {
                       key={preset.label}
                       style={[styles.quickTimeButton, { backgroundColor: colors.background, borderColor: colors.border }]}
                       onPress={() => {
-                        const newTime = new Date(selectedTime);
-                        newTime.setHours(preset.hour, preset.minute, 0, 0);
-                        setSelectedTime(newTime);
+                        setSelectedTime({ hour: preset.hour, minute: preset.minute });
                       }}
                     >
                       <Text style={[styles.quickTimeButtonText, { color: colors.primary }]}>
