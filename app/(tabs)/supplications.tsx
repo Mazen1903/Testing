@@ -26,7 +26,7 @@ import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplic
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Slider } from '@react-native-community/slider';
+import Slider from '@react-native-community/slider';
 
 const { width, height } = Dimensions.get('window');
 
