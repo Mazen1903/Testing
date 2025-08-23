@@ -852,16 +852,16 @@ export default function SupplicationsScreen() {
         ) : showSubcategories ? (
           <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
             {/* Back Button */}
-            <TouchableOpacity
-              style={[styles.backButton, {
-                backgroundColor: manuscriptColors.parchment,
-                borderColor: manuscriptColors.border
-              }]}
-              onPress={goBackToSeries}
+            <TouchableOpacity 
+              style={[styles.timeButton, { backgroundColor: colors.card, borderColor: colors.border }]}
+              onPress={() => setShowCustomTimePicker(true)}
             >
-              <Ionicons name="chevron-back" size={20} color={manuscriptColors.brown} />
-              <Text style={[styles.backButtonText, { color: manuscriptColors.brown }]}>
-                Back to Series
+              <Ionicons name="time-outline" size={20} color={colors.primary} />
+              <Text style={[styles.timeButtonText, { color: colors.text }]}>
+                {customHour.toString().padStart(2, '0')}:{customMinute.toString().padStart(2, '0')}
+              </Text>
+              <Text style={[styles.timeButtonAmPm, { color: colors.secondaryText }]}>
+                {customHour >= 12 ? 'PM' : 'AM'}
               </Text>
             </TouchableOpacity>
 
@@ -1373,25 +1373,28 @@ export default function SupplicationsScreen() {
         </LinearGradient>
       </Modal>
 
-      {/* Time Picker Modal */}
+      {/* Custom Time Picker Modal */}
       <Modal
-        visible={showTimePicker}
+        visible={showCustomTimePicker}
         transparent={true}
         animationType="fade"
       >
         <View style={styles.timePickerOverlay}>
           <View style={[styles.timePickerModal, { backgroundColor: colors.card }]}>
             <View style={[styles.timePickerHeader, { borderBottomColor: colors.border }]}>
-              <TouchableOpacity onPress={() => setShowTimePicker(false)}>
-                <Text style={[styles.timePickerCancel, { color: colors.secondaryText }]}>Cancel</Text>
+              <TouchableOpacity onPress={() => setShowCustomTimePicker(false)}>
+                <Text style={[styles.timePickerCancel, { color: colors.text }]}>Cancel</Text>
               </TouchableOpacity>
               <Text style={[styles.timePickerTitle, { color: colors.text }]}>Select Time</Text>
-              <TouchableOpacity onPress={() => setShowTimePicker(false)}>
+              <TouchableOpacity 
+                onPress={() => {
+                  setShowCustomTimePicker(false);
+                }}
+              >
                 <Text style={[styles.timePickerDone, { color: colors.primary }]}>Done</Text>
               </TouchableOpacity>
             </View>
             
-            {/* Custom Time Picker Implementation */}
             <View style={styles.timePickerContent}>
               <View style={styles.timePickerRow}>
                 {/* Hour Picker */}
@@ -1408,17 +1411,14 @@ export default function SupplicationsScreen() {
                         key={i}
                         style={[
                           styles.timePickerOption,
-                          selectedTime.getHours() === i && { backgroundColor: colors.primary + '20' }
+                          customHour === i && { backgroundColor: colors.primary + '20' }
                         ]}
-                        onPress={() => {
-                          const newTime = new Date(selectedTime);
-                          newTime.setHours(i);
-                          setSelectedTime(newTime);
-                        }}
+                        onPress={() => setCustomHour(i)}
                       >
                         <Text style={[
                           styles.timePickerOptionText,
-                          { color: selectedTime.getHours() === i ? colors.primary : colors.text }
+                          { color: colors.text },
+                          customHour === i && { color: colors.primary, fontWeight: '600' }
                         ]}>
                           {i.toString().padStart(2, '0')}
                         </Text>
@@ -1443,17 +1443,14 @@ export default function SupplicationsScreen() {
                         key={i}
                         style={[
                           styles.timePickerOption,
-                          selectedTime.getMinutes() === i && { backgroundColor: colors.primary + '20' }
+                          customMinute === i && { backgroundColor: colors.primary + '20' }
                         ]}
-                        onPress={() => {
-                          const newTime = new Date(selectedTime);
-                          newTime.setMinutes(i);
-                          setSelectedTime(newTime);
-                        }}
+                        onPress={() => setCustomMinute(i)}
                       >
                         <Text style={[
                           styles.timePickerOptionText,
-                          { color: selectedTime.getMinutes() === i ? colors.primary : colors.text }
+                          { color: colors.text },
+                          customMinute === i && { color: colors.primary, fontWeight: '600' }
                         ]}>
                           {i.toString().padStart(2, '0')}
                         </Text>
@@ -1478,9 +1475,8 @@ export default function SupplicationsScreen() {
                       key={preset.label}
                       style={[styles.quickTimeButton, { backgroundColor: colors.background, borderColor: colors.border }]}
                       onPress={() => {
-                        const newTime = new Date(selectedTime);
-                        newTime.setHours(preset.hour, preset.minute, 0, 0);
-                        setSelectedTime(newTime);
+                        setCustomHour(preset.hour);
+                        setCustomMinute(preset.minute);
                       }}
                     >
                       <Text style={[styles.quickTimeButtonText, { color: colors.primary }]}>
@@ -1672,7 +1668,7 @@ function ReminderModal({
                       { color: colors.text },
                       selectedDays.includes(day) && { color: colors.primary }
                     ]}>
-                      {day}
+                      {day.slice(0, 3)}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -2591,13 +2587,24 @@ const styles = StyleSheet.create({
   },
   reminderItem: {
   },
-  reminderIconButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+  timeButton: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 20,
+    alignSelf: 'flex-start',
+    gap: 8,
+  },
+  timeButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  timeButtonAmPm: {
+    fontSize: 12,
+    fontWeight: '500',
   },
 });
 
