@@ -849,17 +849,136 @@ export default function SupplicationsScreen() {
         ) : showSubcategories && activeTab === 'All' ? (
           <Animated.View entering={FadeInDown.delay(400)} style={styles.supplicationsSection}>
             <TouchableOpacity
-              style={[styles.backButton, {
-                backgroundColor: manuscriptColors.parchment,
-                borderColor: manuscriptColors.border
-              }]}
-              onPress={goBackToSeries}
-            >
-              <Ionicons name="chevron-back" size={20} color={manuscriptColors.brown} />
-              <Text style={[styles.backButtonText, { color: manuscriptColors.brown }]}>
-                Back to Series
-              </Text>
-            </TouchableOpacity>
+            <Text style={[styles.formLabel, { color: colors.text }]}>Custom Time</Text>
+            <View style={styles.timePickerContainer}>
+              <View style={styles.timeDisplay}>
+                <Text style={[styles.timeDisplayText, { color: colors.text }]}>
+                  {formatTime(reminderTime.hour, reminderTime.minute)}
+                </Text>
+              </View>
+              
+              <View style={styles.timePickers}>
+                <View style={styles.timePickerSection}>
+                  <Text style={[styles.timePickerLabel, { color: colors.secondaryText }]}>Hour</Text>
+                  <ScrollView 
+                    style={[styles.timePicker, { backgroundColor: colors.card }]}
+                    showsVerticalScrollIndicator={false}
+                    snapToInterval={40}
+                    decelerationRate="fast"
+                  >
+                    {Array.from({ length: 24 }, (_, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        style={[
+                          styles.timeOption,
+                          reminderTime.hour === i && { backgroundColor: colors.primary + '20' }
+                        ]}
+                        onPress={() => setReminderTime(prev => ({ ...prev, hour: i }))}
+                      >
+                        <Text style={[
+                          styles.timeOptionText,
+                          { color: reminderTime.hour === i ? colors.primary : colors.text }
+                        ]}>
+                          {i.toString().padStart(2, '0')}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+                
+                <View style={styles.timePickerSection}>
+                  <Text style={[styles.timePickerLabel, { color: colors.secondaryText }]}>Minute</Text>
+                  <ScrollView 
+                    style={[styles.timePicker, { backgroundColor: colors.card }]}
+                    showsVerticalScrollIndicator={false}
+                    snapToInterval={40}
+                    decelerationRate="fast"
+                  >
+                    {Array.from({ length: 60 }, (_, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        style={[
+                          styles.timeOption,
+                          reminderTime.minute === i && { backgroundColor: colors.primary + '20' }
+                        ]}
+                        onPress={() => setReminderTime(prev => ({ ...prev, minute: i }))}
+                      >
+                        <Text style={[
+                          styles.timeOptionText,
+                          { color: reminderTime.minute === i ? colors.primary : colors.text }
+                        ]}>
+                          {i.toString().padStart(2, '0')}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+              </View>
+            </View>
+            
+            <Text style={[styles.formLabel, { color: colors.text }]}>Custom Days</Text>
+            <View style={styles.daySelection}>
+              <View style={styles.quickDayButtons}>
+                <TouchableOpacity
+                  style={[
+                    styles.quickDayButton,
+                    { backgroundColor: colors.card, borderColor: colors.border }
+                  ]}
+                  onPress={() => setSelectedDays([0, 1, 2, 3, 4, 5, 6])}
+                >
+                  <Text style={[styles.quickDayButtonText, { color: colors.text }]}>Every Day</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={[
+                    styles.quickDayButton,
+                    { backgroundColor: colors.card, borderColor: colors.border }
+                  ]}
+                  onPress={() => setSelectedDays([1, 2, 3, 4, 5])}
+                >
+                  <Text style={[styles.quickDayButtonText, { color: colors.text }]}>Weekdays</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={[
+                    styles.quickDayButton,
+                    { backgroundColor: colors.card, borderColor: colors.border }
+                  ]}
+                  onPress={() => setSelectedDays([0, 6])}
+                >
+                  <Text style={[styles.quickDayButtonText, { color: colors.text }]}>Weekends</Text>
+                </TouchableOpacity>
+              </View>
+              
+              <View style={styles.dayButtons}>
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                  <TouchableOpacity
+                    key={day}
+                    style={[
+                      styles.dayButton,
+                      { 
+                        backgroundColor: selectedDays.includes(index) ? colors.primary : colors.card,
+                        borderColor: colors.border 
+                      }
+                    ]}
+                    onPress={() => {
+                      if (selectedDays.includes(index)) {
+                        setSelectedDays(selectedDays.filter(d => d !== index));
+                      } else {
+                        setSelectedDays([...selectedDays, index]);
+                      }
+                    }}
+                  >
+                    <Text style={[
+                      styles.dayButtonText,
+                      { color: selectedDays.includes(index) ? '#FFFFFF' : colors.text }
+                    ]}>
+                      {day}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
 
             <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
               {selectedSeries?.title ? `${selectedSeries.title.toUpperCase()} CATEGORIES` : 'CATEGORIES'}
@@ -1423,7 +1542,7 @@ export default function SupplicationsScreen() {
                     showsVerticalScrollIndicator={false}
                     snapToInterval={40}
                     decelerationRate="fast"
-                  >
+                  Time for your supplication reminder 🤲
                     {Array.from({ length: 24 }, (_, i) => (
                       <TouchableOpacity
                         key={i}
@@ -1502,7 +1621,7 @@ export default function SupplicationsScreen() {
                         {preset.label}
                       </Text>
                     </TouchableOpacity>
-                  ))}
+                  {getScheduleText()} at {formatTime(reminderTime.hour, reminderTime.minute)}
                 </View>
               </View>
             </View>
