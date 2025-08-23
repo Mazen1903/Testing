@@ -2474,30 +2474,110 @@ const styles = StyleSheet.create({
   reminderModalContent: {
     maxHeight: '80%',
   },
-  timePickerButton: {
+  titleInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  timePickerContainer: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  timePickers: {
+    flexDirection: 'row',
+    height: 200,
+    gap: 20,
+  },
+  pickerColumn: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  pickerLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  picker: {
+    height: 160,
+    width: '100%',
+    borderRadius: 8,
+  },
+  pickerItem: {
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 2,
+    borderRadius: 8,
+    marginHorizontal: 8,
+  },
+  selectedPickerItem: {
+    borderRadius: 8,
+  },
+  pickerItemText: {
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  selectedPickerItemText: {
+    fontWeight: '700',
+  },
+  timeDisplay: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    padding: 16,
+    marginTop: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    gap: 8,
+  },
+  timeDisplayText: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  daysContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  activeDayButton: {
+    borderWidth: 0,
+  },
+  activeDayButtonText: {
+    color: '#FFFFFF',
+  },
+  quickDaySelection: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+  },
+  quickDayButton: {
+    flex: 1,
+    padding: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  quickDayText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  previewCard: {
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    marginBottom: 20,
-  },
-  timePickerText: {
-    fontSize: 18,
-    fontWeight: '600',
-    flex: 1,
-    textAlign: 'center',
   },
   timePickerOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   timePickerModal: {
-    width: '90%',
-    maxWidth: 400,
+    width: '100%',
+    maxWidth: 300,
     borderRadius: 16,
     overflow: 'hidden',
   },
@@ -2505,16 +2585,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    padding: 16,
     borderBottomWidth: 1,
-  },
-  timePickerCancel: {
-    fontSize: 16,
   },
   timePickerTitle: {
     fontSize: 18,
     fontWeight: '600',
+  },
+  timePickerCancel: {
+    fontSize: 16,
   },
   timePickerDone: {
     fontSize: 16,
