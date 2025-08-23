@@ -601,23 +601,6 @@ export default function SupplicationsScreen() {
                 style={[styles.reminderButton, { backgroundColor: colors.secondary + '15' }]}
                 onPress={(e) => {
                   e.stopPropagation();
-                  
-                  // Don't allow reminders for these specific categories
-                  const excludedCategories = [
-                    'The Importance of Daily Supplications',
-                    'The Importance of Hadith-based Supplications', 
-                    'The importance of Quranic Supplications'
-                  ];
-                  
-                  if (excludedCategories.includes(subcategory.name)) {
-                    Alert.alert(
-                      'Reminders Not Available',
-                      'Reminders are not available for this category as it contains educational content rather than specific supplications.',
-                      [{ text: 'OK' }]
-                    );
-                    return;
-                  }
-                  
                   setSelectedSupplicationForReminder({
                     id: subcategory.id,
                     title: subcategory.name
@@ -1679,17 +1662,6 @@ function ReminderModal({
                     key={day}
                     style={[
                       styles.dayButton,
-                      { backgroundColor: colors.card, borderColor: colors.border },
-                      selectedDays.includes(day) && { backgroundColor: colors.primary + '20', borderColor: colors.primary }
-                    ]}
-                    onPress={() => toggleDay(day)}
-                  >
-                    <Text style={[
-                      styles.dayButtonText,
-                      { color: colors.text },
-                      selectedDays.includes(day) && { color: colors.primary }
-                    ]}>
-                      {day.slice(0, 3)}
                     </Text>
                   </TouchableOpacity>
                 ))}
