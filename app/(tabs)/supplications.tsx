@@ -1165,4 +1165,134 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingHorizontal: 20,
   },
+  displayControlsButton: {
+    padding: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  controlsModalContainer: {
+    flex: 1,
+  },
+  controlsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
+  controlsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  controlsContent: {
+    flex: 1,
+    padding: 20,
+  },
+  controlSection: {
+    marginBottom: 32,
+  },
+  controlLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  sliderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  slider: {
+    flex: 1,
+    height: 40,
+    marginHorizontal: 12,
+  },
+  sliderLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    minWidth: 24,
+    textAlign: 'center',
+  },
+  controlValue: {
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  fontFamilyButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  fontFamilyButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  fontFamilyText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  alignmentButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  alignmentButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 8,
+  },
+  alignmentText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  toggleInfo: {
+    flex: 1,
+    marginRight: 16,
+  },
+  toggleLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  toggleDescription: {
+    fontSize: 14,
+  },
+  toggle: {
+    width: 51,
+    height: 31,
+    borderRadius: 15.5,
+    padding: 2,
+    justifyContent: 'center',
+  },
+  toggleHandle: {
+    width: 27,
+    height: 27,
+    borderRadius: 13.5,
+  },
+  previewContainer: {
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  previewArabic: {
+    marginBottom: 12,
+    writingDirection: 'rtl',
+  },
+  previewText: {
+    marginBottom: 8,
+  },
 }); 
