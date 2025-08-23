@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -1295,4 +1295,4 @@ const styles = StyleSheet.create({
   previewText: {
     marginBottom: 8,
   },
-}); 
+});
