@@ -114,6 +114,9 @@ export default function SupplicationsScreen() {
   const [showDisplayControls, setShowDisplayControls] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [fontFamily, setFontFamily] = useState<'System' | 'Serif' | 'Monospace'>('System');
+  const [showCustomTimePicker, setShowCustomTimePicker] = useState(false);
+  const [customHour, setCustomHour] = useState(9);
+  const [customMinute, setCustomMinute] = useState(0);
   const [showArabic, setShowArabic] = useState(true);
   const [showTransliteration, setShowTransliteration] = useState(true);
   const [showTranslation, setShowTranslation] = useState(true);
