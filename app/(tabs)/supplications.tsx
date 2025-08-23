@@ -126,6 +126,7 @@ export default function SupplicationsScreen() {
   const [reminderTime, setReminderTime] = useState({ hour: 9, minute: 0 });
   const [reminderDays, setReminderDays] = useState<number[]>([1, 2, 3, 4, 5, 6, 0]); // All days selected by default
   const [reminderTitle, setReminderTitle] = useState('');
+  const [selectedTime, setSelectedTime] = useState({ hour: 9, minute: 0 });
   const horizontalScrollRef = useRef<ScrollView>(null);
 
   // Request notification permissions on mount
@@ -426,7 +427,8 @@ export default function SupplicationsScreen() {
       setSelectedSeries(series);
       setShowSubcategories(true);
     } else {
-      
+      // Simple series with direct duas - start session directly
+      // This would need implementation for direct dua sessions
     }
   };
 
@@ -526,6 +528,29 @@ export default function SupplicationsScreen() {
       </Text>
     </TouchableOpacity>
   );
+  const getDayName = (dayIndex: number): string => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return days[dayIndex];
+  };
+
+  const toggleDay = (dayIndex: number) => {
+    setReminderDays(prev => 
+      prev.includes(dayIndex) 
+        ? prev.filter(d => d !== dayIndex)
+        : [...prev, dayIndex].sort()
+    );
+  };
+
+  // Check if a category should have reminder functionality disabled
+  const isReminderDisabled = (categoryName: string): boolean => {
+    const disabledCategories = [
+      'The Importance of Daily Supplications',
+      'The Importance of Hadith-based Supplications', 
+      'The importance of Quranic Supplications'
+    ];
+    return disabledCategories.includes(categoryName);
+  };
+
 
   const SeriesCard = ({ series }: { series: ZikrSeries }) => {
     const totalDuas = getAllDuasFromSeries(series).length;
@@ -552,10 +577,7 @@ export default function SupplicationsScreen() {
               <View style={styles.duaFooterLeft}>
                 <Ionicons name="book" size={12} color={manuscriptColors.brown} />
                 <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
-                  {hasSubcats 
-                    ? `${series.subcategories?.length || 0} categories • ${totalDuas} duas`
-                    : `${totalDuas} duas`
-                  }
+                  {totalDuas} duas
                 </Text>
               </View>
               <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
@@ -595,19 +617,21 @@ export default function SupplicationsScreen() {
                   color={bookmarkedSubcategories.has(subcategory.id) ? manuscriptColors.gold : manuscriptColors.brown} 
                 />
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.reminderButton, { backgroundColor: colors.secondary + '15' }]}
-                onPress={(e) => {
-                  e.stopPropagation();
-                  setSelectedSupplicationForReminder({
-                    id: subcategory.id,
-                    title: subcategory.name
-                  });
-                  setShowReminderModal(true);
-                }}
-              >
-                <Ionicons name="notifications-outline" size={16} color={colors.secondary} />
-              </TouchableOpacity>
+              {!isReminderDisabled(subcategory.name) && (
+                <TouchableOpacity 
+                  style={[styles.reminderButton, { backgroundColor: colors.secondary + '15' }]}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    setSelectedSupplicationForReminder({
+                      id: subcategory.id,
+                      title: subcategory.name
+                    });
+                    setShowReminderModal(true);
+                  }}
+                >
+                  <Ionicons name="notifications-outline" size={16} color={colors.secondary} />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
           <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
@@ -2474,110 +2498,30 @@ const styles = StyleSheet.create({
   reminderModalContent: {
     maxHeight: '80%',
   },
-  titleInput: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  timePickerContainer: {
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  timePickers: {
+  timePickerButton: {
     flexDirection: 'row',
-    height: 200,
-    gap: 20,
-  },
-  pickerColumn: {
-    flex: 1,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 20,
   },
-  pickerLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  picker: {
-    height: 160,
-    width: '100%',
-    borderRadius: 8,
-  },
-  pickerItem: {
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 2,
-    borderRadius: 8,
-    marginHorizontal: 8,
-  },
-  selectedPickerItem: {
-    borderRadius: 8,
-  },
-  pickerItemText: {
+  timePickerText: {
     fontSize: 18,
-    fontWeight: '500',
-  },
-  selectedPickerItemText: {
-    fontWeight: '700',
-  },
-  timeDisplay: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    marginTop: 16,
-    borderRadius: 12,
-    borderWidth: 2,
-    gap: 8,
-  },
-  timeDisplayText: {
-    fontSize: 20,
-    fontWeight: '700',
-  },
-  daysContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 16,
-  },
-  activeDayButton: {
-    borderWidth: 0,
-  },
-  activeDayButtonText: {
-    color: '#FFFFFF',
-  },
-  quickDaySelection: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 8,
-  },
-  quickDayButton: {
+    fontWeight: '600',
     flex: 1,
-    padding: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  quickDayText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  previewCard: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
+    textAlign: 'center',
   },
   timePickerOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
   timePickerModal: {
-    width: '100%',
-    maxWidth: 300,
+    width: '90%',
+    maxWidth: 400,
     borderRadius: 16,
     overflow: 'hidden',
   },
@@ -2585,15 +2529,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 1,
+  },
+  timePickerCancel: {
+    fontSize: 16,
   },
   timePickerTitle: {
     fontSize: 18,
     fontWeight: '600',
-  },
-  timePickerCancel: {
-    fontSize: 16,
   },
   timePickerDone: {
     fontSize: 16,
