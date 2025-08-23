@@ -123,8 +123,9 @@ export default function SupplicationsScreen() {
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [selectedSupplicationForReminder, setSelectedSupplicationForReminder] = useState<{id: string, title: string} | null>(null);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedTime, setSelectedTime] = useState({ hour: 8, minute: 0 }); // Default time
-
+  const [reminderTime, setReminderTime] = useState({ hour: 9, minute: 0 });
+  const [reminderDays, setReminderDays] = useState<number[]>([1, 2, 3, 4, 5, 6, 0]); // All days selected by default
+  const [reminderTitle, setReminderTitle] = useState('');
   const horizontalScrollRef = useRef<ScrollView>(null);
 
   // Request notification permissions on mount
