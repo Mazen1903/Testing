@@ -997,20 +997,63 @@ export default function SupplicationsScreen() {
                       style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
                     >
                       <Text style={[styles.counterButtonText, { color: manuscriptColors.ink }]}>
-                        {currentCount + 1}
-                      </Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-
-                  <View style={[styles.counterLabelContainer, {
-                    backgroundColor: manuscriptColors.parchment + '80',
-                    borderColor: manuscriptColors.border
-                  }]}>
-                    <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                      {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
+                {/* Arabic Text */}
+                {showArabic && (
+                  <View style={styles.duaSection}>
+                    <Text style={[
+                      styles.duaArabic, 
+                      { 
+                        color: colors.text,
+                        fontSize: fontSize,
+                        lineHeight: fontSize * lineSpacing,
+                        fontFamily: fontFamily === 'serif' ? 'serif' : fontFamily === 'monospace' ? 'monospace' : 'system',
+                        textAlign: arabicAlignment
+                      }
+                    ]}>
+                      {dua.arabic}
                     </Text>
                   </View>
-                </View>
+                )}
+                
+                {/* Transliteration */}
+                {showTransliteration && (
+                  <View style={styles.duaSection}>
+                    <Text style={[
+                      styles.duaTransliteration, 
+                      { 
+                        color: colors.secondaryText,
+                        fontSize: fontSize * 0.9,
+                        lineHeight: fontSize * 0.9 * lineSpacing,
+                        fontFamily: fontFamily === 'serif' ? 'serif' : fontFamily === 'monospace' ? 'monospace' : 'system',
+                      }
+                    ]}>
+                      {dua.transliteration}
+                    </Text>
+                  </View>
+                )}
+                
+                {/* Translation */}
+                {showTranslation && (
+                  <View style={styles.duaSection}>
+                    <Text style={[
+                      styles.duaTranslation, 
+                      { 
+                        color: colors.text,
+                        fontSize: fontSize * 0.95,
+                        lineHeight: fontSize * 0.95 * lineSpacing,
+                        fontFamily: fontFamily === 'serif' ? 'serif' : fontFamily === 'monospace' ? 'monospace' : 'system',
+                      }
+                    ]}>
+                      {dua.translation}
+                    </Text>
+                  </View>
+                )}
+                
+                {/* Smart Divider - only show if there are sections above and below */}
+                {((showArabic || showTransliteration || showTranslation) && 
+                  (dua.reference || dua.repetitions)) && (
+                  <View style={[styles.divider, { backgroundColor: colors.border }]} />
+                )}
               </View>
             )}
           </SafeAreaView>
