@@ -1363,6 +1363,128 @@ export default function SupplicationsScreen() {
         </LinearGradient>
       </Modal>
 
+      {/* Time Picker Modal */}
+      <Modal
+        visible={showTimePicker}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.timePickerOverlay}>
+          <View style={[styles.timePickerModal, { backgroundColor: colors.card }]}>
+            <View style={[styles.timePickerHeader, { borderBottomColor: colors.border }]}>
+              <TouchableOpacity onPress={() => setShowTimePicker(false)}>
+                <Text style={[styles.timePickerCancel, { color: colors.secondaryText }]}>Cancel</Text>
+              </TouchableOpacity>
+              <Text style={[styles.timePickerTitle, { color: colors.text }]}>Select Time</Text>
+              <TouchableOpacity onPress={() => setShowTimePicker(false)}>
+                <Text style={[styles.timePickerDone, { color: colors.primary }]}>Done</Text>
+              </TouchableOpacity>
+            </View>
+            
+            {/* Custom Time Picker Implementation */}
+            <View style={styles.timePickerContent}>
+              <View style={styles.timePickerRow}>
+                {/* Hour Picker */}
+                <View style={styles.timePickerColumn}>
+                  <Text style={[styles.timePickerLabel, { color: colors.secondaryText }]}>Hour</Text>
+                  <ScrollView 
+                    style={styles.timePickerScroll}
+                    showsVerticalScrollIndicator={false}
+                    snapToInterval={40}
+                    decelerationRate="fast"
+                  >
+                    {Array.from({ length: 24 }, (_, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        style={[
+                          styles.timePickerOption,
+                          selectedTime.getHours() === i && { backgroundColor: colors.primary + '20' }
+                        ]}
+                        onPress={() => {
+                          const newTime = new Date(selectedTime);
+                          newTime.setHours(i);
+                          setSelectedTime(newTime);
+                        }}
+                      >
+                        <Text style={[
+                          styles.timePickerOptionText,
+                          { color: selectedTime.getHours() === i ? colors.primary : colors.text }
+                        ]}>
+                          {i.toString().padStart(2, '0')}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+                
+                <Text style={[styles.timePickerSeparator, { color: colors.text }]}>:</Text>
+                
+                {/* Minute Picker */}
+                <View style={styles.timePickerColumn}>
+                  <Text style={[styles.timePickerLabel, { color: colors.secondaryText }]}>Minute</Text>
+                  <ScrollView 
+                    style={styles.timePickerScroll}
+                    showsVerticalScrollIndicator={false}
+                    snapToInterval={40}
+                    decelerationRate="fast"
+                  >
+                    {Array.from({ length: 60 }, (_, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        style={[
+                          styles.timePickerOption,
+                          selectedTime.getMinutes() === i && { backgroundColor: colors.primary + '20' }
+                        ]}
+                        onPress={() => {
+                          const newTime = new Date(selectedTime);
+                          newTime.setMinutes(i);
+                          setSelectedTime(newTime);
+                        }}
+                      >
+                        <Text style={[
+                          styles.timePickerOptionText,
+                          { color: selectedTime.getMinutes() === i ? colors.primary : colors.text }
+                        ]}>
+                          {i.toString().padStart(2, '0')}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+              </View>
+              
+              {/* Quick Time Presets */}
+              <View style={styles.quickTimePresets}>
+                <Text style={[styles.quickTimeLabel, { color: colors.secondaryText }]}>Quick Select:</Text>
+                <View style={styles.quickTimeButtons}>
+                  {[
+                    { label: 'Fajr', hour: 5, minute: 30 },
+                    { label: 'Dhuhr', hour: 12, minute: 30 },
+                    { label: 'Asr', hour: 15, minute: 30 },
+                    { label: 'Maghrib', hour: 18, minute: 30 },
+                    { label: 'Isha', hour: 20, minute: 0 },
+                  ].map((preset) => (
+                    <TouchableOpacity
+                      key={preset.label}
+                      style={[styles.quickTimeButton, { backgroundColor: colors.background, borderColor: colors.border }]}
+                      onPress={() => {
+                        const newTime = new Date(selectedTime);
+                        newTime.setHours(preset.hour, preset.minute, 0, 0);
+                        setSelectedTime(newTime);
+                      }}
+                    >
+                      <Text style={[styles.quickTimeButtonText, { color: colors.primary }]}>
+                        {preset.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Reminder Creation Modal */}
       <ReminderModal
         visible={showReminderModal}
@@ -2347,5 +2469,116 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
+  },
+  reminderModalContent: {
+    maxHeight: '80%',
+  },
+  timePickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 20,
+  },
+  timePickerText: {
+    fontSize: 18,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'center',
+  },
+  timePickerOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  timePickerModal: {
+    width: '90%',
+    maxWidth: 400,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  timePickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
+  timePickerCancel: {
+    fontSize: 16,
+  },
+  timePickerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  timePickerDone: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  timePickerContent: {
+    padding: 20,
+  },
+  timePickerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  timePickerColumn: {
+    alignItems: 'center',
+  },
+  timePickerLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  timePickerScroll: {
+    height: 120,
+    width: 60,
+  },
+  timePickerOption: {
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginVertical: 2,
+  },
+  timePickerOptionText: {
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  timePickerSeparator: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginHorizontal: 20,
+  },
+  quickTimePresets: {
+    marginTop: 20,
+  },
+  quickTimeLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  quickTimeButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  quickTimeButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  quickTimeButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  reminderItem: {
   },
 });
