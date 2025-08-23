@@ -20,6 +20,7 @@ import { useTheme } from '@/shared/contexts/ThemeContext';
 import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplications';
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -67,19 +68,83 @@ const getManuscriptColors = (isDark: boolean, themeColors: any) => ({
   spiralBinding: themeColors.primary
 });
 
+type TabType = 'All' | 'Collections';
+
 export default function SupplicationsScreen() {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
   const manuscriptColors = getManuscriptColors(isDark, colors);
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [activeTab, setActiveTab] = useState<TabType>('All');
   const [selectedSeries, setSelectedSeries] = useState<ZikrSeries | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<DuaSubcategory | null>(null);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [zikrSessionVisible, setZikrSessionVisible] = useState(false);
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
+  const [bookmarkedDuas, setBookmarkedDuas] = useState<Set<string>>(new Set());
+  const [bookmarkedSubcategories, setBookmarkedSubcategories] = useState<Set<string>>(new Set());
   const horizontalScrollRef = useRef<ScrollView>(null);
 
+  // Load bookmarks on component mount
+  useEffect(() => {
+    loadBookmarks();
+  }, []);
+
+  const loadBookmarks = async () => {
+    try {
+      const [duasData, subcategoriesData] = await Promise.all([
+        AsyncStorage.getItem('bookmarked_duas'),
+        AsyncStorage.getItem('bookmarked_subcategories')
+      ]);
+      
+      if (duasData) {
+        setBookmarkedDuas(new Set(JSON.parse(duasData)));
+      }
+      if (subcategoriesData) {
+        setBookmarkedSubcategories(new Set(JSON.parse(subcategoriesData)));
+      }
+    } catch (error) {
+      console.error('Error loading bookmarks:', error);
+    }
+  };
+
+  const saveBookmarks = async (duas: Set<string>, subcategories: Set<string>) => {
+    try {
+      await Promise.all([
+        AsyncStorage.setItem('bookmarked_duas', JSON.stringify(Array.from(duas))),
+        AsyncStorage.setItem('bookmarked_subcategories', JSON.stringify(Array.from(subcategories)))
+      ]);
+    } catch (error) {
+      console.error('Error saving bookmarks:', error);
+    }
+  };
+
+  const toggleBookmarkSubcategory = async (subcategoryId: string) => {
+    const newBookmarksSet = new Set(bookmarkedSubcategories);
+    if (newBookmarksSet.has(subcategoryId)) {
+      newBookmarksSet.delete(subcategoryId);
+    } else {
+      newBookmarksSet.add(subcategoryId);
+    }
+    setBookmarkedSubcategories(newBookmarksSet);
+    await saveBookmarks(bookmarkedDuas, newBookmarksSet);
+  };
+
+  const getBookmarkedSubcategories = () => {
+    const bookmarked: DuaSubcategory[] = [];
+    
+    ZIKR_SERIES.forEach(series => {
+      if (series.subcategories) {
+        series.subcategories.forEach(subcategory => {
+          if (bookmarkedSubcategories.has(subcategory.id)) {
+            bookmarked.push(subcategory);
+          }
+        });
+      }
+    });
+    
+    return bookmarked;
+  };
 
   const filteredSeries = ZIKR_SERIES;
 
@@ -239,9 +304,24 @@ export default function SupplicationsScreen() {
         style={styles.cardGradient}
       >
         <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
-          <View style={styles.duaHeader}>
-            <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{subcategory.name}</Text>
-            <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
+          <View style={styles.subcategoryHeader}>
+            <View style={styles.subcategoryTitleContainer}>
+              <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{subcategory.name}</Text>
+              <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
+            </View>
+            <TouchableOpacity
+              style={styles.bookmarkButton}
+              onPress={(e) => {
+                e.stopPropagation();
+                toggleBookmarkSubcategory(subcategory.id);
+              }}
+            >
+              <Ionicons 
+                name={bookmarkedSubcategories.has(subcategory.id) ? "bookmark" : "bookmark-outline"} 
+                size={20} 
+                color={bookmarkedSubcategories.has(subcategory.id) ? manuscriptColors.gold : manuscriptColors.brown} 
+              />
+            </TouchableOpacity>
           </View>
           <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
             {subcategory.description}
@@ -288,8 +368,41 @@ export default function SupplicationsScreen() {
           </View>
         </Animated.View>
 
+        {/* Tab Navigation */}
+        <Animated.View entering={FadeInDown.delay(500)} style={styles.tabContainer}>
+          <View style={[styles.tabBar, { backgroundColor: manuscriptColors.parchment, borderColor: manuscriptColors.border }]}>
+            {(['All', 'Collections'] as TabType[]).map((tab) => (
+              <TouchableOpacity
+                key={tab}
+                style={[
+                  styles.tabButton,
+                  activeTab === tab && [styles.activeTabButton, { backgroundColor: manuscriptColors.brown }]
+                ]}
+                onPress={() => setActiveTab(tab)}
+              >
+                <Text
+                  style={[
+                    styles.tabButtonText,
+                    { color: manuscriptColors.brown },
+                    activeTab === tab && [styles.activeTabButtonText, { color: manuscriptColors.parchment }]
+                  ]}
+                >
+                  {tab}
+                </Text>
+                {tab === 'Collections' && bookmarkedSubcategories.size > 0 && (
+                  <View style={[styles.tabBadge, { backgroundColor: manuscriptColors.gold }]}>
+                    <Text style={[styles.tabBadgeText, { color: manuscriptColors.parchment }]}>
+                      {bookmarkedSubcategories.size}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </Animated.View>
+
         {/* Zikr Series List or Subcategories */}
-        {!showSubcategories ? (
+        {!showSubcategories && activeTab === 'All' ? (
           <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
             <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
               SUPPLICATIONS ({filteredSeries.length})
@@ -308,7 +421,30 @@ export default function SupplicationsScreen() {
               </View>
             )}
           </Animated.View>
-        ) : (
+        ) : !showSubcategories && activeTab === 'Collections' ? (
+          <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
+            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
+              MY COLLECTIONS ({bookmarkedSubcategories.size})
+            </Text>
+            {getBookmarkedSubcategories().length === 0 ? (
+              <View style={styles.emptyState}>
+                <Ionicons name="bookmark-outline" size={48} color={manuscriptColors.lightInk} />
+                <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
+                  No bookmarked supplications yet
+                </Text>
+                <Text style={[styles.emptyStateSubtext, { color: manuscriptColors.lightInk }]}>
+                  Tap the bookmark icon on any supplication to save it here
+                </Text>
+              </View>
+            ) : (
+              getBookmarkedSubcategories().map((subcategory: DuaSubcategory, index: number) => (
+                <Animated.View key={subcategory.id} entering={FadeInDown.delay(700 + index * 100)}>
+                  <SubcategoryCard subcategory={subcategory} />
+                </Animated.View>
+              ))
+            )}
+          </Animated.View>
+        ) : showSubcategories ? (
           <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
             {/* Back Button */}
             <TouchableOpacity
@@ -333,7 +469,7 @@ export default function SupplicationsScreen() {
               </Animated.View>
             ))}
           </Animated.View>
-        )}
+        ) : null}
       </ScrollView>
 
       {/* Zikr Session Modal - Islamic Manuscript Style */}
@@ -893,5 +1029,67 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 8,
+  },
+  tabContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  tabBar: {
+    flexDirection: 'row',
+    borderRadius: 12,
+    padding: 4,
+    borderWidth: 1,
+  },
+  tabButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    gap: 6,
+  },
+  activeTabButton: {
+  },
+  tabButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  activeTabButtonText: {
+  },
+  tabBadge: {
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+  },
+  tabBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  subcategoryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  subcategoryTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 8,
+  },
+  bookmarkButton: {
+    padding: 4,
+    marginLeft: 8,
+  },
+  emptyStateSubtext: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 8,
+    paddingHorizontal: 20,
   },
 }); 
