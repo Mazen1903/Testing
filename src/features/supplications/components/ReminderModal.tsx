@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
-import { CreateReminderRequest } from '@/shared/types/reminders';
+import { CreateReminderRequest } from '@/src/shared/types/reminder';
 import { DuaSubcategory } from '@/shared/types/supplications';
 
 interface ReminderModalProps {
@@ -181,7 +181,7 @@ export default function ReminderModal({
               style={[styles.timeButton, { backgroundColor: colors.background, borderColor: colors.border }]}
               onPress={() => setShowTimePicker(true)}
             >
-              <Ionicons name="clock-outline" size={20} color={colors.primary} />
+              <Ionicons name="time-outline" size={20} color={colors.primary} />
               <Text style={[styles.timeText, { color: colors.text }]}>
                 {formatTime(selectedTime)}
               </Text>
@@ -430,10 +430,6 @@ export default function ReminderModal({
       </SafeAreaView>
     </Modal>
   );
-
-  function formatTime(date: Date): string {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
 
   function getFrequencyDescription(): string {
     switch (frequency) {
