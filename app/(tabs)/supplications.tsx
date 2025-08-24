@@ -13,6 +13,13 @@ import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring, 
+  withSequence,
+  runOnJS
+} from 'react-native-reanimated';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
@@ -80,13 +87,31 @@ export default function SupplicationsScreen() {
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
   const [bookmarkedDuas, setBookmarkedDuas] = useState<Set<string>>(new Set());
-  const [bookmarkAnimation, setBookmarkAnimation] = useState<string | null>(null);
   const horizontalScrollRef = useRef<ScrollView>(null);
+  
+  // Animation values for bookmark buttons
+  const bookmarkScales = useRef<{ [key: string]: any }>({});
+  
+  // Get or create animation value for a bookmark button
+  const getBookmarkScale = (duaId: string) => {
+    if (!bookmarkScales.current[duaId]) {
+      bookmarkScales.current[duaId] = useSharedValue(1);
+    }
+    return bookmarkScales.current[duaId];
+  };
 
   const toggleBookmark = (duaId: string) => {
-    // Trigger animation
-    setBookmarkAnimation(duaId);
-    setTimeout(() => setBookmarkAnimation(null), 300);
+    // Get animation value for this bookmark
+    const scale = getBookmarkScale(duaId);
+    
+    // Trigger smooth bounce animation
+    scale.value = withSequence(
+      withSpring(1.3, { damping: 8, stiffness: 200 }),
+      withSpring(1, { damping: 8, stiffness: 200 })
+    );
+    
+    // Haptic feedback
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
     setBookmarkedDuas(prev => {
       const newBookmarksSet = new Set(prev);
@@ -214,7 +239,11 @@ export default function SupplicationsScreen() {
 
   const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => {
     const isBookmarked = bookmarkedDuas.has(subcategory.id);
-    const isAnimating = bookmarkAnimation === subcategory.id;
+    const scale = getBookmarkScale(subcategory.id);
+    
+    const animatedStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: scale.value }]
+    }));
     
     const handleBookmark = () => {
       toggleBookmark(subcategory.id);
@@ -233,22 +262,23 @@ export default function SupplicationsScreen() {
             <View style={styles.duaHeader}>
               <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{subcategory.name}</Text>
               <View style={styles.headerIcons}>
-                <TouchableOpacity
+                <Animated.View style={animatedStyle}>
+                  <TouchableOpacity
                   style={[styles.bookmarkButtonCard, {
                     backgroundColor: isBookmarked 
                       ? manuscriptColors.brown + '20' 
                       : manuscriptColors.border + '30',
                     borderColor: manuscriptColors.border,
-                    transform: [{ scale: isAnimating ? 1.2 : 1 }]
                   }]}
                   onPress={handleBookmark}
-                >
+                  >
                   <Ionicons 
                     name={isBookmarked ? "bookmark" : "bookmark-outline"} 
                     size={16} 
                     color={isBookmarked ? manuscriptColors.brown : manuscriptColors.lightInk} 
                   />
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                </Animated.View>
                 <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
               </View>
             </View>
@@ -337,7 +367,7 @@ export default function SupplicationsScreen() {
                 styles.tabButtonText,
                 { color: activeTab === 'collection' ? '#FFFFFF' : manuscriptColors.lightInk }
               ]}>
-                Collection
+                Collection {bookmarkedDuas.size > 0 && `(${bookmarkedDuas.size})`}
               </Text>
             </TouchableOpacity>
           </View>
