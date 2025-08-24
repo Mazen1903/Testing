@@ -481,28 +481,6 @@ export default function SupplicationsScreen() {
 
                       {/* Reference */}
                       <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
-                        {/* Bookmark Button */}
-                        <TouchableOpacity
-                          style={[styles.bookmarkButton, { 
-                            backgroundColor: bookmarkedDuas.has(dua.id) 
-                              ? manuscriptColors.brown + '20' 
-                              : manuscriptColors.border + '30',
-                            borderColor: manuscriptColors.border
-                          }]}
-                          onPress={() => toggleBookmark(dua.id)}
-                        >
-                          <Ionicons 
-                            name={bookmarkedDuas.has(dua.id) ? "bookmark" : "bookmark-outline"} 
-                            size={16} 
-                            color={bookmarkedDuas.has(dua.id) ? manuscriptColors.brown : manuscriptColors.lightInk} 
-                          />
-                          <Text style={[styles.bookmarkText, { 
-                            color: bookmarkedDuas.has(dua.id) ? manuscriptColors.brown : manuscriptColors.lightInk 
-                          }]}>
-                            {bookmarkedDuas.has(dua.id) ? 'Bookmarked' : 'Bookmark'}
-                          </Text>
-                        </TouchableOpacity>
-
                         {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
                           <ExpandableText
                             text={`Reference: ${dua.reference || ''}\n\n${dua.fullReference}`}
@@ -949,21 +927,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 10,
     right: 10,
-  },
-  bookmarkButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    alignSelf: 'flex-start',
-    marginBottom: 12,
-    gap: 6,
-  },
-  bookmarkText: {
-    fontSize: 12,
-    fontWeight: '600',
   },
   backButton: {
     flexDirection: 'row',
