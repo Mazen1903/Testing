@@ -242,7 +242,6 @@ class ReminderService {
           badge: 1,
         },
         trigger: {
-          type: 'date',
           date: nextTrigger,
         },
       });
@@ -594,7 +593,6 @@ class ReminderService {
           badge: 1,
         },
         trigger: {
-          type: 'timeInterval',
           seconds: 2, // Fire in 2 seconds
         },
       });
