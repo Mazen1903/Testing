@@ -860,6 +860,7 @@ export default function SupplicationsScreen() {
                 Back to Series
               </Text>
             </TouchableOpacity>
+
             <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
               {selectedSeries?.title ? `${selectedSeries.title.toUpperCase()} CATEGORIES` : 'CATEGORIES'}
             </Text>
@@ -2604,54 +2605,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   reminderItem: {
-  },
-  timePickerContainer: {
-    marginBottom: 20,
-  },
-  timeDisplay: {
-    alignItems: 'center',
-    marginBottom: 16,
-    padding: 20,
-    borderRadius: 12,
-  },
-  timeDisplayText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  timePickers: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  timePickerSection: {
-    flex: 1,
-  },
-  timePicker: {
-    height: 120,
-    borderRadius: 8,
-  },
-  daySelection: {
-    marginBottom: 20,
-  },
-  quickDayButtons: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 12,
-  },
-  quickDayButton: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  quickDayButtonText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  dayButtons: {
-    flexDirection: 'row',
-    gap: 8,
   },
 });
 
