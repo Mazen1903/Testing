@@ -27,7 +27,6 @@ import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplic
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
 import { CollectionTab } from '@/src/features/supplications/components';
-import { SupplicationSettings } from '@/src/features/supplications/components';
 
 const { width, height } = Dimensions.get('window');
 
@@ -669,13 +668,7 @@ export default function SupplicationsScreen() {
                     </ScrollView>
                   ))}
                 </ScrollView>
-              ) : (
-                <View style={styles.errorContainer}>
-                  <Text style={[styles.errorText, { color: manuscriptColors.ink }]}>
-                    No supplications available
-                  </Text>
-                </View>
-              )}
+              ) : null}
 
               {/* Swipe Hint */}
               {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
@@ -732,15 +725,6 @@ export default function SupplicationsScreen() {
           </LinearGradient>
         )}
       </Modal>
-
-      {/* Supplication Settings Modal */}
-      <SupplicationSettings
-        visible={showSettings}
-        onClose={() => setShowSettings(false)}
-        settings={displaySettings}
-        onSettingsChange={setDisplaySettings}
-        manuscriptColors={manuscriptColors}
-      />
     </SafeAreaView>
   );
 }
@@ -940,6 +924,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
+  settingsButton: {
+    padding: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
   titleContainer: {
     flex: 1,
     alignItems: 'center',
@@ -1118,11 +1107,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
-  },
-  settingsButton: {
-    padding: 8,
-    borderRadius: 20,
-    borderWidth: 1,
   },
   learnMoreButton: {
     borderWidth: 1,
