@@ -171,6 +171,7 @@ export default function SupplicationsScreen() {
   const SeriesCard = ({ series }: { series: ZikrSeries }) => {
     const totalDuas = getAllDuasFromSeries(series).length;
     const hasSubcats = hasSubcategories(series);
+    const isBookmarked = bookmarkedDuas.has(series.id);
     
     return (
       <TouchableOpacity
@@ -184,7 +185,41 @@ export default function SupplicationsScreen() {
           <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
             <View style={styles.duaHeader}>
               <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{series.title}</Text>
-              <Ionicons name={series.icon as any} size={20} color={manuscriptColors.brown} />
+              <View style={styles.headerIcons}>
+                <TouchableOpacity
+                  style={[styles.bookmarkButtonCard, {
+                    backgroundColor: isBookmarked 
+                      ? manuscriptColors.brown + '20' 
+                      : manuscriptColors.border + '30',
+                    borderColor: manuscriptColors.border
+                  }]}
+                  onPress={() => toggleBookmark(subcategory.id)}
+                >
+                  <Ionicons 
+                    name={isBookmarked ? "bookmark" : "bookmark-outline"} 
+                    size={16} 
+                    color={isBookmarked ? manuscriptColors.brown : manuscriptColors.lightInk} 
+                  />
+                </TouchableOpacity>
+                <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
+              </View>
+                <TouchableOpacity
+                  style={[styles.bookmarkButtonCard, {
+                    backgroundColor: isBookmarked 
+                      ? manuscriptColors.brown + '20' 
+                      : manuscriptColors.border + '30',
+                    borderColor: manuscriptColors.border
+                  }]}
+                  onPress={() => toggleBookmark(series.id)}
+                >
+                  <Ionicons 
+                    name={isBookmarked ? "bookmark" : "bookmark-outline"} 
+                    size={16} 
+                    color={isBookmarked ? manuscriptColors.brown : manuscriptColors.lightInk} 
+                  />
+                </TouchableOpacity>
+                <Ionicons name={series.icon as any} size={20} color={manuscriptColors.brown} />
+              </View>
             </View>
             <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
               {series.description}
@@ -208,6 +243,9 @@ export default function SupplicationsScreen() {
   };
 
   const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => (
+    const isBookmarked = bookmarkedDuas.has(subcategory.id);
+    
+    return (
     <TouchableOpacity
       style={styles.manuscriptCard}
       onPress={() => startZikrSession(subcategory)}
@@ -934,6 +972,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 8,
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  bookmarkButtonCard: {
+    padding: 6,
+    borderRadius: 12,
+    borderWidth: 1,
   },
   tabNavigation: {
     paddingHorizontal: 20,
