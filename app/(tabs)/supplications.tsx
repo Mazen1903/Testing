@@ -27,6 +27,7 @@ import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplic
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
 import { CollectionTab } from '@/src/features/supplications/components';
+import { SupplicationSettings } from '@/src/features/supplications/components/SupplicationSettings';
 
 const { width, height } = Dimensions.get('window');
 
@@ -88,6 +89,20 @@ export default function SupplicationsScreen() {
   const [currentCount, setCurrentCount] = useState(0);
   const [bookmarkedDuas, setBookmarkedDuas] = useState<Set<string>>(new Set());
   const [isLoadingSession, setIsLoadingSession] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [displaySettings, setDisplaySettings] = useState({
+    showArabic: true,
+    showTransliteration: true,
+    showTranslation: true,
+    showReferences: true,
+    arabicFontSize: 24,
+    transliterationFontSize: 16,
+    translationFontSize: 16,
+    lineHeight: 1.5,
+    arabicAlignment: 'right' as 'left' | 'center' | 'right',
+    textAlignment: 'justify' as 'left' | 'center' | 'right' | 'justify',
+    fontFamily: 'System'
+  });
   const horizontalScrollRef = useRef<ScrollView>(null);
   
   // Animation values for bookmark buttons
@@ -570,124 +585,95 @@ export default function SupplicationsScreen() {
                         disabled={index !== currentDuaIndex}
                       >
                         {/* Arabic Text */}
-                        <View style={styles.arabicSection}>
-                          <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
-                            {dua.arabic || 'Arabic text not available'}
-                          </Text>
-                        </View>
+                        {displaySettings.showArabic && (
+                          <View style={styles.arabicSection}>
+                            <Text style={[
+                              styles.manuscriptArabic, 
+                              { 
+                                color: manuscriptColors.ink,
+                                fontSize: displaySettings.arabicFontSize,
+                                lineHeight: displaySettings.arabicFontSize * displaySettings.lineHeight,
+                                textAlign: displaySettings.arabicAlignment,
+                                fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
+                              }
+                            ]}>
+                              {dua.arabic || 'Arabic text not available'}
+                            </Text>
+                          </View>
+                        )}
 
-                        {/* Divider */}
-                        <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
+                        {/* Divider - only show if multiple sections are visible */}
+                        {(displaySettings.showArabic && (displaySettings.showTransliteration || displaySettings.showTranslation)) && (
+                          <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
+                        )}
 
                         {/* Transliteration */}
-                        <View style={styles.textSection}>
-                          <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
-                            {dua.transliteration || 'Transliteration not available'}
-                          </Text>
-                        </View>
+                        {displaySettings.showTransliteration && (
+                          <View style={styles.textSection}>
+                            <Text style={[
+                              styles.manuscriptTransliteration, 
+                              { 
+                                color: manuscriptColors.lightInk,
+                                fontSize: displaySettings.transliterationFontSize,
+                                lineHeight: displaySettings.transliterationFontSize * displaySettings.lineHeight,
+                                textAlign: displaySettings.textAlignment,
+                                fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
+                              }
+                            ]}>
+                              {dua.transliteration || 'Transliteration not available'}
+                            </Text>
+                          </View>
+                        )}
 
                         {/* Translation */}
-                        <View style={styles.textSection}>
-                          <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
-                            {dua.translation || 'Translation not available'}
-                          </Text>
-                        </View>
+                        {displaySettings.showTranslation && (
+                          <View style={styles.textSection}>
+                            <Text style={[
+                              styles.manuscriptTranslation, 
+                              { 
+                                color: manuscriptColors.lightInk,
+                                fontSize: displaySettings.translationFontSize,
+                                lineHeight: displaySettings.translationFontSize * displaySettings.lineHeight,
+                                textAlign: displaySettings.textAlignment,
+                                fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
+                              }
+                            ]}>
+                              {dua.translation || 'Translation not available'}
+                            </Text>
+                          </View>
+                        )}
 
                         {/* Reference */}
-                        <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
-                          {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
-                            <ExpandableText
-                              text={`Reference: ${dua.reference || 'No reference'}\n\n${dua.fullReference}`}
-                              numberOfLines={2}
-                              style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                              expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                              buttonStyle={[styles.learnMoreButton, {
-                            {/* Arabic Text */}
-                            {displaySettings.showArabic && (
-                              <View style={styles.arabicSection}>
-                                <Text style={[
-                                  styles.manuscriptArabic, 
-                                  { 
-                                    color: manuscriptColors.ink,
-                                    fontSize: displaySettings.arabicFontSize,
-                                    lineHeight: displaySettings.arabicFontSize * displaySettings.lineHeight,
-                                    textAlign: displaySettings.arabicAlignment,
-                                    fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
-                                  }
-                                ]}>
-                                  {dua.arabic || 'Arabic text not available'}
-                                </Text>
-                              </View>
+                        {displaySettings.showReferences && (
+                          <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
+                            {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
+                              <ExpandableText
+                                text={`Reference: ${dua.reference || 'No reference'}\n\n${dua.fullReference}`}
+                                numberOfLines={2}
+                                style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                                expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                                buttonStyle={[styles.learnMoreButton, {
+                                  backgroundColor: manuscriptColors.brown + '15',
+                                  borderColor: manuscriptColors.brown + '30'
+                                }]}
+                                textAlign="left"
+                              />
+                            ) : (
+                              <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
+                                {dua.reference || 'No reference available'}
+                              </Text>
                             )}
+                          </View>
+                        )}
+                      </TouchableOpacity>
+                    </ScrollView>
+                  ))}
+                </ScrollView>
+              ) : null}
 
-                            {/* Divider - only show if multiple sections are visible */}
-                            {(displaySettings.showArabic && (displaySettings.showTransliteration || displaySettings.showTranslation)) && (
-                              <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
-                            )}
-
-                            {/* Transliteration */}
-                            {displaySettings.showTransliteration && (
-                              <View style={styles.textSection}>
-                                <Text style={[
-                                  styles.manuscriptTransliteration, 
-                                  { 
-                                    color: manuscriptColors.lightInk,
-                                    fontSize: displaySettings.transliterationFontSize,
-                                    lineHeight: displaySettings.transliterationFontSize * displaySettings.lineHeight,
-                                    textAlign: displaySettings.textAlignment,
-                                    fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
-                                  }
-                                ]}>
-                                  {dua.transliteration || 'Transliteration not available'}
-                                </Text>
-                              </View>
-                            )}
-
-                            {/* Translation */}
-                            {displaySettings.showTranslation && (
-                              <View style={styles.textSection}>
-                                <Text style={[
-                                  styles.manuscriptTranslation, 
-                                  { 
-                                    color: manuscriptColors.lightInk,
-                                    fontSize: displaySettings.translationFontSize,
-                                    lineHeight: displaySettings.translationFontSize * displaySettings.lineHeight,
-                                    textAlign: displaySettings.textAlignment,
-                                    fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
-                                  }
-                                ]}>
-                                  {dua.translation || 'Translation not available'}
-                                </Text>
-                              </View>
-                            )}
-
-                            {/* Reference */}
-                            {displaySettings.showReferences && (
-                              <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
-                                {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
-                                  <ExpandableText
-                                    text={`Reference: ${dua.reference || 'No reference'}\n\n${dua.fullReference}`}
-                                    numberOfLines={2}
-                                    style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                                    expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                                    buttonStyle={[styles.learnMoreButton, {
-                                      backgroundColor: manuscriptColors.brown + '15',
-                                      borderColor: manuscriptColors.brown + '30'
-                                    }]}
-                                    textAlign="left"
-                                  />
-                                ) : (
-                                  <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
-                                    {dua.reference || 'No reference available'}
-                                  </Text>
-                                )}
-                              </View>
-                            )}
-                          ]}
-                        />
-                      ))}
-                    </View>
-                  )}
+              {/* Swipe Hint */}
+              {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
+                <View style={styles.swipeIndicatorContainer}>
                   <Text style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}>
                     {selectedSubcategory.duas.length > 1
                       ? 'Swipe left/right to navigate • Tap anywhere to count'
@@ -964,6 +950,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 2,
   },
+  settingsButton: {
+    padding: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
   progressIndicator: {
     padding: 8,
     borderRadius: 16,
@@ -1126,11 +1117,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
-  },
-  settingsButton: {
-    padding: 8,
-    borderRadius: 20,
-    borderWidth: 1,
   },
   learnMoreButton: {
     borderWidth: 1,
