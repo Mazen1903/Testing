@@ -12,108 +12,122 @@ interface CollectionTabProps {
   manuscriptColors: any;
 }
 
-interface SavedCollection {
-  id: string;
-  name: string;
-  description: string;
-  duas: Dua[];
-  createdAt: string;
-  icon: string;
-  color: string;
+interface BookmarkedDua extends Dua {
+  bookmarkedAt: string;
+  category: string;
+  subcategory: string;
 }
 
 export default function CollectionTab({ manuscriptColors }: CollectionTabProps) {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
   
-  // Mock saved collections
-  const [savedCollections, setSavedCollections] = useState<SavedCollection[]>([
+  // Mock bookmarked duas
+  const [bookmarkedDuas, setBookmarkedDuas] = useState<BookmarkedDua[]>([
     {
-      id: '1',
-      name: 'My Daily Essentials',
-      description: 'Morning and evening duas I recite daily',
-      duas: [], // Would contain actual duas
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      icon: 'star',
-      color: manuscriptColors.brown
+      id: '1-1',
+      title: 'Upon Waking Up',
+      arabic: 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',
+      transliteration: 'Alhamdu lillahil-ladhi ahyana ba\'da ma amatana wa ilayhin-nushur.',
+      translation: 'All praise is for Allah who gave us life after having taken it from us and unto Him is the resurrection.',
+      category: 'Daily Supplications',
+      subcategory: 'Wakeup Supplications',
+      occasion: 'Upon waking up',
+      reference: 'Bukhari 6/350',
+      repetitions: 1,
+      bookmarkedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
     },
     {
-      id: '2',
-      name: 'Protection Collection',
-      description: 'Duas for seeking Allah\'s protection',
-      duas: [], // Would contain actual duas
-      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      icon: 'shield',
-      color: colors.success
+      id: '2-3',
+      title: 'Before Eating',
+      arabic: 'بِسْمِ اللَّهِ',
+      transliteration: 'Bismillah.',
+      translation: 'In the name of Allah.',
+      category: 'Hadith-based Supplications',
+      subcategory: 'Eating, Drinking & Fasting',
+      occasion: 'Before eating',
+      reference: 'Abu Dawud 3/347',
+      repetitions: 1,
+      bookmarkedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
     },
     {
-      id: '3',
-      name: 'Travel Duas',
-      description: 'Essential supplications for journeys',
-      duas: [], // Would contain actual duas
-      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-      icon: 'airplane',
-      color: colors.secondary
+      id: '3-1',
+      title: 'Prophet Adam\'s Repentance',
+      arabic: 'رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ',
+      transliteration: 'Rabbana zalamna anfusana wa in lam taghfir lana wa tarhamna lanakoonanna minal-khasireen.',
+      translation: 'Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers.',
+      category: 'Quranic Supplications',
+      subcategory: 'Prophet Adam',
+      occasion: 'Seeking forgiveness',
+      reference: 'Quran 7:23',
+      repetitions: 3,
+      bookmarkedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
     }
   ]);
 
-  const [recentlyViewed, setRecentlyViewed] = useState<Dua[]>([
-    // Mock recently viewed duas
+  const [recentlyViewed, setRecentlyViewed] = useState<BookmarkedDua[]>([
+    // Most recent duas viewed (subset of bookmarked)
+    bookmarkedDuas[0], // Upon waking up
+    bookmarkedDuas[2], // Prophet Adam's repentance
   ]);
 
-  const handleCreateCollection = () => {
+  const handleDuaPress = (dua: BookmarkedDua) => {
     Alert.alert(
-      'Create Collection',
-      'This feature will allow you to create custom collections of your favorite duas.',
-      [{ text: 'OK' }]
+      dua.title,
+      `From: ${dua.category} > ${dua.subcategory}\n\n${dua.translation}`,
+      [
+        { text: 'Remove Bookmark', style: 'destructive', onPress: () => removeDuaFromBookmarks(dua.id) },
+        { text: 'Close', style: 'cancel' }
+      ]
     );
   };
 
-  const handleOpenCollection = (collection: SavedCollection) => {
-    Alert.alert(
-      collection.name,
-      `Open collection with ${collection.duas.length} duas`,
-      [{ text: 'OK' }]
-    );
+  const removeDuaFromBookmarks = (duaId: string) => {
+    setBookmarkedDuas(prev => prev.filter(dua => dua.id !== duaId));
+    setRecentlyViewed(prev => prev.filter(dua => dua.id !== duaId));
   };
 
-  const CollectionCard = ({ collection, index }: { collection: SavedCollection; index: number }) => (
+  const BookmarkedDuaCard = ({ dua, index }: { dua: BookmarkedDua; index: number }) => (
     <Animated.View entering={FadeInDown.delay(200 + index * 100)}>
       <TouchableOpacity
-        style={styles.collectionCard}
-        onPress={() => handleOpenCollection(collection)}
+        style={styles.duaCard}
+        onPress={() => handleDuaPress(dua)}
       >
         <LinearGradient
           colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
           style={styles.cardGradient}
         >
           <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
-            <View style={styles.collectionHeader}>
-              <View style={[styles.collectionIcon, { backgroundColor: collection.color + '20' }]}>
-                <Ionicons name={collection.icon as any} size={24} color={collection.color} />
-              </View>
-              <View style={styles.collectionInfo}>
-                <Text style={[styles.collectionName, { color: manuscriptColors.ink }]}>
-                  {collection.name}
+            <View style={styles.duaHeader}>
+              <View style={styles.duaInfo}>
+                <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>
+                  {dua.title}
                 </Text>
-                <Text style={[styles.collectionDescription, { color: manuscriptColors.lightInk }]}>
-                  {collection.description}
+                <Text style={[styles.duaCategory, { color: manuscriptColors.brown }]}>
+                  {dua.subcategory}
                 </Text>
               </View>
-              <TouchableOpacity style={styles.moreButton}>
-                <Ionicons name="ellipsis-horizontal" size={20} color={manuscriptColors.lightInk} />
+              <TouchableOpacity 
+                style={styles.bookmarkButton}
+                onPress={() => removeDuaFromBookmarks(dua.id)}
+              >
+                <Ionicons name="bookmark" size={20} color={manuscriptColors.brown} />
               </TouchableOpacity>
             </View>
             
-            <View style={styles.collectionFooter}>
-              <View style={styles.collectionStats}>
-                <Ionicons name="book" size={12} color={manuscriptColors.brown} />
-                <Text style={[styles.collectionStatsText, { color: manuscriptColors.brown }]}>
-                  {collection.duas.length} duas
+            <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
+              {dua.translation}
+            </Text>
+            
+            <View style={styles.duaFooter}>
+              <View style={styles.duaFooterLeft}>
+                <Ionicons name="time" size={12} color={manuscriptColors.brown} />
+                <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
+                  {dua.repetitions === 1 ? 'Once' : `${dua.repetitions}x`}
                 </Text>
               </View>
-              <Text style={[styles.collectionDate, { color: manuscriptColors.lightInk }]}>
-                Created {new Date(collection.createdAt).toLocaleDateString()}
+              <Text style={[styles.bookmarkedDate, { color: manuscriptColors.lightInk }]}>
+                {new Date(dua.bookmarkedAt).toLocaleDateString()}
               </Text>
             </View>
           </View>
@@ -126,104 +140,14 @@ export default function CollectionTab({ manuscriptColors }: CollectionTabProps) 
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
-        <Text style={[styles.headerTitle, { color: manuscriptColors.ink }]}>My Collections</Text>
+        <Text style={[styles.headerTitle, { color: manuscriptColors.ink }]}>Bookmarked Duas</Text>
         <Text style={[styles.headerSubtitle, { color: manuscriptColors.lightInk }]}>
-          Your saved duas and custom collections
+          Your saved supplications for quick access
         </Text>
       </Animated.View>
 
-      {/* Create New Collection Button */}
-      <Animated.View entering={FadeInDown.delay(150)}>
-        <TouchableOpacity
-          style={styles.createButton}
-          onPress={handleCreateCollection}
-        >
-          <LinearGradient
-            colors={[manuscriptColors.brown, manuscriptColors.brown + 'DD']}
-            style={styles.createButtonGradient}
-          >
-            <Ionicons name="add" size={20} color="#FFFFFF" />
-            <Text style={styles.createButtonText}>Create New Collection</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </Animated.View>
-
-      {/* Quick Access Section */}
-      <Animated.View entering={FadeInDown.delay(200)} style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-          QUICK ACCESS
-        </Text>
-        
-        <View style={styles.quickAccessGrid}>
-          <TouchableOpacity style={styles.quickAccessCard}>
-            <LinearGradient
-              colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
-              style={styles.cardGradient}
-            >
-              <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
-                <View style={[styles.quickAccessIcon, { backgroundColor: colors.success + '20' }]}>
-                  <Ionicons name="heart" size={24} color={colors.success} />
-                </View>
-                <Text style={[styles.quickAccessTitle, { color: manuscriptColors.ink }]}>
-                  Favorites
-                </Text>
-                <Text style={[styles.quickAccessCount, { color: manuscriptColors.lightInk }]}>
-                  12 duas
-                </Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.quickAccessCard}>
-            <LinearGradient
-              colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
-              style={styles.cardGradient}
-            >
-              <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
-                <View style={[styles.quickAccessIcon, { backgroundColor: colors.secondary + '20' }]}>
-                  <Ionicons name="time" size={24} color={colors.secondary} />
-                </View>
-                <Text style={[styles.quickAccessTitle, { color: manuscriptColors.ink }]}>
-                  Recent
-                </Text>
-                <Text style={[styles.quickAccessCount, { color: manuscriptColors.lightInk }]}>
-                  8 duas
-                </Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-      </Animated.View>
-
-      {/* Saved Collections */}
-      <Animated.View entering={FadeInDown.delay(250)} style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-          MY COLLECTIONS ({savedCollections.length})
-        </Text>
-        
-        {savedCollections.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Ionicons name="bookmark-outline" size={48} color={manuscriptColors.border} />
-            <Text style={[styles.emptyStateTitle, { color: manuscriptColors.ink }]}>
-              No Collections Yet
-            </Text>
-            <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
-              Create your first collection to organize your favorite duas
-            </Text>
-          </View>
-        ) : (
-          savedCollections.map((collection, index) => (
-            <CollectionCard key={collection.id} collection={collection} index={index} />
-          ))
-        )}
-      </Animated.View>
-
-      {/* Statistics Section */}
-      <Animated.View entering={FadeInDown.delay(300)} style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-          YOUR PROGRESS
-        </Text>
-        
+      {/* Quick Stats */}
+      <Animated.View entering={FadeInDown.delay(150)} style={styles.statsContainer}>
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
             <LinearGradient
@@ -232,10 +156,14 @@ export default function CollectionTab({ manuscriptColors }: CollectionTabProps) 
             >
               <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
                 <View style={[styles.statIcon, { backgroundColor: manuscriptColors.brown + '20' }]}>
-                  <Ionicons name="calendar" size={20} color={manuscriptColors.brown} />
+                  <Ionicons name="bookmark" size={20} color={manuscriptColors.brown} />
                 </View>
-                <Text style={[styles.statNumber, { color: manuscriptColors.ink }]}>7</Text>
-                <Text style={[styles.statLabel, { color: manuscriptColors.lightInk }]}>Day Streak</Text>
+                <Text style={[styles.statNumber, { color: manuscriptColors.ink }]}>
+                  {bookmarkedDuas.length}
+                </Text>
+                <Text style={[styles.statLabel, { color: manuscriptColors.lightInk }]}>
+                  Bookmarked
+                </Text>
               </View>
             </LinearGradient>
           </View>
@@ -247,10 +175,14 @@ export default function CollectionTab({ manuscriptColors }: CollectionTabProps) 
             >
               <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
                 <View style={[styles.statIcon, { backgroundColor: colors.success + '20' }]}>
-                  <Ionicons name="checkmark-circle" size={20} color={colors.success} />
+                  <Ionicons name="eye" size={20} color={colors.success} />
                 </View>
-                <Text style={[styles.statNumber, { color: manuscriptColors.ink }]}>45</Text>
-                <Text style={[styles.statLabel, { color: manuscriptColors.lightInk }]}>Completed</Text>
+                <Text style={[styles.statNumber, { color: manuscriptColors.ink }]}>
+                  {recentlyViewed.length}
+                </Text>
+                <Text style={[styles.statLabel, { color: manuscriptColors.lightInk }]}>
+                  Recent
+                </Text>
               </View>
             </LinearGradient>
           </View>
@@ -262,14 +194,51 @@ export default function CollectionTab({ manuscriptColors }: CollectionTabProps) 
             >
               <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
                 <View style={[styles.statIcon, { backgroundColor: colors.secondary + '20' }]}>
-                  <Ionicons name="time" size={20} color={colors.secondary} />
+                  <Ionicons name="calendar" size={20} color={colors.secondary} />
                 </View>
-                <Text style={[styles.statNumber, { color: manuscriptColors.ink }]}>2.5h</Text>
-                <Text style={[styles.statLabel, { color: manuscriptColors.lightInk }]}>Total Time</Text>
+                <Text style={[styles.statNumber, { color: manuscriptColors.ink }]}>7</Text>
+                <Text style={[styles.statLabel, { color: manuscriptColors.lightInk }]}>
+                  Day Streak
+                </Text>
               </View>
             </LinearGradient>
           </View>
         </View>
+      </Animated.View>
+
+      {/* Recently Viewed Section */}
+      {recentlyViewed.length > 0 && (
+        <Animated.View entering={FadeInDown.delay(200)} style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
+            RECENTLY VIEWED
+          </Text>
+          {recentlyViewed.map((dua, index) => (
+            <BookmarkedDuaCard key={`recent-${dua.id}`} dua={dua} index={index} />
+          ))}
+        </Animated.View>
+      )}
+
+      {/* All Bookmarked Duas */}
+      <Animated.View entering={FadeInDown.delay(250)} style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
+          ALL BOOKMARKS ({bookmarkedDuas.length})
+        </Text>
+        
+        {bookmarkedDuas.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Ionicons name="bookmark-outline" size={48} color={manuscriptColors.border} />
+            <Text style={[styles.emptyStateTitle, { color: manuscriptColors.ink }]}>
+              No Bookmarked Duas
+            </Text>
+            <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
+              Bookmark your favorite duas while browsing to access them quickly here
+            </Text>
+          </View>
+        ) : (
+          bookmarkedDuas.map((dua, index) => (
+            <BookmarkedDuaCard key={dua.id} dua={dua} index={index} />
+          ))
+        )}
       </Animated.View>
     </ScrollView>
   );
@@ -293,38 +262,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
-  createButton: {
-    marginBottom: 24,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  createButtonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    gap: 8,
-  },
-  createButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  section: {
+  statsContainer: {
     marginBottom: 24,
   },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    marginBottom: 12,
-  },
-  quickAccessGrid: {
+  statsGrid: {
     flexDirection: 'row',
     gap: 12,
   },
-  quickAccessCard: {
+  statCard: {
     flex: 1,
     borderRadius: 12,
     overflow: 'hidden',
@@ -338,70 +283,78 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
   },
-  quickAccessIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  quickAccessTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  quickAccessCount: {
-    fontSize: 12,
-  },
-  collectionCard: {
-    marginBottom: 12,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  collectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  collectionIcon: {
+  statIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginBottom: 8,
   },
-  collectionInfo: {
+  statNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 11,
+    textAlign: 'center',
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginBottom: 12,
+  },
+  duaCard: {
+    marginBottom: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  duaHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  duaInfo: {
     flex: 1,
   },
-  collectionName: {
+  duaTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 2,
   },
-  collectionDescription: {
-    fontSize: 13,
-    lineHeight: 18,
+  duaCategory: {
+    fontSize: 12,
+    fontWeight: '500',
   },
-  moreButton: {
+  bookmarkButton: {
     padding: 4,
   },
-  collectionFooter: {
+  duaTranslation: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  duaFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  collectionStats: {
+  duaFooterLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
   },
-  collectionStatsText: {
-    fontSize: 12,
+  duaReference: {
+    fontSize: 11,
     fontWeight: '500',
+    marginLeft: 4,
   },
-  collectionDate: {
+  bookmarkedDate: {
     fontSize: 11,
   },
   emptyState: {
@@ -419,31 +372,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 20,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  statCard: {
-    flex: 1,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  statIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 11,
-    textAlign: 'center',
   },
 });
