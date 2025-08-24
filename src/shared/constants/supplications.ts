@@ -97,7 +97,8 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           }
         ]
       }
-    ]
+    ],
+    category: ''
   },
   {
     id: 'hadith-based',
@@ -1689,7 +1690,8 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           }
         ]
       }
-    ]
+    ],
+    category: ''
   },
   {
     id: 'quranic-supplications',
@@ -2049,8 +2051,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           }
         ]
       }
-    ]
+    ],
+    category: ''
   }
 ];
-
-export { ZIKR_SERIES, ZIKR_CATEGORIES }
