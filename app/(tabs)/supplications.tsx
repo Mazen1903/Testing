@@ -531,6 +531,16 @@ export default function SupplicationsScreen() {
                     {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
                   </Text>
                 </View>
+
+                <TouchableOpacity
+                  style={[styles.settingsButton, {
+                    backgroundColor: manuscriptColors.parchment,
+                    borderColor: manuscriptColors.border
+                  }]}
+                  onPress={() => setShowSettings(true)}
+                >
+                  <Ionicons name="settings" size={20} color={manuscriptColors.brown} />
+                </TouchableOpacity>
               </View>
 
               {/* Manuscript Content - Horizontal Swiping */}
@@ -592,50 +602,87 @@ export default function SupplicationsScreen() {
                               style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
                               expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
                               buttonStyle={[styles.learnMoreButton, {
-                                backgroundColor: manuscriptColors.brown + '15',
-                                borderColor: manuscriptColors.brown + '30'
-                              }]}
-                              textAlign="left"
-                            />
-                          ) : (
-                            <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
-                              {dua.reference || 'No reference available'}
-                            </Text>
-                          )}
-                        </View>
-                      </TouchableOpacity>
-                    </ScrollView>
-                  ))}
-                </ScrollView>
-              ) : (
-                <View style={styles.errorContainer}>
-                  <Text style={[styles.errorText, { color: manuscriptColors.ink }]}>
-                    No supplications available
-                  </Text>
-                  <TouchableOpacity 
-                    style={[styles.retryButton, { backgroundColor: manuscriptColors.brown }]}
-                    onPress={closeZikrSession}
-                  >
-                    <Text style={styles.retryButtonText}>Go Back</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+                            {/* Arabic Text */}
+                            {displaySettings.showArabic && (
+                              <View style={styles.arabicSection}>
+                                <Text style={[
+                                  styles.manuscriptArabic, 
+                                  { 
+                                    color: manuscriptColors.ink,
+                                    fontSize: displaySettings.arabicFontSize,
+                                    lineHeight: displaySettings.arabicFontSize * displaySettings.lineHeight,
+                                    textAlign: displaySettings.arabicAlignment,
+                                    fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
+                                  }
+                                ]}>
+                                  {dua.arabic || 'Arabic text not available'}
+                                </Text>
+                              </View>
+                            )}
 
-              {/* Navigation Indicator */}
-              {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
-                <View style={styles.swipeIndicatorContainer}>
-                  {selectedSubcategory.duas.length > 1 && (
-                    <View style={styles.swipeDotsContainer}>
-                      {selectedSubcategory.duas.map((_, index) => (
-                        <View
-                          key={index}
-                          style={[
-                            styles.swipeDot,
-                            {
-                              backgroundColor: index === currentDuaIndex
-                                ? manuscriptColors.brown
-                                : manuscriptColors.border
-                            }
+                            {/* Divider - only show if multiple sections are visible */}
+                            {(displaySettings.showArabic && (displaySettings.showTransliteration || displaySettings.showTranslation)) && (
+                              <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
+                            )}
+
+                            {/* Transliteration */}
+                            {displaySettings.showTransliteration && (
+                              <View style={styles.textSection}>
+                                <Text style={[
+                                  styles.manuscriptTransliteration, 
+                                  { 
+                                    color: manuscriptColors.lightInk,
+                                    fontSize: displaySettings.transliterationFontSize,
+                                    lineHeight: displaySettings.transliterationFontSize * displaySettings.lineHeight,
+                                    textAlign: displaySettings.textAlignment,
+                                    fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
+                                  }
+                                ]}>
+                                  {dua.transliteration || 'Transliteration not available'}
+                                </Text>
+                              </View>
+                            )}
+
+                            {/* Translation */}
+                            {displaySettings.showTranslation && (
+                              <View style={styles.textSection}>
+                                <Text style={[
+                                  styles.manuscriptTranslation, 
+                                  { 
+                                    color: manuscriptColors.lightInk,
+                                    fontSize: displaySettings.translationFontSize,
+                                    lineHeight: displaySettings.translationFontSize * displaySettings.lineHeight,
+                                    textAlign: displaySettings.textAlignment,
+                                    fontFamily: displaySettings.fontFamily === 'System' ? 'System' : displaySettings.fontFamily.toLowerCase()
+                                  }
+                                ]}>
+                                  {dua.translation || 'Translation not available'}
+                                </Text>
+                              </View>
+                            )}
+
+                            {/* Reference */}
+                            {displaySettings.showReferences && (
+                              <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
+                                {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
+                                  <ExpandableText
+                                    text={`Reference: ${dua.reference || 'No reference'}\n\n${dua.fullReference}`}
+                                    numberOfLines={2}
+                                    style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                                    expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                                    buttonStyle={[styles.learnMoreButton, {
+                                      backgroundColor: manuscriptColors.brown + '15',
+                                      borderColor: manuscriptColors.brown + '30'
+                                    }]}
+                                    textAlign="left"
+                                  />
+                                ) : (
+                                  <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
+                                    {dua.reference || 'No reference available'}
+                                  </Text>
+                                )}
+                              </View>
+                            )}
                           ]}
                         />
                       ))}
@@ -693,6 +740,15 @@ export default function SupplicationsScreen() {
           </LinearGradient>
         )}
       </Modal>
+
+      {/* Supplication Settings Modal */}
+      <SupplicationSettings
+        visible={showSettings}
+        onClose={() => setShowSettings(false)}
+        settings={displaySettings}
+        onSettingsChange={setDisplaySettings}
+        manuscriptColors={manuscriptColors}
+      />
     </SafeAreaView>
   );
 }
@@ -1070,6 +1126,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
+  },
+  settingsButton: {
+    padding: 8,
+    borderRadius: 20,
+    borderWidth: 1,
   },
   learnMoreButton: {
     borderWidth: 1,
