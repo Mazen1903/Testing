@@ -3,47 +3,107 @@ import { ZikrSeries, ZikrCategory, DuaSubcategory, Dua } from '@/shared/types/su
 // Zikr Categories
 export const ZIKR_CATEGORIES: ZikrCategory[] = [
   { id: 'all', name: 'All', icon: 'apps' },
-  { id: 'morning', name: 'Morning', icon: 'sunny' },
-  { id: 'evening', name: 'Evening', icon: 'moon' },
   { id: 'daily', name: 'Daily', icon: 'calendar' },
-  { id: 'protection', name: 'Protection', icon: 'shield' },
-  { id: 'gratitude', name: 'Gratitude', icon: 'heart' },
+  { id: 'hadith', name: 'Hadith', icon: 'book' },
+  { id: 'quranic', name: 'Quranic', icon: 'library' },
 ];
 
-// Sample duas for demonstration
-const sampleDuas: Dua[] = [
-  {
-    id: '1-1',
-    title: 'The Virtue of Remembering Allah',
-    arabic: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
-    transliteration: 'Lā ilāha illā Allāhu waḥdahu lā sharīka lahu, lahu al-mulku wa lahu al-ḥamdu, wa huwa ʿalā kulli shay\'in qadīr',
-    translation: 'There is no god but Allah alone, with no partner. To Him belongs the dominion and to Him belongs all praise, and He has power over all things.',
-    category: 'Virtues & General Remembrance',
-    occasion: 'General remembrance',
-    reference: 'Bukhari and Muslim',
-    repetitions: 100
-  },
-  {
-    id: '1-2',
-    title: 'The Excellence of Remembering Allah',
-    arabic: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',
-    transliteration: 'Subḥān Allāhi wa biḥamdih',
-    translation: 'Glory be to Allah and praise be to Him.',
-    category: 'Virtues & General Remembrance',
-    occasion: 'General remembrance',
-    reference: 'Bukhari and Muslim',
-    fullReference: 'The Prophet (ﷺ) said: "Whoever says \'Glory be to Allah and praise be to Him\' (Subhan Allah wa bihamdihi) a hundred times during the day, his sins are wiped away, even if they are like the foam of the sea." [Bukhari and Muslim]\n\nThis simple yet powerful dhikr carries immense reward. The combination of glorifying Allah (Subhan Allah) while simultaneously praising Him (wa bihamdihi) acknowledges both His perfection and our gratitude. The Prophet (ﷺ) emphasized that even saying this 100 times can lead to complete forgiveness of sins, no matter how numerous they may be.',
-    repetitions: 100
-  }
-];
-
-// Zikr Series with detailed subcategories
+// Zikr Series with new structure
 export const ZIKR_SERIES: ZikrSeries[] = [
+  {
+    id: 'daily-supplications',
+    title: 'Daily Supplications',
+    description: 'The Importance of Daily Supplications - Essential prayers for every Muslim\'s daily routine',
+    categories: ['daily'],
+    icon: 'calendar',
+    subcategories: [
+      {
+        id: 'wakeup-supplications',
+        name: 'Wakeup Supplications',
+        description: 'Supplications to recite upon waking up',
+        icon: 'sunny',
+        category: 'Wakeup',
+        duas: [
+          {
+            id: 'w-1',
+            title: 'Upon Waking Up',
+            arabic: 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',
+            transliteration: 'Al-ḥamdu lillāhi alladhī aḥyānā baʿda mā amātanā wa ilayhi an-nushūr',
+            translation: 'Praise be to Allah who gave us life after having taken it from us, and unto Him is the resurrection.',
+            category: 'Wakeup',
+            occasion: 'Upon waking up',
+            reference: 'Bukhari',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'morning-supplications',
+        name: 'Morning Supplications',
+        description: 'Supplications to recite in the morning',
+        icon: 'sunny',
+        category: 'Morning',
+        duas: [
+          {
+            id: 'm-1',
+            title: 'Morning Protection',
+            arabic: 'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ',
+            transliteration: 'Aṣbaḥnā wa aṣbaḥa al-mulku lillāh, wal-ḥamdu lillāh, lā ilāha illā Allāhu waḥdahu lā sharīka lah',
+            translation: 'We have entered the morning and the kingdom belongs to Allah. Praise be to Allah. There is no god but Allah alone, with no partner.',
+            category: 'Morning',
+            occasion: 'Morning remembrance',
+            reference: 'Muslim',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'evening-supplications',
+        name: 'Evening Supplications',
+        description: 'Supplications to recite in the evening',
+        icon: 'moon',
+        category: 'Evening',
+        duas: [
+          {
+            id: 'e-1',
+            title: 'Evening Protection',
+            arabic: 'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ',
+            transliteration: 'Amsaynā wa amsā al-mulku lillāh, wal-ḥamdu lillāh, lā ilāha illā Allāhu waḥdahu lā sharīka lah',
+            translation: 'We have entered the evening and the kingdom belongs to Allah. Praise be to Allah. There is no god but Allah alone, with no partner.',
+            category: 'Evening',
+            occasion: 'Evening remembrance',
+            reference: 'Muslim',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'bedtime-supplications',
+        name: 'Bedtime Supplications',
+        description: 'Supplications to recite before going to sleep',
+        icon: 'bed',
+        category: 'Bedtime',
+        duas: [
+          {
+            id: 'b-1',
+            title: 'Before Going to Sleep',
+            arabic: 'بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ',
+            transliteration: 'Bi-ismika rabbī waḍaʿtu janbī, wa bika arfaʿuh, fa-in amsakta nafsī fa-irḥamhā, wa in arsaltahā fa-iḥfaẓhā bimā taḥfaẓu bihi ʿibādaka aṣ-ṣāliḥīn',
+            translation: 'In Your name, my Lord, I lay down my side, and by You I raise it up. If You take my soul, have mercy on it, and if You send it back, protect it with that which You protect Your righteous servants.',
+            category: 'Bedtime',
+            occasion: 'Before sleeping',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          }
+        ]
+      }
+    ]
+  },
   {
     id: 'hadith-based',
     title: 'Hadith-based Supplications',
-    description: 'Authentic supplications from the Quran and Sunnah for every aspect of life',
-    categories: ['daily', 'protection', 'gratitude'],
+    description: 'The Importance of Hadith-based Supplications - Authentic supplications from the Quran and Sunnah for every aspect of life',
+    categories: ['hadith'],
     icon: 'book',
     subcategories: [
       {
@@ -90,7 +150,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           {
             id: '1-4',
             title: 'How the Prophet (ﷺ) Glorified Allah',
-            arabic: 'سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ',
+            arabic: 'سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَارُ',
             transliteration: 'Subḥān Allāhi wal-ḥamdu lillāhi wa lā ilāha illā Allāhu wa Allāhu akbar',
             translation: 'Glory be to Allah, and praise be to Allah, and there is no god but Allah, and Allah is the Greatest.',
             category: 'Virtues & General Remembrance',
@@ -385,6 +445,72 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             occasion: 'During tashahhud',
             reference: 'Bukhari and Muslim',
             repetitions: 1
+          },
+          {
+            id: '6-7',
+            title: 'Prayers Upon the Prophet ﷺ After the Tashahhud',
+            arabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ',
+            transliteration: 'Allāhumma ṣalli ʿalā Muḥammadin wa ʿalā āli Muḥammadin kamā ṣallayta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīma innaka ḥamīdun majīd',
+            translation: 'O Allah, send prayers upon Muhammad and upon the family of Muhammad as You sent prayers upon Ibrahim and upon the family of Ibrahim. Indeed, You are Praiseworthy and Glorious.',
+            category: 'Inside the Prayer',
+            occasion: 'After tashahhud',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '6-8',
+            title: 'After the Final Tashahhud and Before Ending the Prayer',
+            arabic: 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ',
+            transliteration: 'Allāhumma aʿinnī ʿalā dhikrika wa shukrika wa ḥusni ʿibādatik',
+            translation: 'O Allah, help me to remember You, to thank You, and to worship You in the best manner.',
+            category: 'Inside the Prayer',
+            occasion: 'Before ending prayer',
+            reference: 'Abu Dawud, Nasai',
+            repetitions: 1
+          },
+          {
+            id: '6-9',
+            title: 'When Afflicted by Satan Whisperings in Prayer or Quran Recitation',
+            arabic: 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ',
+            transliteration: 'Aʿūdhu billāhi min ash-shayṭāni ar-rajīm',
+            translation: 'I seek refuge in Allah from Satan the accursed.',
+            category: 'Inside the Prayer',
+            occasion: 'When experiencing whispers during prayer',
+            reference: 'Muslim',
+            repetitions: 3
+          },
+          {
+            id: '6-10',
+            title: 'What to Say After Completing the Prayer',
+            arabic: 'أَسْتَغْفِرُ اللَّهَ، أَسْتَغْفِرُ اللَّهَ، أَسْتَغْفِرُ اللَّهَ، اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ',
+            transliteration: 'Astaghfiru Allāh, astaghfiru Allāh, astaghfiru Allāh, Allāhumma anta as-salāmu wa minka as-salām tabārakta yā dhā al-jalāli wal-ikrām',
+            translation: 'I seek Allah\'s forgiveness (3x). O Allah, You are Peace and from You comes peace. Blessed are You, O Owner of majesty and honor.',
+            category: 'Inside the Prayer',
+            occasion: 'After completing prayer',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '6-11',
+            title: 'Invocations for Qunut in Witr (Night Prayer)',
+            arabic: 'اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ',
+            transliteration: 'Allāhumma ihdinī fīman hadayt, wa ʿāfinī fīman ʿāfayt, wa tawallānī fīman tawallayt',
+            translation: 'O Allah, guide me among those You have guided, grant me health among those You have granted health, and take me as an ally among those You have taken as allies.',
+            category: 'Inside the Prayer',
+            occasion: 'During Qunut in Witr prayer',
+            reference: 'Abu Dawud, Tirmidhi',
+            repetitions: 1
+          },
+          {
+            id: '6-12',
+            title: 'Immediately Following the Witr Prayer',
+            arabic: 'سُبْحَانَ الْمَلِكِ الْقُدُّوسِ',
+            transliteration: 'Subḥāna al-maliki al-quddūs',
+            translation: 'Glory be to the King, the Most Holy.',
+            category: 'Inside the Prayer',
+            occasion: 'After Witr prayer',
+            reference: 'Abu Dawud, Nasai',
+            repetitions: 3
           }
         ]
       },
@@ -408,7 +534,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           },
           {
             id: '7-2',
-            title: 'Upon Experiencing Unrest, Fear, or Apprehensiveness',
+            title: 'Upon Experiencing Unrest, Fear, Apprehensiveness Before or During Sleep',
             arabic: 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ، وَشَرِّ عِبَادِهِ، وَمِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَنْ يَحْضُرُونِ',
             transliteration: 'Aʿūdhu bi-kalimāti Allāhi at-tāmmāti min ghaḍabihi wa ʿiqābihi, wa sharri ʿibādihi, wa min hamazāti ash-shayāṭīni wa an yaḥḍurūn',
             translation: 'I seek refuge in the perfect words of Allah from His anger and punishment, from the evil of His servants, from the whispers of devils, and from their presence.',
@@ -419,25 +545,14 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           },
           {
             id: '7-3',
-            title: 'Upon Seeing a Good Dream',
+            title: 'Upon Seeing a Good Dream or a Bad Dream',
             arabic: 'الْحَمْدُ لِلَّهِ',
             transliteration: 'Al-ḥamdu lillāh',
-            translation: 'Praise be to Allah.',
+            translation: 'Praise be to Allah (for good dreams). For bad dreams: I seek refuge in Allah from Satan the accursed.',
             category: 'Sleep Issues',
-            occasion: 'After a good dream',
+            occasion: 'After dreams',
             reference: 'Bukhari and Muslim',
             repetitions: 1
-          },
-          {
-            id: '7-4',
-            title: 'Upon Seeing a Bad Dream',
-            arabic: 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ',
-            transliteration: 'Aʿūdhu billāhi min ash-shayṭāni ar-rajīm',
-            translation: 'I seek refuge in Allah from Satan the accursed.',
-            category: 'Sleep Issues',
-            occasion: 'After a bad dream',
-            reference: 'Bukhari and Muslim',
-            repetitions: 3
           }
         ]
       },
@@ -483,6 +598,17 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           },
           {
             id: '8-4',
+            title: 'When You Find Something Becoming Difficult for You',
+            arabic: 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا',
+            transliteration: 'Allāhumma lā sahla illā mā jaʿaltahu sahlan, wa anta tajʿalu al-ḥazna idhā shi\'ta sahlan',
+            translation: 'O Allah, there is no ease except in that which You have made easy, and You make the difficult easy if it be Your will.',
+            category: 'Distress & Protection',
+            occasion: 'When facing difficulty',
+            reference: 'Ibn Hibban',
+            repetitions: 1
+          },
+          {
+            id: '8-5',
             title: 'Upon Committing a Sin',
             arabic: 'أَسْتَغْفِرُ اللَّهَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ',
             transliteration: 'Astaghfiru Allāha alladhī lā ilāha illā huwa al-ḥayyu al-qayyūmu wa atūbu ilayh',
@@ -491,6 +617,105 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             occasion: 'After committing a sin',
             reference: 'Abu Dawud, Tirmidhi',
             repetitions: 3
+          },
+          {
+            id: '8-6',
+            title: 'For Expelling the Devil and His Whisperings',
+            arabic: 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ',
+            transliteration: 'Aʿūdhu billāhi min ash-shayṭāni ar-rajīm',
+            translation: 'I seek refuge in Allah from Satan the accursed.',
+            category: 'Distress & Protection',
+            occasion: 'Against Satan\'s whispers',
+            reference: 'Abu Dawud',
+            repetitions: 3
+          },
+          {
+            id: '8-7',
+            title: 'For Fear of Shirk',
+            arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ أَنْ أُشْرِكَ بِكَ شَيْئًا وَأَنَا أَعْلَمُ، وَأَسْتَغْفِرُكَ لِمَا لَا أَعْلَمُ',
+            transliteration: 'Allāhumma innī aʿūdhu bika an ushrika bika shay\'an wa anā aʿlam, wa astaghfiruka limā lā aʿlam',
+            translation: 'O Allah, I seek refuge in You from knowingly associating anything with You, and I seek Your forgiveness for what I do not know.',
+            category: 'Distress & Protection',
+            occasion: 'Fear of committing shirk',
+            reference: 'Ahmad',
+            repetitions: 1
+          },
+          {
+            id: '8-8',
+            title: 'When Something You Dislike Happens or When You Fail to Achieve Something',
+            arabic: 'قَدَرُ اللَّهِ وَمَا شَاءَ فَعَلَ',
+            transliteration: 'Qadaru Allāhi wa mā shā\'a faʿal',
+            translation: 'This is the decree of Allah and what He willed, He has done.',
+            category: 'Distress & Protection',
+            occasion: 'When disappointed or facing failure',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '8-9',
+            title: 'When Angry',
+            arabic: 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ',
+            transliteration: 'Aʿūdhu billāhi min ash-shayṭāni ar-rajīm',
+            translation: 'I seek refuge in Allah from Satan the accursed.',
+            category: 'Distress & Protection',
+            occasion: 'When feeling angry',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '8-10',
+            title: 'When Startled',
+            arabic: 'لَا إِلَهَ إِلَّا اللَّهُ',
+            transliteration: 'Lā ilāha illā Allāh',
+            translation: 'There is no god but Allah.',
+            category: 'Distress & Protection',
+            occasion: 'When startled or surprised',
+            reference: 'Malik',
+            repetitions: 1
+          },
+          {
+            id: '8-11',
+            title: 'When in Fear of Afflicting Something with Evil Eye',
+            arabic: 'اللَّهُمَّ بَارِكْ عَلَيْهِ',
+            transliteration: 'Allāhumma bārik ʿalayh',
+            translation: 'O Allah, bless him/it.',
+            category: 'Distress & Protection',
+            occasion: 'To prevent evil eye',
+            reference: 'Malik',
+            repetitions: 1
+          },
+          {
+            id: '8-12',
+            title: 'To Ward Off the Plot of the Rebellious Devils',
+            arabic: 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ',
+            transliteration: 'Aʿūdhu bi-kalimāti Allāhi at-tāmmāti min sharri mā khalaq',
+            translation: 'I seek refuge in the perfect words of Allah from the evil of what He has created.',
+            category: 'Distress & Protection',
+            occasion: 'Protection from devils',
+            reference: 'Muslim',
+            repetitions: 3
+          },
+          {
+            id: '8-13',
+            title: 'Repentance and Seeking Forgiveness',
+            arabic: 'رَبِّ اغْفِرْ لِي ذَنْبِي وَخَطَئِي وَجَهْلِي',
+            transliteration: 'Rabbi ighfir lī dhanbī wa khaṭa\'ī wa jahlī',
+            translation: 'My Lord, forgive me my sin, my error, and my ignorance.',
+            category: 'Distress & Protection',
+            occasion: 'Seeking forgiveness',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '8-14',
+            title: 'When Having Doubts About the Faith',
+            arabic: 'آمَنْتُ بِاللَّهِ وَرُسُلِهِ',
+            transliteration: 'Āmantu billāhi wa rusulih',
+            translation: 'I believe in Allah and His messengers.',
+            category: 'Distress & Protection',
+            occasion: 'When having doubts',
+            reference: 'Muslim',
+            repetitions: 1
           }
         ]
       },
@@ -521,6 +746,28 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             category: 'Enemies & Oppression',
             occasion: 'When fearing injustice',
             reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '9-3',
+            title: 'Against Enemies',
+            arabic: 'اللَّهُمَّ مُنْزِلَ الْكِتَابِ، سَرِيعَ الْحِسَابِ، اهْزِمِ الْأَحْزَابَ، اللَّهُمَّ اهْزِمْهُمْ وَزَلْزِلْهُمْ',
+            transliteration: 'Allāhumma munzila al-kitāb, sarīʿa al-ḥisāb, ihzimi al-aḥzāb, Allāhumma ihzimhum wa zalzilhum',
+            translation: 'O Allah, Revealer of the Book, Swift in taking account, defeat the confederates. O Allah, defeat them and shake them.',
+            category: 'Enemies & Oppression',
+            occasion: 'Against enemies',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '9-4',
+            title: 'What to Say If You Fear People May Harm You',
+            arabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+            transliteration: 'Ḥasbunā Allāhu wa niʿma al-wakīl',
+            translation: 'Allah is sufficient for us, and He is the best Disposer of affairs.',
+            category: 'Enemies & Oppression',
+            occasion: 'When fearing harm from people',
+            reference: 'Bukhari',
             repetitions: 1
           }
         ]
@@ -554,7 +801,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: [
           {
             id: '11-1',
-            title: 'Congratulation on the Occasion of a Birth',
+            title: 'Congratulation on the Occasion of a Birth and Its Reply',
             arabic: 'بَارَكَ اللَّهُ لَكَ فِي الْمَوْهُوبِ لَكَ، وَشَكَرْتَ الْوَاهِبَ، وَبَلَغَ أَشُدَّهُ، وَرُزِقْتَ بِرَّهُ',
             transliteration: 'Bāraka Allāhu laka fī al-mawhūbi laka, wa shakarta al-wāhiba, wa balagha ashuddahu, wa ruziqta birrah',
             translation: 'May Allah bless you with His gift to you, may you give thanks to the Giver, may the child reach maturity, and may you be blessed with his righteousness.',
@@ -572,6 +819,39 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             category: 'Family & Marriage',
             occasion: 'Protecting children',
             reference: 'Bukhari',
+            repetitions: 1
+          },
+          {
+            id: '11-3',
+            title: 'To the Newlywed',
+            arabic: 'بَارَكَ اللَّهُ لَكَ، وَبَارَكَ عَلَيْكَ، وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ',
+            transliteration: 'Bāraka Allāhu laka, wa bāraka ʿalayka, wa jamaʿa baynakumā fī khayr',
+            translation: 'May Allah bless you, and shower His blessings upon you, and bring you together in goodness.',
+            category: 'Family & Marriage',
+            occasion: 'Congratulating newlyweds',
+            reference: 'Abu Dawud, Tirmidhi',
+            repetitions: 1
+          },
+          {
+            id: '11-4',
+            title: 'On the Wedding Night or When Buying an Animal',
+            arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَخَيْرَ مَا جَبَلْتَهَا عَلَيْهِ، وَأَعُوذُ بِكَ مِنْ شَرِّهَا وَشَرِّ مَا جَبَلْتَهَا عَلَيْهِ',
+            transliteration: 'Allāhumma innī as\'aluka khayrahā wa khayra mā jabaltahā ʿalayh, wa aʿūdhu bika min sharrihā wa sharri mā jabaltahā ʿalayh',
+            translation: 'O Allah, I ask You for her good and the good of the disposition You have given her, and I take refuge in You from her evil and the evil of the disposition You have given her.',
+            category: 'Family & Marriage',
+            occasion: 'Wedding night or buying animal',
+            reference: 'Abu Dawud, Ibn Majah',
+            repetitions: 1
+          },
+          {
+            id: '11-5',
+            title: 'Before Intercourse',
+            arabic: 'بِسْمِ اللَّهِ، اللَّهُمَّ جَنِّبْنَا الشَّيْطَانَ، وَجَنِّبِ الشَّيْطَانَ مَا رَزَقْتَنَا',
+            transliteration: 'Bismillāh, Allāhumma jannibnā ash-shayṭān, wa jannib ash-shayṭāna mā razaqtanā',
+            translation: 'In the name of Allah. O Allah, keep us away from Satan and keep Satan away from what You bestow upon us.',
+            category: 'Family & Marriage',
+            occasion: 'Before intimacy',
+            reference: 'Bukhari and Muslim',
             repetitions: 1
           }
         ]
@@ -596,6 +876,17 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           },
           {
             id: '12-2',
+            title: 'The Reward for Visiting the Sick',
+            arabic: 'اللَّهُمَّ أَشْفِ عَبْدَكَ، يَنْكَأُ لَكَ عَدُوًّا، أَوْ يَمْشِي لَكَ إِلَى صَلَاةٍ',
+            transliteration: 'Allāhumma ishfi ʿabdaka, yanka\'u laka ʿaduwwan, aw yamshī laka ilā ṣalāh',
+            translation: 'O Allah, heal Your servant, so that he may wound an enemy for You, or walk to prayer for You.',
+            category: 'Illness & Death',
+            occasion: 'Praying for the sick',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '12-3',
             title: 'When Having Terminal Illness',
             arabic: 'اللَّهُمَّ اغْفِرْ لِي وَارْحَمْنِي وَأَلْحِقْنِي بِالرَّفِيقِ الْأَعْلَى',
             transliteration: 'Allāhumma ighfir lī wa irḥamnī wa alḥiqnī bir-rafīqi al-aʿlā',
@@ -603,6 +894,94 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             category: 'Illness & Death',
             occasion: 'During terminal illness',
             reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '12-4',
+            title: 'Instruction for the One Nearing Death',
+            arabic: 'لَا إِلَهَ إِلَّا اللَّهُ',
+            transliteration: 'Lā ilāha illā Allāh',
+            translation: 'There is no god but Allah.',
+            category: 'Illness & Death',
+            occasion: 'When nearing death',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '12-5',
+            title: 'When Closing the Eyes of the Deceased',
+            arabic: 'اللَّهُمَّ اغْفِرْ لِفُلَانٍ وَارْفَعْ دَرَجَتَهُ فِي الْمَهْدِيِّينَ',
+            transliteration: 'Allāhumma ighfir li-fulān wa irfaʿ darajatahu fī al-mahdiyyīn',
+            translation: 'O Allah, forgive [name] and raise his rank among the rightly guided.',
+            category: 'Illness & Death',
+            occasion: 'When closing eyes of deceased',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '12-6',
+            title: 'For the Deceased at the Funeral Prayer',
+            arabic: 'اللَّهُمَّ اغْفِرْ لَهُ وَارْحَمْهُ وَعَافِهِ وَاعْفُ عَنْهُ',
+            transliteration: 'Allāhumma ighfir lahu wa irḥamhu wa ʿāfihi wa iʿfu ʿanh',
+            translation: 'O Allah, forgive him, have mercy on him, give him strength and pardon him.',
+            category: 'Illness & Death',
+            occasion: 'During funeral prayer',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '12-7',
+            title: 'For the Deceased Child in the Funeral Prayer',
+            arabic: 'اللَّهُمَّ اجْعَلْهُ فَرَطًا وَذُخْرًا لِوَالِدَيْهِ، وَشَفِيعًا مُجَابًا',
+            transliteration: 'Allāhumma ijʿalhu faraṭan wa dhukhran li-wālidayh, wa shafīʿan mujāban',
+            translation: 'O Allah, make him a forerunner and a treasure for his parents, and an answered intercessor.',
+            category: 'Illness & Death',
+            occasion: 'Funeral prayer for child',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '12-8',
+            title: 'Condolence',
+            arabic: 'إِنَّ لِلَّهِ مَا أَخَذَ، وَلَهُ مَا أَعْطَى، وَكُلُّ شَيْءٍ عِنْدَهُ بِأَجَلٍ مُسَمًّى، فَلْتَصْبِرْ وَلْتَحْتَسِبْ',
+            transliteration: 'Inna lillāhi mā akhadh, wa lahu mā aʿṭā, wa kullu shay\'in ʿindahu bi-ajalin musamman, faltaṣbir waltaḥtasib',
+            translation: 'Indeed, to Allah belongs what He took and to Him belongs what He gave, and everything with Him has a limited time. So be patient and seek reward.',
+            category: 'Illness & Death',
+            occasion: 'Offering condolences',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '12-9',
+            title: 'When Placing the Deceased in the Grave',
+            arabic: 'بِسْمِ اللَّهِ وَعَلَى مِلَّةِ رَسُولِ اللَّهِ',
+            transliteration: 'Bismillāhi wa ʿalā millati rasūli Allāh',
+            translation: 'In the name of Allah and upon the religion of the Messenger of Allah.',
+            category: 'Illness & Death',
+            occasion: 'When placing deceased in grave',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '12-10',
+            title: 'After Burying the Deceased',
+            arabic: 'اللَّهُمَّ اغْفِرْ لَهُ وَثَبِّتْهُ، فَإِنَّهُ الْآنَ يُسْأَلُ',
+            transliteration: 'Allāhumma ighfir lahu wa thabbithu, fa-innahu al-āna yus\'al',
+            translation: 'O Allah, forgive him and make him steadfast, for he is now being questioned.',
+            category: 'Illness & Death',
+            occasion: 'After burial',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '12-11',
+            title: 'When Visiting the Graves',
+            arabic: 'السَّلَامُ عَلَيْكُمْ دَارَ قَوْمٍ مُؤْمِنِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ',
+            transliteration: 'As-salāmu ʿalaykum dāra qawmin mu\'minīn, wa innā in shā\' Allāhu bikum lāḥiqūn',
+            translation: 'Peace be upon you, dwelling place of believing people, and we, Allah willing, will join you.',
+            category: 'Illness & Death',
+            occasion: 'When visiting graves',
+            reference: 'Muslim',
             repetitions: 1
           }
         ]
@@ -635,6 +1014,61 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             occasion: 'When hearing thunder',
             reference: 'Malik',
             repetitions: 1
+          },
+          {
+            id: '13-3',
+            title: 'For Rainfall',
+            arabic: 'اللَّهُمَّ اسْقِنَا غَيْثًا مُغِيثًا مَرِيئًا نَافِعًا غَيْرَ ضَارٍّ، عَاجِلًا غَيْرَ آجِلٍ',
+            transliteration: 'Allāhumma isqinā ghaythan mughīthan marī\'an nāfiʿan ghayra ḍārr, ʿājilan ghayra ājil',
+            translation: 'O Allah, give us beneficial rain, helpful, wholesome, not harmful, sooner rather than later.',
+            category: 'Weather & Celestial',
+            occasion: 'Asking for rain',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '13-4',
+            title: 'During Rainfall',
+            arabic: 'اللَّهُمَّ صَيِّبًا نَافِعًا',
+            transliteration: 'Allāhumma ṣayyiban nāfiʿan',
+            translation: 'O Allah, (let it be) beneficial rain.',
+            category: 'Weather & Celestial',
+            occasion: 'During rain',
+            reference: 'Bukhari',
+            repetitions: 1
+          },
+          {
+            id: '13-5',
+            title: 'After Rainfall',
+            arabic: 'مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ',
+            transliteration: 'Muṭirnā bi-faḍli Allāhi wa raḥmatih',
+            translation: 'We have been given rain by the grace and mercy of Allah.',
+            category: 'Weather & Celestial',
+            occasion: 'After rain',
+            reference: 'Bukhari',
+            repetitions: 1
+          },
+          {
+            id: '13-6',
+            title: 'Asking for Clear Skies',
+            arabic: 'اللَّهُمَّ حَوَالَيْنَا وَلَا عَلَيْنَا، اللَّهُمَّ عَلَى الْآكَامِ وَالظِّرَابِ وَبُطُونِ الْأَوْدِيَةِ وَمَنَابِتِ الشَّجَرِ',
+            transliteration: 'Allāhumma ḥawālaynā wa lā ʿalaynā, Allāhumma ʿalā al-ākāmi waẓ-ẓirābi wa buṭūni al-awdiyati wa manābiti ash-shajar',
+            translation: 'O Allah, around us and not upon us. O Allah, on the hills, mountains, valleys and where trees grow.',
+            category: 'Weather & Celestial',
+            occasion: 'When seeking clear weather',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '13-7',
+            title: 'Upon Sighting the Crescent Moon',
+            arabic: 'اللَّهُ أَكْبَرُ، اللَّهُمَّ أَهِلَّهُ عَلَيْنَا بِالْأَمْنِ وَالْإِيمَانِ، وَالسَّلَامَةِ وَالْإِسْلَامِ',
+            transliteration: 'Allāhu akbar, Allāhumma ahillahu ʿalaynā bil-amni wal-īmān, was-salāmati wal-Islām',
+            translation: 'Allah is the Greatest. O Allah, bring it over us with security and faith, safety and Islam.',
+            category: 'Weather & Celestial',
+            occasion: 'Upon seeing new moon',
+            reference: 'Tirmidhi',
+            repetitions: 1
           }
         ]
       },
@@ -666,6 +1100,83 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             occasion: 'After eating',
             reference: 'Abu Dawud, Tirmidhi',
             repetitions: 1
+          },
+          {
+            id: '14-3',
+            title: 'Of the Guest for the Host',
+            arabic: 'اللَّهُمَّ بَارِكْ لَهُمْ فِيمَا رَزَقْتَهُمْ، وَاغْفِرْ لَهُمْ وَارْحَمْهُمْ',
+            transliteration: 'Allāhumma bārik lahum fīmā razaqtahum, wa ighfir lahum wa irḥamhum',
+            translation: 'O Allah, bless them in what You have provided for them, forgive them and have mercy on them.',
+            category: 'Eating & Drinking',
+            occasion: 'Guest praying for host',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '14-4',
+            title: 'When Someone Gives You Food or Drink',
+            arabic: 'اللَّهُمَّ أَطْعِمْ مَنْ أَطْعَمَنِي، وَاسْقِ مَنْ سَقَانِي',
+            transliteration: 'Allāhumma aṭʿim man aṭʿamanī, wa isqi man saqānī',
+            translation: 'O Allah, feed the one who has fed me, and give drink to the one who has given me drink.',
+            category: 'Eating & Drinking',
+            occasion: 'When given food or drink',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '14-5',
+            title: 'When Breaking Fast in Someone\'s Home',
+            arabic: 'أَفْطَرَ عِنْدَكُمُ الصَّائِمُونَ، وَأَكَلَ طَعَامَكُمُ الْأَبْرَارُ، وَصَلَّتْ عَلَيْكُمُ الْمَلَائِكَةُ',
+            transliteration: 'Afṭara ʿindakumu aṣ-ṣā\'imūn, wa akala ṭaʿāmakumu al-abrār, wa ṣallat ʿalaykumu al-malā\'ikah',
+            translation: 'May the fasting break their fast in your home, may the righteous eat your food, and may the angels pray for you.',
+            category: 'Eating & Drinking',
+            occasion: 'When breaking fast at someone\'s home',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '14-6',
+            title: 'When Someone Offers You Food When You Are Fasting (Which You Decline)',
+            arabic: 'إِنِّي صَائِمٌ',
+            transliteration: 'Innī ṣā\'im',
+            translation: 'I am fasting.',
+            category: 'Eating & Drinking',
+            occasion: 'Declining food while fasting',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '14-7',
+            title: 'Upon Breaking Fast',
+            arabic: 'ذَهَبَ الظَّمَأُ، وَابْتَلَّتِ الْعُرُوقُ، وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ',
+            transliteration: 'Dhahaba aẓ-ẓama\', wa ibtallati al-ʿurūq, wa thabata al-ajru in shā\' Allāh',
+            translation: 'The thirst is gone, the veins are moistened, and the reward is confirmed, Allah willing.',
+            category: 'Eating & Drinking',
+            occasion: 'When breaking fast',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '14-8',
+            title: 'When Insulted While Fasting',
+            arabic: 'إِنِّي امْرُؤٌ صَائِمٌ',
+            transliteration: 'Innī imru\'un ṣā\'im',
+            translation: 'I am a person who is fasting.',
+            category: 'Eating & Drinking',
+            occasion: 'When insulted while fasting',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '14-9',
+            title: 'Upon Seeing the Early or Premature Fruit',
+            arabic: 'اللَّهُمَّ بَارِكْ لَنَا فِي ثَمَرِنَا، وَبَارِكْ لَنَا فِي مَدِينَتِنَا، وَبَارِكْ لَنَا فِي صَاعِنَا وَمُدِّنَا',
+            transliteration: 'Allāhumma bārik lanā fī thamarinā, wa bārik lanā fī madīnatinā, wa bārik lanā fī ṣāʿinā wa muddinā',
+            translation: 'O Allah, bless us in our fruit, bless us in our city, bless us in our measure and in our measure.',
+            category: 'Eating & Drinking',
+            occasion: 'Upon seeing early fruit',
+            reference: 'Muslim',
+            repetitions: 1
           }
         ]
       },
@@ -689,6 +1200,17 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           },
           {
             id: '15-2',
+            title: 'When a Disbeliever Praises Allah After Sneezing',
+            arabic: 'يَهْدِيكُمُ اللَّهُ وَيُصْلِحُ بَالَكُمْ',
+            transliteration: 'Yahdīkumu Allāhu wa yuṣliḥu bālakum',
+            translation: 'May Allah guide you and rectify your condition.',
+            category: 'Social Etiquette',
+            occasion: 'Response to non-Muslim who sneezes',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '15-3',
             title: 'The Excellence of Spreading the Islamic Greeting',
             arabic: 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ',
             transliteration: 'As-salāmu ʿalaykum wa raḥmatu Allāhi wa barakātuh',
@@ -696,6 +1218,149 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             category: 'Social Etiquette',
             occasion: 'Islamic greeting',
             reference: 'Abu Dawud, Tirmidhi',
+            repetitions: 1
+          },
+          {
+            id: '15-4',
+            title: 'Returning a Greeting to a Disbeliever',
+            arabic: 'وَعَلَيْكُمْ',
+            transliteration: 'Wa ʿalaykum',
+            translation: 'And upon you.',
+            category: 'Social Etiquette',
+            occasion: 'Responding to non-Muslim greeting',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '15-5',
+            title: 'Returning an Invocation of Forgiveness',
+            arabic: 'وَلَكَ',
+            transliteration: 'Wa lak',
+            translation: 'And for you too.',
+            category: 'Social Etiquette',
+            occasion: 'When someone asks for forgiveness for you',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '15-6',
+            title: 'When Someone Does Good to You',
+            arabic: 'جَزَاكَ اللَّهُ خَيْرًا',
+            transliteration: 'Jazāka Allāhu khayran',
+            translation: 'May Allah reward you with good.',
+            category: 'Social Etiquette',
+            occasion: 'When someone does good to you',
+            reference: 'Tirmidhi',
+            repetitions: 1
+          },
+          {
+            id: '15-7',
+            title: 'To One Who Pronounces Their Love for You, for Allah\'s Sake',
+            arabic: 'أَحَبَّكَ الَّذِي أَحْبَبْتَنِي لَهُ',
+            transliteration: 'Aḥabbaka alladhī aḥbabtanī lah',
+            translation: 'May the One for Whose sake you love me, love you.',
+            category: 'Social Etiquette',
+            occasion: 'When someone expresses love for Allah\'s sake',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '15-8',
+            title: 'To One Who Has Offered You Some of Their Wealth',
+            arabic: 'بَارَكَ اللَّهُ لَكَ فِي أَهْلِكَ وَمَالِكَ',
+            transliteration: 'Bāraka Allāhu laka fī ahlika wa mālik',
+            translation: 'May Allah bless you in your family and wealth.',
+            category: 'Social Etiquette',
+            occasion: 'When offered wealth',
+            reference: 'Bukhari',
+            repetitions: 1
+          },
+          {
+            id: '15-9',
+            title: 'To the Debtor When His Debt is Settled',
+            arabic: 'بَارَكَ اللَّهُ لَكَ فِي أَهْلِكَ وَمَالِكَ، إِنَّمَا جَزَاءُ السَّلَفِ الْحَمْدُ وَالْأَدَاءُ',
+            transliteration: 'Bāraka Allāhu laka fī ahlika wa mālik, innamā jazā\'u as-salafi al-ḥamdu wal-adā\'',
+            translation: 'May Allah bless you in your family and wealth. Indeed, the reward for a loan is praise and repayment.',
+            category: 'Social Etiquette',
+            occasion: 'When debt is repaid',
+            reference: 'Nasai',
+            repetitions: 1
+          },
+          {
+            id: '15-10',
+            title: 'To Someone Who Says "May Allah Bless You"',
+            arabic: 'وَفِيكَ بَارَكَ اللَّهُ',
+            transliteration: 'Wa fīka bāraka Allāh',
+            translation: 'And may Allah bless you too.',
+            category: 'Social Etiquette',
+            occasion: 'Response to blessing',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '15-11',
+            title: 'At a Sitting or Gathering',
+            arabic: 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ',
+            transliteration: 'Subḥānaka Allāhumma wa biḥamdika, ashhadu an lā ilāha illā anta, astaghfiruka wa atūbu ilayk',
+            translation: 'Glory be to You, O Allah, and praise be to You. I bear witness that there is no god but You. I seek Your forgiveness and repent to You.',
+            category: 'Social Etiquette',
+            occasion: 'At end of gathering',
+            reference: 'Abu Dawud, Tirmidhi',
+            repetitions: 1
+          },
+          {
+            id: '15-12',
+            title: 'For the Expiation of Sins, Said at the Conclusion of a Sitting or Gathering',
+            arabic: 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ',
+            transliteration: 'Subḥānaka Allāhumma wa biḥamdika, ashhadu an lā ilāha illā anta, astaghfiruka wa atūbu ilayk',
+            translation: 'Glory be to You, O Allah, and praise be to You. I bear witness that there is no god but You. I seek Your forgiveness and repent to You.',
+            category: 'Social Etiquette',
+            occasion: 'For expiation at end of gathering',
+            reference: 'Abu Dawud, Tirmidhi',
+            repetitions: 1
+          },
+          {
+            id: '15-13',
+            title: 'For One You Have Insulted',
+            arabic: 'اللَّهُمَّ فَأَيُّمَا مُؤْمِنٍ سَبَبْتُهُ فَاجْعَلْ ذَلِكَ لَهُ قُرْبَةً إِلَيْكَ يَوْمَ الْقِيَامَةِ',
+            transliteration: 'Allāhumma fa-ayyumā mu\'minin sababtuhu fajʿal dhālika lahu qurbatan ilayka yawma al-qiyāmah',
+            translation: 'O Allah, whichever believer I have insulted, make that a means of drawing him closer to You on the Day of Resurrection.',
+            category: 'Social Etiquette',
+            occasion: 'After insulting someone',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '15-14',
+            title: 'The Etiquette of Praising a Fellow Muslim',
+            arabic: 'أَحْسِبُهُ كَذَلِكَ، وَلَا أُزَكِّي عَلَى اللَّهِ أَحَدًا',
+            transliteration: 'Aḥsibuhu kadhālik, wa lā uzakkī ʿalā Allāhi aḥadan',
+            translation: 'I think he is like that, and I do not praise anyone before Allah.',
+            category: 'Social Etiquette',
+            occasion: 'When praising someone',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '15-15',
+            title: 'For the One That Have Been Praised',
+            arabic: 'اللَّهُمَّ لَا تُؤَاخِذْنِي بِمَا يَقُولُونَ، وَاغْفِرْ لِي مَا لَا يَعْلَمُونَ، وَاجْعَلْنِي خَيْرًا مِمَّا يَظُنُّونَ',
+            transliteration: 'Allāhumma lā tu\'ākhidhnī bimā yaqūlūn, wa ighfir lī mā lā yaʿlamūn, wa ijʿalnī khayran mimmā yaẓunnūn',
+            translation: 'O Allah, do not call me to account for what they say, forgive me for what they do not know, and make me better than what they think.',
+            category: 'Social Etiquette',
+            occasion: 'When being praised',
+            reference: 'Bukhari',
+            repetitions: 1
+          },
+          {
+            id: '15-16',
+            title: 'Upon Seeing Someone in Trial or Tribulation',
+            arabic: 'الْحَمْدُ لِلَّهِ الَّذِي عَافَانِي مِمَّا ابْتَلَاكَ بِهِ، وَفَضَّلَنِي عَلَى كَثِيرٍ مِمَّنْ خَلَقَ تَفْضِيلًا',
+            transliteration: 'Al-ḥamdu lillāhi alladhī ʿāfānī mimmā ibtalāka bih, wa faḍḍalanī ʿalā kathīrin mimman khalaqa tafḍīlan',
+            translation: 'Praise be to Allah who has spared me from that with which He has afflicted you, and has favored me over many of those He has created.',
+            category: 'Social Etiquette',
+            occasion: 'Upon seeing someone in trial',
+            reference: 'Tirmidhi',
             repetitions: 1
           }
         ]
@@ -728,6 +1393,94 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             occasion: 'When beginning a journey',
             reference: 'Tirmidhi',
             repetitions: 1
+          },
+          {
+            id: '16-3',
+            title: 'Upon Entering a Town or Village',
+            arabic: 'اللَّهُمَّ رَبَّ السَّمَاوَاتِ السَّبْعِ وَمَا أَظْلَلْنَ، وَرَبَّ الْأَرَضِينَ السَّبْعِ وَمَا أَقْلَلْنَ، وَرَبَّ الشَّيَاطِينِ وَمَا أَضْلَلْنَ، وَرَبَّ الرِّيَاحِ وَمَا ذَرَيْنَ، أَسْأَلُكَ خَيْرَ هَذِهِ الْقَرْيَةِ وَخَيْرَ أَهْلِهَا وَخَيْرَ مَا فِيهَا، وَأَعُوذُ بِكَ مِنْ شَرِّهَا وَشَرِّ أَهْلِهَا وَشَرِّ مَا فِيهَا',
+            transliteration: 'Allāhumma rabba as-samāwāti as-sabʿi wa mā aẓlalna, wa rabba al-araḍīna as-sabʿi wa mā aqlaln, wa rabba ash-shayāṭīni wa mā aḍlaln, wa rabba ar-riyāḥi wa mā dharayn, as\'aluka khayra hādhihi al-qaryati wa khayra ahlihā wa khayra mā fīhā, wa aʿūdhu bika min sharrihā wa sharri ahlihā wa sharri mā fīhā',
+            translation: 'O Allah, Lord of the seven heavens and what they overshadow, Lord of the seven earths and what they carry, Lord of the devils and what they misguide, Lord of the winds and what they scatter, I ask You for the good of this town, the good of its people and the good that is in it, and I seek refuge in You from its evil, the evil of its people and the evil that is in it.',
+            category: 'Travel & Riding',
+            occasion: 'When entering a town',
+            reference: 'Nasai, Hakim',
+            repetitions: 1
+          },
+          {
+            id: '16-4',
+            title: 'When Your Vehicle Stumbles',
+            arabic: 'بِسْمِ اللَّهِ',
+            transliteration: 'Bismillāh',
+            translation: 'In the name of Allah.',
+            category: 'Travel & Riding',
+            occasion: 'When vehicle stumbles',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '16-5',
+            title: 'The Traveler for the Resident',
+            arabic: 'أَسْتَوْدِعُكُمُ اللَّهَ الَّذِي لَا تَضِيعُ وَدَائِعُهُ',
+            transliteration: 'Astawdiʿukumu Allāha alladhī lā taḍīʿu wadā\'iʿuh',
+            translation: 'I entrust you to Allah, whose deposits are never lost.',
+            category: 'Travel & Riding',
+            occasion: 'Traveler\'s farewell to residents',
+            reference: 'Ahmad, Ibn Majah',
+            repetitions: 1
+          },
+          {
+            id: '16-6',
+            title: 'The Resident for the Traveler',
+            arabic: 'زَوَّدَكَ اللَّهُ التَّقْوَى، وَغَفَرَ ذَنْبَكَ، وَيَسَّرَ لَكَ الْخَيْرَ حَيْثُ مَا كُنْتَ',
+            transliteration: 'Zawwadaka Allāhu at-taqwā, wa ghafara dhanbaka, wa yassara laka al-khayra ḥaythu mā kunt',
+            translation: 'May Allah give you piety as provision, forgive your sins, and make good easy for you wherever you are.',
+            category: 'Travel & Riding',
+            occasion: 'Resident\'s farewell to traveler',
+            reference: 'Tirmidhi',
+            repetitions: 1
+          },
+          {
+            id: '16-7',
+            title: 'Glorifying and Magnifying Allah During Travel',
+            arabic: 'سُبْحَانَ اللَّهِ، اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ',
+            transliteration: 'Subḥān Allāh, Allāhu akbar, lā ilāha illā Allāh',
+            translation: 'Glory be to Allah, Allah is the Greatest, there is no god but Allah.',
+            category: 'Travel & Riding',
+            occasion: 'During travel',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '16-8',
+            title: 'The Traveler as Dawn Approaches',
+            arabic: 'سَمِعَ سَامِعٌ بِحَمْدِ اللَّهِ وَحُسْنِ بَلَائِهِ عَلَيْنَا، رَبَّنَا صَاحِبْنَا وَأَفْضِلْ عَلَيْنَا، عَائِذًا بِاللَّهِ مِنَ النَّارِ',
+            transliteration: 'Samiʿa sāmiʿun bi-ḥamdi Allāhi wa ḥusni balā\'ihi ʿalaynā, rabbanā ṣāḥibnā wa afḍil ʿalaynā, ʿā\'idhan billāhi min an-nār',
+            translation: 'May a listener hear our praise of Allah and His beautiful trial upon us. Our Lord, be our companion and bestow favor upon us. I seek refuge in Allah from the Fire.',
+            category: 'Travel & Riding',
+            occasion: 'At dawn during travel',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '16-9',
+            title: 'Stopping Along the Way of a Travel',
+            arabic: 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ',
+            transliteration: 'Aʿūdhu bi-kalimāti Allāhi at-tāmmāti min sharri mā khalaq',
+            translation: 'I seek refuge in the perfect words of Allah from the evil of what He has created.',
+            category: 'Travel & Riding',
+            occasion: 'When stopping during travel',
+            reference: 'Muslim',
+            repetitions: 1
+          },
+          {
+            id: '16-10',
+            title: 'Upon Returning from Travel',
+            arabic: 'آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ',
+            transliteration: 'Āyibūna tā\'ibūna ʿābidūna li-rabbinā ḥāmidūn',
+            translation: 'We return, repent, worship and praise our Lord.',
+            category: 'Travel & Riding',
+            occasion: 'When returning from travel',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
           }
         ]
       },
@@ -740,7 +1493,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
         duas: [
           {
             id: '17-1',
-            title: 'The Pilgrim\'s Announcement (Talbiyah)',
+            title: 'The Pilgrim\'s Announcement of His Arrival for Hajj or \'Umrah',
             arabic: 'لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ',
             transliteration: 'Labbayka Allāhumma labbayk, labbayka lā sharīka laka labbayk, inna al-ḥamda wan-niʿmata laka wal-mulk, lā sharīka lak',
             translation: 'Here I am, O Allah, here I am. Here I am, You have no partner, here I am. Indeed all praise, favor and sovereignty belong to You. You have no partner.',
@@ -751,6 +1504,17 @@ export const ZIKR_SERIES: ZikrSeries[] = [
           },
           {
             id: '17-2',
+            title: 'Saying "Allahu Akbar" When Passing the Black Stone',
+            arabic: 'اللَّهُ أَكْبَرُ',
+            transliteration: 'Allāhu akbar',
+            translation: 'Allah is the Greatest.',
+            category: 'Hajj & Umrah',
+            occasion: 'When passing Black Stone',
+            reference: 'Bukhari',
+            repetitions: 1
+          },
+          {
+            id: '17-3',
             title: 'Between the Yemeni Corner and the Black Stone',
             arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
             transliteration: 'Rabbanā ātinā fī ad-dunyā ḥasanatan wa fī al-ākhirati ḥasanatan wa qinā ʿadhāb an-nār',
@@ -758,6 +1522,50 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             category: 'Hajj & Umrah',
             occasion: 'During Tawaf',
             reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '17-4',
+            title: 'While Standing at Safa and Marwah',
+            arabic: 'إِنَّ الصَّفَا وَالْمَرْوَةَ مِنْ شَعَائِرِ اللَّهِ',
+            transliteration: 'Inna aṣ-ṣafā wal-marwata min shaʿā\'iri Allāh',
+            translation: 'Indeed, Safa and Marwah are among the symbols of Allah.',
+            category: 'Hajj & Umrah',
+            occasion: 'At Safa and Marwah',
+            reference: 'Quran 2:158',
+            repetitions: 1
+          },
+          {
+            id: '17-5',
+            title: 'The Day of \'Arafah',
+            arabic: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
+            transliteration: 'Lā ilāha illā Allāhu waḥdahu lā sharīka lahu, lahu al-mulku wa lahu al-ḥamdu, wa huwa ʿalā kulli shay\'in qadīr',
+            translation: 'There is no god but Allah alone, with no partner. To Him belongs the dominion and to Him belongs all praise, and He has power over all things.',
+            category: 'Hajj & Umrah',
+            occasion: 'On the Day of Arafah',
+            reference: 'Tirmidhi',
+            repetitions: 100
+          },
+          {
+            id: '17-6',
+            title: 'At the Sacred Area of Muzdalifah',
+            arabic: 'اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ',
+            transliteration: 'Allāhu akbar, lā ilāha illā Allāh',
+            translation: 'Allah is the Greatest, there is no god but Allah.',
+            category: 'Hajj & Umrah',
+            occasion: 'At Muzdalifah',
+            reference: 'Bukhari',
+            repetitions: 1
+          },
+          {
+            id: '17-7',
+            title: 'Saying "Allahu Akbar" While Stoning the Three Pillars at Mina',
+            arabic: 'اللَّهُ أَكْبَرُ',
+            transliteration: 'Allāhu akbar',
+            translation: 'Allah is the Greatest.',
+            category: 'Hajj & Umrah',
+            occasion: 'When stoning pillars',
+            reference: 'Bukhari',
             repetitions: 1
           }
         ]
@@ -790,135 +1598,454 @@ export const ZIKR_SERIES: ZikrSeries[] = [
             occasion: 'When amazed or delighted',
             reference: 'Abu Dawud',
             repetitions: 1
+          },
+          {
+            id: '18-3',
+            title: 'Upon Receiving Pleasant News',
+            arabic: 'الْحَمْدُ لِلَّهِ الَّذِي بِنِعْمَتِهِ تَتِمُّ الصَّالِحَاتُ',
+            transliteration: 'Al-ḥamdu lillāhi alladhī bi-niʿmatihi tatimmu aṣ-ṣāliḥāt',
+            translation: 'Praise be to Allah by whose favor good deeds are accomplished.',
+            category: 'Miscellaneous',
+            occasion: 'Upon receiving good news',
+            reference: 'Ibn Majah',
+            repetitions: 1
+          },
+          {
+            id: '18-4',
+            title: 'Upon Receiving Pleasing or Displeasing News',
+            arabic: 'اللَّهُمَّ لَا يَأْتِي بِالْحَسَنَاتِ إِلَّا أَنْتَ، وَلَا يَدْفَعُ السَّيِّئَاتِ إِلَّا أَنْتَ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِكَ',
+            transliteration: 'Allāhumma lā ya\'tī bil-ḥasanāti illā ant, wa lā yadfaʿu as-sayyi\'āti illā ant, wa lā ḥawla wa lā quwwata illā bik',
+            translation: 'O Allah, none can bring good things except You, and none can ward off bad things except You, and there is no power and no strength except with You.',
+            category: 'Miscellaneous',
+            occasion: 'Upon receiving any news',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '18-5',
+            title: 'What to Say When You Feel a Pain in Your Body',
+            arabic: 'أَعُوذُ بِاللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ',
+            transliteration: 'Aʿūdhu billāhi wa qudratihi min sharri mā ajidu wa uḥādhir',
+            translation: 'I seek refuge in Allah and in His power from the evil of what I feel and fear.',
+            category: 'Miscellaneous',
+            occasion: 'When feeling pain',
+            reference: 'Muslim',
+            repetitions: 7
+          },
+          {
+            id: '18-6',
+            title: 'When Slaughtering or Offering a Sacrifice',
+            arabic: 'بِسْمِ اللَّهِ، اللَّهُ أَكْبَرُ، اللَّهُمَّ مِنْكَ وَلَكَ',
+            transliteration: 'Bismillāh, Allāhu akbar, Allāhumma minka wa lak',
+            translation: 'In the name of Allah, Allah is the Greatest. O Allah, from You and for You.',
+            category: 'Miscellaneous',
+            occasion: 'When slaughtering',
+            reference: 'Abu Dawud',
+            repetitions: 1
+          },
+          {
+            id: '18-7',
+            title: 'Against Evil Omens',
+            arabic: 'اللَّهُمَّ لَا طَيْرَ إِلَّا طَيْرُكَ، وَلَا خَيْرَ إِلَّا خَيْرُكَ، وَلَا إِلَهَ غَيْرُكَ',
+            transliteration: 'Allāhumma lā ṭayra illā ṭayruk, wa lā khayra illā khayruk, wa lā ilāha ghayruk',
+            translation: 'O Allah, there is no omen except Your omen, no good except Your good, and no god other than You.',
+            category: 'Miscellaneous',
+            occasion: 'Against bad omens',
+            reference: 'Ahmad',
+            repetitions: 1
+          },
+          {
+            id: '18-8',
+            title: 'For Allah\'s Protection from the False Messiah',
+            arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ جَهَنَّمَ، وَمِنْ عَذَابِ الْقَبْرِ، وَمِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ، وَمِنْ شَرِّ فِتْنَةِ الْمَسِيحِ الدَّجَّالِ',
+            transliteration: 'Allāhumma innī aʿūdhu bika min ʿadhābi jahannam, wa min ʿadhābi al-qabr, wa min fitnati al-maḥyā wal-mamāt, wa min sharri fitnati al-masīḥi ad-dajjāl',
+            translation: 'O Allah, I seek refuge in You from the punishment of Hell, from the punishment of the grave, from the trials of life and death, and from the evil of the trial of the False Messiah.',
+            category: 'Miscellaneous',
+            occasion: 'Seeking protection from Dajjal',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '18-9',
+            title: 'Upon Hearing the Cock\'s Crow or the Bray of a Donkey',
+            arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ وَرَحْمَتِكَ',
+            transliteration: 'Allāhumma innī as\'aluka min faḍlika wa raḥmatik',
+            translation: 'O Allah, I ask You from Your bounty and mercy (when hearing a rooster). When hearing a donkey: I seek refuge in Allah from Satan.',
+            category: 'Miscellaneous',
+            occasion: 'Upon hearing animals',
+            reference: 'Bukhari and Muslim',
+            repetitions: 1
+          },
+          {
+            id: '18-10',
+            title: 'Upon Hearing a Dog Barking at Night',
+            arabic: 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ',
+            transliteration: 'Aʿūdhu billāhi min ash-shayṭāni ar-rajīm',
+            translation: 'I seek refuge in Allah from Satan the accursed.',
+            category: 'Miscellaneous',
+            occasion: 'When hearing dog bark at night',
+            reference: 'Abu Dawud',
+            repetitions: 1
           }
         ]
       }
     ]
   },
   {
-    id: 'morning-evening',
-    title: 'Morning & Evening Adhkar',
-    description: 'Daily remembrance for morning and evening times',
-    categories: ['morning', 'evening', 'daily'],
-    icon: 'sunny',
+    id: 'quranic-supplications',
+    title: 'Quranic Supplications',
+    description: 'The Importance of Quranic Supplications - Prayers from the Holy Quran by the Prophets and believers',
+    categories: ['quranic'],
+    icon: 'library',
     subcategories: [
       {
-        id: 'morning-adhkar',
-        name: 'Morning Adhkar',
-        description: 'Remembrance to be recited in the morning',
-        icon: 'sunny',
-        category: 'Morning',
+        id: 'prophet-adam',
+        name: 'Prophet Adam',
+        description: 'Supplications of Prophet Adam (peace be upon him)',
+        icon: 'person',
+        category: 'Prophet Adam',
         duas: [
           {
-            id: 'm-1',
-            title: 'Ayat al-Kursi',
-            arabic: 'اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ',
-            transliteration: 'Allāhu lā ilāha illā huwa al-ḥayyu al-qayyūm lā ta\'khudhuhu sinatun wa lā nawm',
-            translation: 'Allah - there is no deity except Him, the Ever-Living, the Self-Sustaining. Neither drowsiness overtakes Him nor sleep.',
-            category: 'Morning',
-            occasion: 'Morning remembrance',
-            reference: 'Quran 2:255',
+            id: 'adam-1',
+            title: 'Adam\'s Repentance',
+            arabic: 'رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ',
+            transliteration: 'Rabbanā ẓalamnā anfusanā wa in lam taghfir lanā wa tarḥamnā la-nakūnanna min al-khāsirīn',
+            translation: 'Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers.',
+            category: 'Prophet Adam',
+            occasion: 'Seeking forgiveness',
+            reference: 'Quran 7:23',
             repetitions: 1
-          },
-          {
-            id: 'm-2',
-            title: 'Seeking Allah\'s Protection',
-            arabic: 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ',
-            transliteration: 'Aʿūdhu billāhi min ash-shayṭāni ar-rajīm',
-            translation: 'I seek refuge in Allah from Satan the accursed.',
-            category: 'Morning',
-            occasion: 'Morning protection',
-            reference: 'Abu Dawud',
-            repetitions: 3
           }
         ]
       },
       {
-        id: 'evening-adhkar',
-        name: 'Evening Adhkar',
-        description: 'Remembrance to be recited in the evening',
-        icon: 'moon',
-        category: 'Evening',
+        id: 'prophet-nooh',
+        name: 'Prophet Nooh (Noah)',
+        description: 'Supplications of Prophet Nooh (peace be upon him)',
+        icon: 'boat',
+        category: 'Prophet Nooh',
         duas: [
           {
-            id: 'e-1',
-            title: 'Evening Protection',
-            arabic: 'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ',
-            transliteration: 'Amsaynā wa amsā al-mulku lillāh, wal-ḥamdu lillāh, lā ilāha illā Allāhu waḥdahu lā sharīka lah',
-            translation: 'We have entered the evening and the kingdom belongs to Allah. Praise be to Allah. There is no god but Allah alone, with no partner.',
-            category: 'Evening',
-            occasion: 'Evening remembrance',
+            id: 'nooh-1',
+            title: 'Nooh\'s Call for Help',
+            arabic: 'رَّبِّ إِنِّي مَغْلُوبٌ فَانتَصِرْ',
+            transliteration: 'Rabbi innī maghlūbun fantaṣir',
+            translation: 'My Lord, indeed I am overpowered, so help me.',
+            category: 'Prophet Nooh',
+            occasion: 'When seeking Allah\'s help',
+            reference: 'Quran 54:10',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-hood',
+        name: 'Prophet Hood',
+        description: 'Supplications of Prophet Hood (peace be upon him)',
+        icon: 'cloudy',
+        category: 'Prophet Hood',
+        duas: [
+          {
+            id: 'hood-1',
+            title: 'Hood\'s Trust in Allah',
+            arabic: 'إِنِّي تَوَكَّلْتُ عَلَى اللَّهِ رَبِّي وَرَبِّكُم مَّا مِن دَابَّةٍ إِلَّا هُوَ آخِذٌ بِنَاصِيَتِهَا إِنَّ رَبِّي عَلَىٰ صِرَاطٍ مُّسْتَقِيمٍ',
+            transliteration: 'Innī tawakkaltu ʿalā Allāhi rabbī wa rabbikum mā min dābbatin illā huwa ākhidhun bi-nāṣiyatihā inna rabbī ʿalā ṣirāṭin mustaqīm',
+            translation: 'Indeed, I have relied upon Allah, my Lord and your Lord. There is no creature but that He holds its forelock. Indeed, my Lord is on a path that is straight.',
+            category: 'Prophet Hood',
+            occasion: 'Trusting in Allah',
+            reference: 'Quran 11:56',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-ibrahim',
+        name: 'Prophet Ibrahim (Abraham)',
+        description: 'Supplications of Prophet Ibrahim (peace be upon him)',
+        icon: 'star',
+        category: 'Prophet Ibrahim',
+        duas: [
+          {
+            id: 'ibrahim-1',
+            title: 'Ibrahim\'s Prayer for Guidance',
+            arabic: 'رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي رَبَّنَا وَتَقَبَّلْ دُعَاءِ',
+            transliteration: 'Rabbi ijʿalnī muqīma aṣ-ṣalāti wa min dhurriyyatī rabbanā wa taqabbal duʿā\'',
+            translation: 'My Lord, make me an establisher of prayer, and [many] from my descendants. Our Lord, and accept my supplication.',
+            category: 'Prophet Ibrahim',
+            occasion: 'For establishing prayer',
+            reference: 'Quran 14:40',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-lot',
+        name: 'Prophet Lot (Lut)',
+        description: 'Supplications of Prophet Lot (peace be upon him)',
+        icon: 'shield',
+        category: 'Prophet Lot',
+        duas: [
+          {
+            id: 'lot-1',
+            title: 'Lot\'s Call for Help',
+            arabic: 'رَبِّ انصُرْنِي عَلَى الْقَوْمِ الْمُفْسِدِينَ',
+            transliteration: 'Rabbi unṣurnī ʿalā al-qawmi al-mufsidīn',
+            translation: 'My Lord, support me against the corrupting people.',
+            category: 'Prophet Lot',
+            occasion: 'Against corruption',
+            reference: 'Quran 29:30',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-shuaib',
+        name: 'Prophet Shuaib (Jethro)',
+        description: 'Supplications of Prophet Shuaib (peace be upon him)',
+        icon: 'scale',
+        category: 'Prophet Shuaib',
+        duas: [
+          {
+            id: 'shuaib-1',
+            title: 'Shuaib\'s Trust in Allah',
+            arabic: 'وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ عَلَيْهِ تَوَكَّلْتُ وَإِلَيْهِ أُنِيبُ',
+            transliteration: 'Wa mā tawfīqī illā billāh ʿalayhi tawakkaltu wa ilayhi unīb',
+            translation: 'And my success is not but through Allah. Upon Him I have relied, and to Him I return.',
+            category: 'Prophet Shuaib',
+            occasion: 'Trusting in Allah',
+            reference: 'Quran 11:88',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-yaqub',
+        name: 'Prophet Yaqub (Jacob)',
+        description: 'Supplications of Prophet Yaqub (peace be upon him)',
+        icon: 'family',
+        category: 'Prophet Yaqub',
+        duas: [
+          {
+            id: 'yaqub-1',
+            title: 'Yaqub\'s Patience',
+            arabic: 'فَصَبْرٌ جَمِيلٌ وَاللَّهُ الْمُسْتَعَانُ عَلَىٰ مَا تَصِفُونَ',
+            transliteration: 'Fa-ṣabrun jamīlun wa Allāhu al-mustaʿānu ʿalā mā taṣifūn',
+            translation: 'So patience is most fitting. And Allah is the one sought for help against that which you describe.',
+            category: 'Prophet Yaqub',
+            occasion: 'For patience',
+            reference: 'Quran 12:18',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-yusuf',
+        name: 'Prophet Yusuf (Joseph)',
+        description: 'Supplications of Prophet Yusuf (peace be upon him)',
+        icon: 'diamond',
+        category: 'Prophet Yusuf',
+        duas: [
+          {
+            id: 'yusuf-1',
+            title: 'Yusuf\'s Prayer for Righteousness',
+            arabic: 'رَبِّ قَدْ آتَيْتَنِي مِنَ الْمُلْكِ وَعَلَّمْتَنِي مِن تَأْوِيلِ الْأَحَادِيثِ فَاطِرَ السَّمَاوَاتِ وَالْأَرْضِ أَنتَ وَلِيِّي فِي الدُّنْيَا وَالْآخِرَةِ تَوَفَّنِي مُسْلِمًا وَأَلْحِقْنِي بِالصَّالِحِينَ',
+            transliteration: 'Rabbi qad ātaytanī min al-mulki wa ʿallamtanī min ta\'wīli al-aḥādīth fāṭira as-samāwāti wal-arḍi anta waliyyī fī ad-dunyā wal-ākhirati tawaffanī musliman wa alḥiqnī biṣ-ṣāliḥīn',
+            translation: 'My Lord, You have given me [something] of sovereignty and taught me of the interpretation of dreams. Creator of the heavens and earth, You are my protector in this world and in the Hereafter. Cause me to die a Muslim and join me with the righteous.',
+            category: 'Prophet Yusuf',
+            occasion: 'For righteous death',
+            reference: 'Quran 12:101',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-ayyub',
+        name: 'Prophet Ayyub (Job)',
+        description: 'Supplications of Prophet Ayyub (peace be upon him)',
+        icon: 'medical',
+        category: 'Prophet Ayyub',
+        duas: [
+          {
+            id: 'ayyub-1',
+            title: 'Ayyub\'s Call During Hardship',
+            arabic: 'أَنِّي مَسَّنِيَ الضُّرُّ وَأَنتَ أَرْحَمُ الرَّاحِمِينَ',
+            transliteration: 'Annī massaniya aḍ-ḍurru wa anta arḥamu ar-rāḥimīn',
+            translation: 'Indeed, adversity has touched me, and You are the most merciful of the merciful.',
+            category: 'Prophet Ayyub',
+            occasion: 'During hardship',
+            reference: 'Quran 21:83',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-yunus',
+        name: 'Prophet Yunus (Jonah)',
+        description: 'Supplications of Prophet Yunus (peace be upon him)',
+        icon: 'fish',
+        category: 'Prophet Yunus',
+        duas: [
+          {
+            id: 'yunus-1',
+            title: 'Yunus\'s Call from the Whale',
+            arabic: 'لَّا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ',
+            transliteration: 'Lā ilāha illā anta subḥānaka innī kuntu min aẓ-ẓālimīn',
+            translation: 'There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.',
+            category: 'Prophet Yunus',
+            occasion: 'Seeking forgiveness',
+            reference: 'Quran 21:87',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-musa',
+        name: 'Prophet Musa (Moses)',
+        description: 'Supplications of Prophet Musa (peace be upon him)',
+        icon: 'flash',
+        category: 'Prophet Musa',
+        duas: [
+          {
+            id: 'musa-1',
+            title: 'Musa\'s Prayer for Guidance',
+            arabic: 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي يَفْقَهُوا قَوْلِي',
+            transliteration: 'Rabbi ishraḥ lī ṣadrī wa yassir lī amrī wa uḥlul ʿuqdatan min lisānī yafqahū qawlī',
+            translation: 'My Lord, expand for me my breast and ease for me my task and untie the knot from my tongue that they may understand my speech.',
+            category: 'Prophet Musa',
+            occasion: 'For guidance and ease',
+            reference: 'Quran 20:25-28',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-dawud',
+        name: 'Prophet Dawud (David)',
+        description: 'Supplications of Prophet Dawud (peace be upon him)',
+        icon: 'musical-notes',
+        category: 'Prophet Dawud',
+        duas: [
+          {
+            id: 'dawud-1',
+            title: 'Dawud\'s Repentance',
+            arabic: 'رَبِّ اغْفِرْ لِي ذَنْبِي وَهَبْ لِي مُلْكًا لَّا يَنبَغِي لِأَحَدٍ مِّن بَعْدِي إِنَّكَ أَنتَ الْوَهَّابُ',
+            transliteration: 'Rabbi ighfir lī dhanbī wa hab lī mulkan lā yanbaghī li-aḥadin min baʿdī innaka anta al-wahhāb',
+            translation: 'My Lord, forgive me my sin and grant me a kingdom such as will not belong to anyone after me. Indeed, You are the Bestower.',
+            category: 'Prophet Dawud',
+            occasion: 'Seeking forgiveness',
+            reference: 'Quran 38:35',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-sulaiman',
+        name: 'Prophet Sulaiman (Solomon)',
+        description: 'Supplications of Prophet Sulaiman (peace be upon him)',
+        icon: 'crown',
+        category: 'Prophet Sulaiman',
+        duas: [
+          {
+            id: 'sulaiman-1',
+            title: 'Sulaiman\'s Gratitude',
+            arabic: 'رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَدْخِلْنِي بِرَحْمَتِكَ فِي عِبَادِكَ الصَّالِحِينَ',
+            transliteration: 'Rabbi awziʿnī an ashkura niʿmataka allatī anʿamta ʿalayya wa ʿalā wālidayya wa an aʿmala ṣāliḥan tarḍāhu wa adkhilnī bi-raḥmatika fī ʿibādika aṣ-ṣāliḥīn',
+            translation: 'My Lord, enable me to be grateful for Your favor which You have bestowed upon me and upon my parents and to do righteousness of which You approve. And admit me by Your mercy into [the ranks of] Your righteous servants.',
+            category: 'Prophet Sulaiman',
+            occasion: 'For gratitude',
+            reference: 'Quran 27:19',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-zakariya',
+        name: 'Prophet Zakariya (Zechariah)',
+        description: 'Supplications of Prophet Zakariya (peace be upon him)',
+        icon: 'person-add',
+        category: 'Prophet Zakariya',
+        duas: [
+          {
+            id: 'zakariya-1',
+            title: 'Zakariya\'s Prayer for Offspring',
+            arabic: 'رَبِّ هَبْ لِي مِن لَّدُنكَ ذُرِّيَّةً طَيِّبَةً إِنَّكَ سَمِيعُ الدُّعَاءِ',
+            transliteration: 'Rabbi hab lī min ladunka dhurriyyatan ṭayyibatan innaka samīʿu ad-duʿā\'',
+            translation: 'My Lord, grant me from Yourself a good offspring. Indeed, You are the Hearer of supplication.',
+            category: 'Prophet Zakariya',
+            occasion: 'For righteous offspring',
+            reference: 'Quran 3:38',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-isa',
+        name: 'Prophet Isa (Jesus)',
+        description: 'Supplications of Prophet Isa (peace be upon him)',
+        icon: 'heart',
+        category: 'Prophet Isa',
+        duas: [
+          {
+            id: 'isa-1',
+            title: 'Isa\'s Prayer for the Table',
+            arabic: 'اللَّهُمَّ رَبَّنَا أَنزِلْ عَلَيْنَا مَائِدَةً مِّنَ السَّمَاءِ تَكُونُ لَنَا عِيدًا لِّأَوَّلِنَا وَآخِرِنَا وَآيَةً مِّنكَ وَارْزُقْنَا وَأَنتَ خَيْرُ الرَّازِقِينَ',
+            transliteration: 'Allāhumma rabbanā anzil ʿalaynā mā\'idatan min as-samā\'i takūnu lanā ʿīdan li-awwalinā wa ākhirinā wa āyatan minka wa urzuqnā wa anta khayru ar-rāziqīn',
+            translation: 'O Allah, our Lord, send down to us a table [spread with food] from the heaven to be for us a festival for the first of us and the last of us and a sign from You. And provide for us, and You are the best of providers.',
+            category: 'Prophet Isa',
+            occasion: 'Seeking provision',
+            reference: 'Quran 5:114',
+            repetitions: 1
+          }
+        ]
+      },
+      {
+        id: 'prophet-muhammad',
+        name: 'Prophet Muhammad ﷺ',
+        description: 'Supplications of Prophet Muhammad (peace be upon him)',
+        icon: 'star-half',
+        category: 'Prophet Muhammad',
+        duas: [
+          {
+            id: 'muhammad-1',
+            title: 'The Prophet\'s Comprehensive Prayer',
+            arabic: 'اللَّهُمَّ أَصْلِحْ لِي دِينِي الَّذِي هُوَ عِصْمَةُ أَمْرِي، وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي، وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي',
+            transliteration: 'Allāhumma aṣliḥ lī dīnī alladhī huwa ʿiṣmatu amrī, wa aṣliḥ lī dunyāya allatī fīhā maʿāshī, wa aṣliḥ lī ākhiratī allatī fīhā maʿādī',
+            translation: 'O Allah, make my religion right for me, which is the safeguard of my affairs. Make my world right for me, in which is my livelihood. Make my Hereafter right for me, to which is my return.',
+            category: 'Prophet Muhammad',
+            occasion: 'Comprehensive prayer',
             reference: 'Muslim',
             repetitions: 1
           }
         ]
-      }
-    ]
-  },
-  {
-    id: 'protection-fortress',
-    title: 'Protection & Spiritual Fortress',
-    description: 'Powerful supplications for protection from all forms of harm',
-    categories: ['protection', 'daily'],
-    icon: 'shield',
-    subcategories: [
+      },
       {
-        id: 'general-protection',
-        name: 'General Protection',
-        description: 'Comprehensive protection from all harm',
-        icon: 'shield-checkmark',
-        category: 'Protection',
+        id: 'supplication-believers',
+        name: 'The Supplication of the Believers',
+        description: 'General supplications mentioned in the Quran for believers',
+        icon: 'people',
+        category: 'Believers',
         duas: [
           {
-            id: 'p-1',
-            title: 'Surah Al-Falaq',
-            arabic: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ مِنْ شَرِّ مَا خَلَقَ',
-            transliteration: 'Qul aʿūdhu bi-rabbi al-falaq min sharri mā khalaq',
-            translation: 'Say: I seek refuge in the Lord of daybreak from the evil of what He created.',
-            category: 'Protection',
-            occasion: 'General protection',
-            reference: 'Quran 113:1-2',
-            repetitions: 3
+            id: 'believers-1',
+            title: 'Prayer for This World and the Next',
+            arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
+            transliteration: 'Rabbanā ātinā fī ad-dunyā ḥasanatan wa fī al-ākhirati ḥasanatan wa qinā ʿadhāb an-nār',
+            translation: 'Our Lord, give us good in this world and good in the next world, and save us from the punishment of the Fire.',
+            category: 'Believers',
+            occasion: 'General supplication',
+            reference: 'Quran 2:201',
+            repetitions: 1
           },
           {
-            id: 'p-2',
-            title: 'Surah An-Nas',
-            arabic: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ مَلِكِ النَّاسِ إِلَهِ النَّاسِ',
-            transliteration: 'Qul aʿūdhu bi-rabbi an-nās maliki an-nās ilāhi an-nās',
-            translation: 'Say: I seek refuge in the Lord of mankind, the King of mankind, the God of mankind.',
-            category: 'Protection',
-            occasion: 'Protection from evil whispers',
-            reference: 'Quran 114:1-3',
-            repetitions: 3
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'gratitude-praise',
-    title: 'Gratitude & Praise',
-    description: 'Expressions of thankfulness and praise to Allah',
-    categories: ['gratitude', 'daily'],
-    icon: 'heart',
-    subcategories: [
-      {
-        id: 'daily-gratitude',
-        name: 'Daily Gratitude',
-        description: 'Daily expressions of thankfulness',
-        icon: 'heart-circle',
-        category: 'Gratitude',
-        duas: [
-          {
-            id: 'g-1',
-            title: 'General Praise',
-            arabic: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
-            transliteration: 'Al-ḥamdu lillāhi rabbi al-ʿālamīn',
-            translation: 'Praise be to Allah, Lord of all the worlds.',
-            category: 'Gratitude',
-            occasion: 'General praise',
-            reference: 'Quran 1:2',
-            repetitions: 10
+            id: 'believers-2',
+            title: 'Prayer for Forgiveness',
+            arabic: 'رَبَّنَا اغْفِرْ لَنَا ذُنُوبَنَا وَإِسْرَافَنَا فِي أَمْرِنَا وَثَبِّتْ أَقْدَامَنَا وَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ',
+            transliteration: 'Rabbanā ighfir lanā dhunūbanā wa isrāfanā fī amrinā wa thabbit aqdāmanā wa unṣurnā ʿalā al-qawmi al-kāfirīn',
+            translation: 'Our Lord, forgive us our sins and the excess [committed] in our affairs and plant firmly our feet and give us victory over the disbelieving people.',
+            category: 'Believers',
+            occasion: 'Seeking forgiveness and victory',
+            reference: 'Quran 3:147',
+            repetitions: 1
           }
         ]
       }
