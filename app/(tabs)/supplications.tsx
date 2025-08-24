@@ -171,7 +171,6 @@ export default function SupplicationsScreen() {
   const SeriesCard = ({ series }: { series: ZikrSeries }) => {
     const totalDuas = getAllDuasFromSeries(series).length;
     const hasSubcats = hasSubcategories(series);
-    const isBookmarked = bookmarkedDuas.has(series.id);
     
     return (
       <TouchableOpacity
@@ -185,24 +184,7 @@ export default function SupplicationsScreen() {
           <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
             <View style={styles.duaHeader}>
               <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{series.title}</Text>
-              <View style={styles.headerIcons}>
-                <TouchableOpacity
-                  style={[styles.bookmarkButtonCard, {
-                    backgroundColor: isBookmarked 
-                      ? manuscriptColors.brown + '20' 
-                      : manuscriptColors.border + '30',
-                    borderColor: manuscriptColors.border
-                  }]}
-                  onPress={() => toggleBookmark(series.id)}
-                >
-                  <Ionicons 
-                    name={isBookmarked ? "bookmark" : "bookmark-outline"} 
-                    size={16} 
-                    color={isBookmarked ? manuscriptColors.brown : manuscriptColors.lightInk} 
-                  />
-                </TouchableOpacity>
-                <Ionicons name={series.icon as any} size={20} color={manuscriptColors.brown} />
-              </View>
+              <Ionicons name={series.icon as any} size={20} color={manuscriptColors.brown} />
             </View>
             <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
               {series.description}
@@ -227,6 +209,14 @@ export default function SupplicationsScreen() {
 
   const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => {
     const isBookmarked = bookmarkedDuas.has(subcategory.id);
+    const [justBookmarked, setJustBookmarked] = useState(false);
+    
+    const handleBookmark = () => {
+      toggleBookmark(subcategory.id);
+      setJustBookmarked(true);
+      // Reset the visual effect after animation
+      setTimeout(() => setJustBookmarked(false), 300);
+    };
     
     return (
       <TouchableOpacity
@@ -246,9 +236,10 @@ export default function SupplicationsScreen() {
                     backgroundColor: isBookmarked 
                       ? manuscriptColors.brown + '20' 
                       : manuscriptColors.border + '30',
-                    borderColor: manuscriptColors.border
+                    borderColor: manuscriptColors.border,
+                    transform: [{ scale: justBookmarked ? 1.2 : 1 }]
                   }]}
-                  onPress={() => toggleBookmark(subcategory.id)}
+                  onPress={handleBookmark}
                 >
                   <Ionicons 
                     name={isBookmarked ? "bookmark" : "bookmark-outline"} 
