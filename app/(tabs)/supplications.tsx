@@ -19,6 +19,7 @@ import { useTheme } from '@/shared/contexts/ThemeContext';
 import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplications';
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
+import { CollectionTab } from '@/src/features/supplications/components';
 
 const { width, height } = Dimensions.get('window');
 
@@ -70,6 +71,7 @@ export default function SupplicationsScreen() {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
   const manuscriptColors = getManuscriptColors(isDark, colors);
+  const [activeTab, setActiveTab] = useState<'browse' | 'collection'>('browse');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSeries, setSelectedSeries] = useState<ZikrSeries | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<DuaSubcategory | null>(null);
@@ -251,43 +253,93 @@ export default function SupplicationsScreen() {
           </View>
         </Animated.View>
 
-        {/* Zikr Series List or Subcategories */}
-        {!showSubcategories ? (
-          <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
-            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-              ZIKR SERIES ({ZIKR_SERIES.length})
-            </Text>
-            {ZIKR_SERIES.map((series: ZikrSeries, index: number) => (
-              <Animated.View key={series.id} entering={FadeInDown.delay(400 + index * 100)}>
-                <SeriesCard series={series} />
-              </Animated.View>
-            ))}
-          </Animated.View>
-        ) : (
-          <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
-            {/* Back Button */}
+        {/* Tab Navigation */}
+        <Animated.View entering={FadeInDown.delay(200)} style={styles.tabNavigation}>
+          <View style={[styles.tabContainer, { backgroundColor: manuscriptColors.darkParchment, borderColor: manuscriptColors.border }]}>
             <TouchableOpacity
-              style={[styles.backButton, {
-                backgroundColor: manuscriptColors.parchment,
-                borderColor: manuscriptColors.border
-              }]}
-              onPress={goBackToSeries}
+              style={[
+                styles.tabButton,
+                activeTab === 'browse' && [styles.activeTabButton, { backgroundColor: manuscriptColors.brown }]
+              ]}
+              onPress={() => setActiveTab('browse')}
             >
-              <Ionicons name="chevron-back" size={20} color={manuscriptColors.brown} />
-              <Text style={[styles.backButtonText, { color: manuscriptColors.brown }]}>
-                Back to Series
+              <Ionicons 
+                name="library" 
+                size={16} 
+                color={activeTab === 'browse' ? '#FFFFFF' : manuscriptColors.lightInk} 
+              />
+              <Text style={[
+                styles.tabButtonText,
+                { color: activeTab === 'browse' ? '#FFFFFF' : manuscriptColors.lightInk }
+              ]}>
+                Browse
               </Text>
             </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                styles.tabButton,
+                activeTab === 'collection' && [styles.activeTabButton, { backgroundColor: manuscriptColors.brown }]
+              ]}
+              onPress={() => setActiveTab('collection')}
+            >
+              <Ionicons 
+                name="bookmark" 
+                size={16} 
+                color={activeTab === 'collection' ? '#FFFFFF' : manuscriptColors.lightInk} 
+              />
+              <Text style={[
+                styles.tabButtonText,
+                { color: activeTab === 'collection' ? '#FFFFFF' : manuscriptColors.lightInk }
+              ]}>
+                Collection
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+        {/* Tab Content */}
+        {activeTab === 'browse' ? (
+          /* Zikr Series List or Subcategories */
+          !showSubcategories ? (
+            <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
+              <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
+                ZIKR SERIES ({ZIKR_SERIES.length})
+              </Text>
+              {ZIKR_SERIES.map((series: ZikrSeries, index: number) => (
+                <Animated.View key={series.id} entering={FadeInDown.delay(400 + index * 100)}>
+                  <SeriesCard series={series} />
+                </Animated.View>
+              ))}
+            </Animated.View>
+          ) : (
+            <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
+              {/* Back Button */}
+              <TouchableOpacity
+                style={[styles.backButton, {
+                  backgroundColor: manuscriptColors.parchment,
+                  borderColor: manuscriptColors.border
+                }]}
+                onPress={goBackToSeries}
+              >
+                <Ionicons name="chevron-back" size={20} color={manuscriptColors.brown} />
+                <Text style={[styles.backButtonText, { color: manuscriptColors.brown }]}>
+                  Back to Series
+                </Text>
+              </TouchableOpacity>
 
-            <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-              {selectedSeries?.title ? `${selectedSeries.title.toUpperCase()} CATEGORIES` : 'CATEGORIES'}
-            </Text>
-            {selectedSeries?.subcategories?.map((subcategory: DuaSubcategory, index: number) => (
-              <Animated.View key={subcategory.id} entering={FadeInDown.delay(400 + index * 100)}>
-                <SubcategoryCard subcategory={subcategory} />
-              </Animated.View>
-            ))}
-          </Animated.View>
+              <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
+                {selectedSeries?.title ? `${selectedSeries.title.toUpperCase()} CATEGORIES` : 'CATEGORIES'}
+              </Text>
+              {selectedSeries?.subcategories?.map((subcategory: DuaSubcategory, index: number) => (
+                <Animated.View key={subcategory.id} entering={FadeInDown.delay(400 + index * 100)}>
+                  <SubcategoryCard subcategory={subcategory} />
+                </Animated.View>
+              ))}
+            </Animated.View>
+          )
+        ) : (
+          /* Collection Tab */
+          <CollectionTab manuscriptColors={manuscriptColors} />
         )}
       </ScrollView>
 
@@ -828,5 +880,31 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 8,
+  },
+  tabNavigation: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    borderRadius: 12,
+    padding: 4,
+    borderWidth: 1,
+  },
+  tabButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    gap: 6,
+  },
+  activeTabButton: {
+  },
+  tabButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 }); 
