@@ -718,6 +718,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 8,
   },
+  headerIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  bookmarkButtonCard: {
+    padding: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
   duaTitle: {
     fontSize: 18,
     fontWeight: '600',
@@ -973,16 +983,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 8,
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  bookmarkButtonCard: {
-    padding: 6,
-    borderRadius: 12,
-    borderWidth: 1,
   },
   tabNavigation: {
     paddingHorizontal: 20,
