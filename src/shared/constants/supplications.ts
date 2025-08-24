@@ -13,7 +13,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
   {
     id: 'daily-supplications',
     title: 'Daily Supplications',
-    description: 'The Importance of Daily Supplications\n\nDaily supplications form the foundation of a Muslim\'s spiritual connection with Allah. These essential duas help maintain constant remembrance throughout the day, from waking up to going to sleep. Regular recitation of daily supplications purifies the heart, brings barakah (blessings) to our time, and creates a protective spiritual shield around the believer. The Prophet (ﷺ) emphasized the importance of these daily remembrances as they keep us connected to Allah in every moment of our lives.',
+    description: 'Daily supplications are like anchors that steady the believer\'s heart throughout the day. By beginning the morning with remembrance, ending the evening with prayer, and closing the eyes at night with words of faith, a Muslim surrounds every moment with light and protection. These duʿās are not mere routines, but shields against harm, sources of tranquility, and reminders that Allah is always near. Morning supplications prepare the heart for the challenges of the day, evening supplications bring comfort and gratitude for what has passed, and sleep-time supplications entrust the soul to its Lord until it awakens again. In practicing them consistently, the believer strengthens faith, increases gratitude, and lives each day with a sense of peace, purpose, and closeness to Allah.',
     categories: ['daily'],
     icon: 'calendar',
     subcategories: [
