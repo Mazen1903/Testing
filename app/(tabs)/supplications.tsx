@@ -158,15 +158,14 @@ export default function SupplicationsScreen() {
         return;
       }
       
-      // Reset state safely with a small delay
-      setSelectedSubcategory(null);
+      // Reset state immediately
       setCurrentDuaIndex(0);
       setCurrentCount(0);
-      
-      // Small delay to ensure state is reset properly
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
       setSelectedSubcategory(subcategory);
+      
+      // Small delay to ensure state is set properly before showing modal
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
       setZikrSessionVisible(true);
       setIsLoadingSession(false);
     } catch (error) {
