@@ -10,7 +10,7 @@ import {
   ReminderStats,
   ReminderHistory,
   ReminderNotificationData 
-} from '@/shared/types/reminders';
+} from '@/src/shared/types/reminder';
 import { ApiResponse } from '@/shared/types';
 
 // Configure notifications
@@ -19,6 +19,8 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -65,7 +67,7 @@ class ReminderService {
   }
 
   private handleNotificationResponse = (response: Notifications.NotificationResponse) => {
-    const data = response.notification.request.content.data as ReminderNotificationData;
+    const data = response.notification.request.content.data as unknown as ReminderNotificationData;
     console.log('📱 Notification tapped:', data);
     
     // Mark reminder as completed when notification is tapped
@@ -165,7 +167,7 @@ class ReminderService {
         if (!reminder.daysOfWeek || reminder.daysOfWeek.length === 0) return null;
         
         const currentDay = now.getDay();
-        let nextDay = reminder.daysOfWeek.find(day => {
+        let nextDay = reminder.daysOfWeek.find((day: number) => {
           if (day > currentDay) return true;
           if (day === currentDay) {
             // Same day - check if time hasn't passed yet
@@ -536,7 +538,7 @@ class ReminderService {
       }, {} as Record<string, number>);
 
       const favoriteSupplication = Object.entries(supplicationCounts)
-        .sort(([,a], [,b]) => b - a)[0]?.[0];
+        .sort(([,a]: [string, number], [,b]: [string, number]) => b - a)[0]?.[0];
 
       const stats: ReminderStats = {
         totalReminders: reminders.length,
