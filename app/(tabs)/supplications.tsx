@@ -80,15 +80,6 @@ export default function SupplicationsScreen() {
   const horizontalScrollRef = useRef<ScrollView>(null);
 
 
-  const filteredSeries = ZIKR_SERIES.filter((series: ZikrSeries) => {
-    const matchesCategory = selectedCategory === 'all' || series.categories.includes(selectedCategory);
-    return matchesCategory;
-  });
-
-  const handleCategorySelect = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-  };
-
   const handleSeriesSelect = (series: ZikrSeries) => {
     if (hasSubcategories(series) || isMixedSeries(series)) {
       // Complex or mixed series - show subcategories (and direct duas if mixed)
@@ -161,32 +152,6 @@ export default function SupplicationsScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
-
-  const CategoryButton = ({ category, isSelected }: { category: ZikrCategory, isSelected: boolean }) => (
-    <TouchableOpacity
-      style={[
-        styles.categoryButton,
-        {
-          backgroundColor: isSelected ? manuscriptColors.brown : manuscriptColors.parchment,
-          borderColor: manuscriptColors.border,
-          borderWidth: 1
-        }
-      ]}
-      onPress={() => handleCategorySelect(category.id)}
-    >
-      <Ionicons
-        name={category.icon as any}
-        size={20}
-        color={isSelected ? manuscriptColors.parchment : manuscriptColors.brown}
-      />
-      <Text style={[
-        styles.categoryText,
-        { color: isSelected ? manuscriptColors.parchment : manuscriptColors.brown }
-      ]}>
-        {category.name}
-      </Text>
-    </TouchableOpacity>
-  );
 
   const SeriesCard = ({ series }: { series: ZikrSeries }) => {
     const totalDuas = getAllDuasFromSeries(series).length;
@@ -286,40 +251,17 @@ export default function SupplicationsScreen() {
           </View>
         </Animated.View>
 
-        {/* Categories */}
-        <Animated.View entering={FadeInDown.delay(300)} style={styles.categoriesSection}>
-          <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>CATEGORIES</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
-            {ZIKR_CATEGORIES.map((category: ZikrCategory, index: number) => (
-              <Animated.View key={category.id} entering={FadeInRight.delay(300 + index * 100)}>
-                <CategoryButton
-                  category={category}
-                  isSelected={selectedCategory === category.id}
-                />
-              </Animated.View>
-            ))}
-          </ScrollView>
-        </Animated.View>
-
         {/* Zikr Series List or Subcategories */}
         {!showSubcategories ? (
-          <Animated.View entering={FadeInDown.delay(600)} style={styles.supplicationsSection}>
+          <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
             <Text style={[styles.sectionTitle, { color: manuscriptColors.brown }]}>
-              ZIKR SERIES ({filteredSeries.length})
+              ZIKR SERIES ({ZIKR_SERIES.length})
             </Text>
-            {filteredSeries.map((series: ZikrSeries, index: number) => (
-              <Animated.View key={series.id} entering={FadeInDown.delay(700 + index * 100)}>
+            {ZIKR_SERIES.map((series: ZikrSeries, index: number) => (
+              <Animated.View key={series.id} entering={FadeInDown.delay(400 + index * 100)}>
                 <SeriesCard series={series} />
               </Animated.View>
             ))}
-            {filteredSeries.length === 0 && (
-              <View style={styles.emptyState}>
-                <Ionicons name="book" size={48} color={manuscriptColors.lightInk} />
-                <Text style={[styles.emptyStateText, { color: manuscriptColors.lightInk }]}>
-                  No zikr series in this category
-                </Text>
-              </View>
-            )}
           </Animated.View>
         ) : (
           <Animated.View entering={FadeInDown.delay(300)} style={styles.supplicationsSection}>
@@ -578,29 +520,6 @@ const styles = StyleSheet.create({
   categoriesSection: {
     marginBottom: 20,
   },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    marginHorizontal: 20,
-    marginBottom: 12,
-  },
-  categoriesScroll: {
-    paddingLeft: 20,
-  },
-  categoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  categoryText: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginLeft: 8,
-  },
   subCategoriesSection: {
     marginBottom: 20,
   },
@@ -643,6 +562,12 @@ const styles = StyleSheet.create({
   },
   supplicationsSection: {
     paddingHorizontal: 20,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginBottom: 12,
   },
   manuscriptCard: {
     marginBottom: 12,
