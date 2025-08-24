@@ -1694,7 +1694,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
   {
     id: 'quranic-supplications',
     title: 'Quranic Supplications',
-    description: 'The Importance of Quranic Supplications\n\nQuranic supplications are the direct words of Allah, revealed in the Holy Quran as perfect examples of how to call upon Him. These duas were made by the Prophets and righteous believers, and Allah preserved them in His final revelation as guidance for all humanity. When we recite Quranic supplications, we use the exact words that Allah chose and approved, making them the most powerful and accepted forms of dua. These supplications teach us the proper etiquette of calling upon Allah and demonstrate how the Prophets sought His help in times of need, guidance, and gratitude.',
+    description: 'The Qur\'an contains the most eloquent and comprehensive supplications, taught to us through the prayers of the Prophets and righteous believers. These duʿās reflect deep humility, trust, and hope in Allah\'s mercy. When reciting them, we use the very words revealed by Allah, words that carried the pleas of His chosen servants in their moments of hardship and gratitude. They teach us balance – asking for goodness in this world while striving for success in the Hereafter. They also remind us that no matter the trial, turning sincerely to Allah brings relief and guidance. By adopting these Qur\'anic supplications in our lives, we not only strengthen our connection with Allah\'s Book but also inherit the wisdom, patience, and faith of the Prophets who came before us.',
     categories: ['quranic'],
     icon: 'library',
     subcategories: [
@@ -2052,3 +2052,5 @@ export const ZIKR_SERIES: ZikrSeries[] = [
     ]
   }
 ];
+
+export { ZIKR_SERIES, ZIKR_CATEGORIES }
