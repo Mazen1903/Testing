@@ -732,7 +732,10 @@ export default function SupplicationsScreen() {
           visible={showSettings}
           onClose={() => setShowSettings(false)}
           settings={displaySettings}
-          onSettingsChange={setDisplaySettings}
+          onSettingsChange={(settings) => setDisplaySettings(prevSettings => ({
+            ...prevSettings,
+            ...settings as typeof prevSettings
+          }))}
           manuscriptColors={manuscriptColors}
         />
       </Modal>
