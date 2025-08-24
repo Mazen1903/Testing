@@ -26,7 +26,7 @@ import { useTheme } from '@/shared/contexts/ThemeContext';
 import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplications';
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
-import { CollectionTab } from '@/src/features/supplications/components';
+import { CollectionTab, SupplicationSettings, type SupplicationDisplaySettings } from '@/src/features/supplications/components';
 
 const { width, height } = Dimensions.get('window');
 
@@ -723,6 +723,15 @@ export default function SupplicationsScreen() {
             </SafeAreaView>
           </LinearGradient>
         )}
+
+        {/* Settings Modal */}
+        <SupplicationSettings
+          visible={showSettings}
+          onClose={() => setShowSettings(false)}
+          settings={displaySettings}
+          onSettingsChange={setDisplaySettings}
+          manuscriptColors={manuscriptColors}
+        />
       </Modal>
     </SafeAreaView>
   );

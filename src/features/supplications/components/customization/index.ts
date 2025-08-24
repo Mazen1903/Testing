@@ -1,1 +1,0 @@
-export { default as SupplicationSettings, type SupplicationDisplaySettings } from './SupplicationSettings';
