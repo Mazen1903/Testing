@@ -193,23 +193,6 @@ export default function SupplicationsScreen() {
                       : manuscriptColors.border + '30',
                     borderColor: manuscriptColors.border
                   }]}
-                  onPress={() => toggleBookmark(subcategory.id)}
-                >
-                  <Ionicons 
-                    name={isBookmarked ? "bookmark" : "bookmark-outline"} 
-                    size={16} 
-                    color={isBookmarked ? manuscriptColors.brown : manuscriptColors.lightInk} 
-                  />
-                </TouchableOpacity>
-                <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
-              </View>
-                <TouchableOpacity
-                  style={[styles.bookmarkButtonCard, {
-                    backgroundColor: isBookmarked 
-                      ? manuscriptColors.brown + '20' 
-                      : manuscriptColors.border + '30',
-                    borderColor: manuscriptColors.border
-                  }]}
                   onPress={() => toggleBookmark(series.id)}
                 >
                   <Ionicons 
@@ -242,39 +225,57 @@ export default function SupplicationsScreen() {
     );
   };
 
-  const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => (
+  const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => {
     const isBookmarked = bookmarkedDuas.has(subcategory.id);
     
     return (
-    <TouchableOpacity
-      style={styles.manuscriptCard}
-      onPress={() => startZikrSession(subcategory)}
-    >
-      <LinearGradient
-        colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
-        style={styles.cardGradient}
+      <TouchableOpacity
+        style={styles.manuscriptCard}
+        onPress={() => startZikrSession(subcategory)}
       >
-        <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
-          <View style={styles.duaHeader}>
-            <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{subcategory.name}</Text>
-            <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
-          </View>
-          <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
-            {subcategory.description}
-          </Text>
-          <View style={styles.duaFooter}>
-            <View style={styles.duaFooterLeft}>
-              <Ionicons name="book" size={12} color={manuscriptColors.brown} />
-              <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
-                {subcategory.duas.length} duas
-              </Text>
+        <LinearGradient
+          colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
+          style={styles.cardGradient}
+        >
+          <View style={[styles.cardBorder, { borderColor: manuscriptColors.border }]}>
+            <View style={styles.duaHeader}>
+              <Text style={[styles.duaTitle, { color: manuscriptColors.ink }]}>{subcategory.name}</Text>
+              <View style={styles.headerIcons}>
+                <TouchableOpacity
+                  style={[styles.bookmarkButtonCard, {
+                    backgroundColor: isBookmarked 
+                      ? manuscriptColors.brown + '20' 
+                      : manuscriptColors.border + '30',
+                    borderColor: manuscriptColors.border
+                  }]}
+                  onPress={() => toggleBookmark(subcategory.id)}
+                >
+                  <Ionicons 
+                    name={isBookmarked ? "bookmark" : "bookmark-outline"} 
+                    size={16} 
+                    color={isBookmarked ? manuscriptColors.brown : manuscriptColors.lightInk} 
+                  />
+                </TouchableOpacity>
+                <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
+              </View>
             </View>
-            <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
+            <Text style={[styles.duaTranslation, { color: manuscriptColors.lightInk }]} numberOfLines={2}>
+              {subcategory.description}
+            </Text>
+            <View style={styles.duaFooter}>
+              <View style={styles.duaFooterLeft}>
+                <Ionicons name="book" size={12} color={manuscriptColors.brown} />
+                <Text style={[styles.duaReference, { color: manuscriptColors.brown }]}>
+                  {subcategory.duas.length} duas
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={manuscriptColors.brown} />
+            </View>
           </View>
-        </View>
-      </LinearGradient>
-    </TouchableOpacity>
-  );
+        </LinearGradient>
+      </TouchableOpacity>
+    );
+  };
 
   // Spiral binding component
   const SpiralBinding = () => (
