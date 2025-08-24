@@ -80,9 +80,14 @@ export default function SupplicationsScreen() {
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
   const [bookmarkedDuas, setBookmarkedDuas] = useState<Set<string>>(new Set());
+  const [bookmarkAnimation, setBookmarkAnimation] = useState<string | null>(null);
   const horizontalScrollRef = useRef<ScrollView>(null);
 
   const toggleBookmark = (duaId: string) => {
+    // Trigger animation
+    setBookmarkAnimation(duaId);
+    setTimeout(() => setBookmarkAnimation(null), 300);
+    
     setBookmarkedDuas(prev => {
       const newBookmarksSet = new Set(prev);
       if (newBookmarksSet.has(duaId)) {
@@ -209,13 +214,10 @@ export default function SupplicationsScreen() {
 
   const SubcategoryCard = ({ subcategory }: { subcategory: DuaSubcategory }) => {
     const isBookmarked = bookmarkedDuas.has(subcategory.id);
-    const [justBookmarked, setJustBookmarked] = useState(false);
+    const isAnimating = bookmarkAnimation === subcategory.id;
     
     const handleBookmark = () => {
       toggleBookmark(subcategory.id);
-      setJustBookmarked(true);
-      // Reset the visual effect after animation
-      setTimeout(() => setJustBookmarked(false), 300);
     };
     
     return (
@@ -237,7 +239,7 @@ export default function SupplicationsScreen() {
                       ? manuscriptColors.brown + '20' 
                       : manuscriptColors.border + '30',
                     borderColor: manuscriptColors.border,
-                    transform: [{ scale: justBookmarked ? 1.2 : 1 }]
+                    transform: [{ scale: isAnimating ? 1.2 : 1 }]
                   }]}
                   onPress={handleBookmark}
                 >
@@ -382,10 +384,13 @@ export default function SupplicationsScreen() {
           )
         ) : (
           /* Collection Tab */
-          <CollectionTab 
+          <CollectionTab
             manuscriptColors={manuscriptColors} 
             bookmarkedDuas={Array.from(bookmarkedDuas)}
             onRemoveBookmark={toggleBookmark}
+            onOpenSubcategory={(subcategory) => {
+              startZikrSession(subcategory);
+            }}
           />
         )}
       </ScrollView>
