@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Switch, Slider } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Slider from '@react-native-community/slider';
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
 
@@ -17,6 +18,9 @@ export interface SupplicationDisplaySettings {
   arabicAlignment: 'left' | 'center' | 'right';
   textAlignment: 'left' | 'center' | 'right' | 'justify';
   fontFamily: string;
+  backgroundColor: 'default' | 'sepia' | 'dark' | 'highContrast';
+  autoScroll: boolean;
+  highlightMode: boolean;
 }
 
 interface SupplicationSettingsProps {
@@ -76,11 +80,11 @@ export default function SupplicationSettings({
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         {/* Header */}
         <View style={[styles.header, { borderBottomColor: colors.border }]}>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <TouchableOpacity onPress={onClose} style={styles.headerButton}>
             <Ionicons name="close" size={24} color={colors.text} />
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: colors.text }]}>Reading Settings</Text>
-          <TouchableOpacity onPress={resetToDefaults} style={styles.resetButton}>
+          <TouchableOpacity onPress={resetToDefaults} style={styles.headerButton}>
             <Text style={[styles.resetText, { color: colors.primary }]}>Reset</Text>
           </TouchableOpacity>
         </View>
@@ -88,143 +92,146 @@ export default function SupplicationSettings({
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Display Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Display Options</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>What to Show</Text>
             
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <Text style={[styles.settingLabel, { color: colors.text }]}>Show Arabic Text</Text>
-                <Text style={[styles.settingDescription, { color: colors.secondaryText }]}>
-                  Display original Arabic text
-                </Text>
+            <View style={[styles.settingCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="text" size={20} color={colors.primary} style={styles.settingIcon} />
+                  <Text style={[styles.settingLabel, { color: colors.text }]}>Arabic Text</Text>
+                </View>
+                <Switch
+                  value={settings.showArabic}
+                  onValueChange={(value) => updateSetting('showArabic', value)}
+                  trackColor={{ false: colors.border, true: colors.primary + '40' }}
+                  thumbColor={settings.showArabic ? colors.primary : colors.secondaryText}
+                />
               </View>
-              <Switch
-                value={settings.showArabic}
-                onValueChange={(value) => updateSetting('showArabic', value)}
-                trackColor={{ false: colors.border, true: colors.primary }}
-                thumbColor={colors.background}
-              />
-            </View>
 
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <Text style={[styles.settingLabel, { color: colors.text }]}>Show Transliteration</Text>
-                <Text style={[styles.settingDescription, { color: colors.secondaryText }]}>
-                  Display phonetic pronunciation
-                </Text>
-              </View>
-              <Switch
-                value={settings.showTransliteration}
-                onValueChange={(value) => updateSetting('showTransliteration', value)}
-                trackColor={{ false: colors.border, true: colors.primary }}
-                thumbColor={colors.background}
-              />
-            </View>
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <Text style={[styles.settingLabel, { color: colors.text }]}>Show Translation</Text>
-                <Text style={[styles.settingDescription, { color: colors.secondaryText }]}>
-                  Display English translation
-                </Text>
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="chatbubble-outline" size={20} color={colors.primary} style={styles.settingIcon} />
+                  <Text style={[styles.settingLabel, { color: colors.text }]}>Pronunciation</Text>
+                </View>
+                <Switch
+                  value={settings.showTransliteration}
+                  onValueChange={(value) => updateSetting('showTransliteration', value)}
+                  trackColor={{ false: colors.border, true: colors.primary + '40' }}
+                  thumbColor={settings.showTransliteration ? colors.primary : colors.secondaryText}
+                />
               </View>
-              <Switch
-                value={settings.showTranslation}
-                onValueChange={(value) => updateSetting('showTranslation', value)}
-                trackColor={{ false: colors.border, true: colors.primary }}
-                thumbColor={colors.background}
-              />
-            </View>
 
-            <View style={styles.settingRow}>
-              <View style={styles.settingInfo}>
-                <Text style={[styles.settingLabel, { color: colors.text }]}>Show References</Text>
-                <Text style={[styles.settingDescription, { color: colors.secondaryText }]}>
-                  Display hadith references
-                </Text>
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="language" size={20} color={colors.primary} style={styles.settingIcon} />
+                  <Text style={[styles.settingLabel, { color: colors.text }]}>English Translation</Text>
+                </View>
+                <Switch
+                  value={settings.showTranslation}
+                  onValueChange={(value) => updateSetting('showTranslation', value)}
+                  trackColor={{ false: colors.border, true: colors.primary + '40' }}
+                  thumbColor={settings.showTranslation ? colors.primary : colors.secondaryText}
+                />
               </View>
-              <Switch
-                value={settings.showReferences}
-                onValueChange={(value) => updateSetting('showReferences', value)}
-                trackColor={{ false: colors.border, true: colors.primary }}
-                thumbColor={colors.background}
-              />
+
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+              <View style={styles.settingRow}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="book" size={20} color={colors.primary} style={styles.settingIcon} />
+                  <Text style={[styles.settingLabel, { color: colors.text }]}>References</Text>
+                </View>
+                <Switch
+                  value={settings.showReferences}
+                  onValueChange={(value) => updateSetting('showReferences', value)}
+                  trackColor={{ false: colors.border, true: colors.primary + '40' }}
+                  thumbColor={settings.showReferences ? colors.primary : colors.secondaryText}
+                />
+              </View>
             </View>
           </View>
 
           {/* Font Size Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Font Sizes</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Text Size</Text>
             
-            <View style={styles.sliderContainer}>
-              <View style={styles.sliderHeader}>
-                <Text style={[styles.sliderLabel, { color: colors.text }]}>Arabic Text Size</Text>
-                <Text style={[styles.sliderValue, { color: colors.primary }]}>{settings.arabicFontSize}px</Text>
+            <View style={[styles.settingCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.sliderContainer}>
+                <View style={styles.sliderHeader}>
+                  <View style={styles.sliderLabelContainer}>
+                    <Ionicons name="text" size={18} color={colors.primary} />
+                    <Text style={[styles.sliderLabel, { color: colors.text }]}>Arabic</Text>
+                  </View>
+                  <View style={[styles.sizeIndicator, { backgroundColor: colors.primary + '20' }]}>
+                    <Text style={[styles.sizeText, { color: colors.primary }]}>{settings.arabicFontSize}</Text>
+                  </View>
+                </View>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={18}
+                  maximumValue={36}
+                  step={2}
+                  value={settings.arabicFontSize}
+                  onValueChange={(value) => updateSetting('arabicFontSize', value)}
+                  minimumTrackTintColor={colors.primary}
+                  maximumTrackTintColor={colors.border}
+                  thumbTintColor={colors.primary}
+                />
               </View>
-              <Slider
-                style={styles.slider}
-                minimumValue={18}
-                maximumValue={36}
-                step={2}
-                value={settings.arabicFontSize}
-                onValueChange={(value) => updateSetting('arabicFontSize', value)}
-                minimumTrackTintColor={colors.primary}
-                maximumTrackTintColor={colors.border}
-                thumbTintColor={colors.primary}
-              />
-            </View>
 
-            <View style={styles.sliderContainer}>
-              <View style={styles.sliderHeader}>
-                <Text style={[styles.sliderLabel, { color: colors.text }]}>Transliteration Size</Text>
-                <Text style={[styles.sliderValue, { color: colors.primary }]}>{settings.transliterationFontSize}px</Text>
-              </View>
-              <Slider
-                style={styles.slider}
-                minimumValue={12}
-                maximumValue={24}
-                step={1}
-                value={settings.transliterationFontSize}
-                onValueChange={(value) => updateSetting('transliterationFontSize', value)}
-                minimumTrackTintColor={colors.primary}
-                maximumTrackTintColor={colors.border}
-                thumbTintColor={colors.primary}
-              />
-            </View>
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
-            <View style={styles.sliderContainer}>
-              <View style={styles.sliderHeader}>
-                <Text style={[styles.sliderLabel, { color: colors.text }]}>Translation Size</Text>
-                <Text style={[styles.sliderValue, { color: colors.primary }]}>{settings.translationFontSize}px</Text>
+              <View style={styles.sliderContainer}>
+                <View style={styles.sliderHeader}>
+                  <View style={styles.sliderLabelContainer}>
+                    <Ionicons name="chatbubble-outline" size={18} color={colors.primary} />
+                    <Text style={[styles.sliderLabel, { color: colors.text }]}>Pronunciation</Text>
+                  </View>
+                  <View style={[styles.sizeIndicator, { backgroundColor: colors.primary + '20' }]}>
+                    <Text style={[styles.sizeText, { color: colors.primary }]}>{settings.transliterationFontSize}</Text>
+                  </View>
+                </View>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={12}
+                  maximumValue={24}
+                  step={1}
+                  value={settings.transliterationFontSize}
+                  onValueChange={(value) => updateSetting('transliterationFontSize', value)}
+                  minimumTrackTintColor={colors.primary}
+                  maximumTrackTintColor={colors.border}
+                  thumbTintColor={colors.primary}
+                />
               </View>
-              <Slider
-                style={styles.slider}
-                minimumValue={12}
-                maximumValue={24}
-                step={1}
-                value={settings.translationFontSize}
-                onValueChange={(value) => updateSetting('translationFontSize', value)}
-                minimumTrackTintColor={colors.primary}
-                maximumTrackTintColor={colors.border}
-                thumbTintColor={colors.primary}
-              />
-            </View>
 
-            <View style={styles.sliderContainer}>
-              <View style={styles.sliderHeader}>
-                <Text style={[styles.sliderLabel, { color: colors.text }]}>Line Height</Text>
-                <Text style={[styles.sliderValue, { color: colors.primary }]}>{settings.lineHeight.toFixed(1)}x</Text>
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+              <View style={styles.sliderContainer}>
+                <View style={styles.sliderHeader}>
+                  <View style={styles.sliderLabelContainer}>
+                    <Ionicons name="language" size={18} color={colors.primary} />
+                    <Text style={[styles.sliderLabel, { color: colors.text }]}>Translation</Text>
+                  </View>
+                  <View style={[styles.sizeIndicator, { backgroundColor: colors.primary + '20' }]}>
+                    <Text style={[styles.sizeText, { color: colors.primary }]}>{settings.translationFontSize}</Text>
+                  </View>
+                </View>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={12}
+                  maximumValue={24}
+                  step={1}
+                  value={settings.translationFontSize}
+                  onValueChange={(value) => updateSetting('translationFontSize', value)}
+                  minimumTrackTintColor={colors.primary}
+                  maximumTrackTintColor={colors.border}
+                  thumbTintColor={colors.primary}
+                />
               </View>
-              <Slider
-                style={styles.slider}
-                minimumValue={1.2}
-                maximumValue={2.0}
-                step={0.1}
-                value={settings.lineHeight}
-                onValueChange={(value) => updateSetting('lineHeight', value)}
-                minimumTrackTintColor={colors.primary}
-                maximumTrackTintColor={colors.border}
-                thumbTintColor={colors.primary}
-              />
             </View>
           </View>
 
@@ -232,63 +239,65 @@ export default function SupplicationSettings({
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>Text Alignment</Text>
             
-            <View style={styles.settingGroup}>
-              <Text style={[styles.settingLabel, { color: colors.text }]}>Arabic Text Alignment</Text>
-              <View style={styles.alignmentButtons}>
-                {(['left', 'center', 'right'] as const).map((alignment) => (
-                  <TouchableOpacity
-                    key={alignment}
-                    style={[
-                      styles.alignmentButton,
-                      {
-                        backgroundColor: settings.arabicAlignment === alignment ? colors.primary + '20' : colors.card,
-                        borderColor: settings.arabicAlignment === alignment ? colors.primary : colors.border,
-                      }
-                    ]}
-                    onPress={() => updateSetting('arabicAlignment', alignment)}
-                  >
-                    <Ionicons
-                      name={
-                        alignment === 'left' ? 'text-outline' :
-                        alignment === 'center' ? 'text-outline' : 'text-outline'
-                      }
-                      size={16}
-                      color={settings.arabicAlignment === alignment ? colors.primary : colors.text}
-                    />
-                    <Text style={[
-                      styles.alignmentText,
-                      { color: settings.arabicAlignment === alignment ? colors.primary : colors.text }
-                    ]}>
-                      {alignment.charAt(0).toUpperCase() + alignment.slice(1)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+            <View style={[styles.settingCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.alignmentSection}>
+                <View style={styles.alignmentHeader}>
+                  <Ionicons name="text" size={18} color={colors.primary} />
+                  <Text style={[styles.alignmentTitle, { color: colors.text }]}>Arabic Text</Text>
+                </View>
+                <View style={styles.alignmentButtons}>
+                  {(['left', 'center', 'right'] as const).map((alignment) => (
+                    <TouchableOpacity
+                      key={alignment}
+                      style={[
+                        styles.alignmentButton,
+                        {
+                          backgroundColor: settings.arabicAlignment === alignment ? colors.primary : colors.background,
+                          borderColor: colors.border,
+                        }
+                      ]}
+                      onPress={() => updateSetting('arabicAlignment', alignment)}
+                    >
+                      <Text style={[
+                        styles.alignmentText,
+                        { color: settings.arabicAlignment === alignment ? '#FFFFFF' : colors.text }
+                      ]}>
+                        {alignment === 'left' ? 'Left' : alignment === 'center' ? 'Center' : 'Right'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
-            </View>
 
-            <View style={styles.settingGroup}>
-              <Text style={[styles.settingLabel, { color: colors.text }]}>Translation Alignment</Text>
-              <View style={styles.alignmentButtons}>
-                {(['left', 'center', 'right', 'justify'] as const).map((alignment) => (
-                  <TouchableOpacity
-                    key={alignment}
-                    style={[
-                      styles.alignmentButton,
-                      {
-                        backgroundColor: settings.textAlignment === alignment ? colors.primary + '20' : colors.card,
-                        borderColor: settings.textAlignment === alignment ? colors.primary : colors.border,
-                      }
-                    ]}
-                    onPress={() => updateSetting('textAlignment', alignment)}
-                  >
-                    <Text style={[
-                      styles.alignmentText,
-                      { color: settings.textAlignment === alignment ? colors.primary : colors.text }
-                    ]}>
-                      {alignment.charAt(0).toUpperCase() + alignment.slice(1)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+              <View style={styles.alignmentSection}>
+                <View style={styles.alignmentHeader}>
+                  <Ionicons name="language" size={18} color={colors.primary} />
+                  <Text style={[styles.alignmentTitle, { color: colors.text }]}>Translation</Text>
+                </View>
+                <View style={styles.alignmentButtons}>
+                  {(['left', 'center', 'right', 'justify'] as const).map((alignment) => (
+                    <TouchableOpacity
+                      key={alignment}
+                      style={[
+                        styles.alignmentButton,
+                        {
+                          backgroundColor: settings.textAlignment === alignment ? colors.primary : colors.background,
+                          borderColor: colors.border,
+                        }
+                      ]}
+                      onPress={() => updateSetting('textAlignment', alignment)}
+                    >
+                      <Text style={[
+                        styles.alignmentText,
+                        { color: settings.textAlignment === alignment ? '#FFFFFF' : colors.text }
+                      ]}>
+                        {alignment.charAt(0).toUpperCase() + alignment.slice(1)}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
             </View>
           </View>
@@ -305,12 +314,12 @@ export default function SupplicationSettings({
                     textAlign: settings.arabicAlignment,
                     color: colors.text,
                     lineHeight: settings.arabicFontSize * settings.lineHeight,
-                    fontFamily: settings.fontFamily === 'System' ? 'System' : settings.fontFamily.toLowerCase()
                   }
                 ]}>
                   بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
                 </Text>
               )}
+              
               {settings.showTransliteration && (
                 <Text style={[
                   styles.previewTransliteration,
@@ -319,12 +328,12 @@ export default function SupplicationSettings({
                     textAlign: settings.textAlignment,
                     color: colors.secondaryText,
                     lineHeight: settings.transliterationFontSize * settings.lineHeight,
-                    fontFamily: settings.fontFamily === 'System' ? 'System' : settings.fontFamily.toLowerCase()
                   }
                 ]}>
                   Bismillahi'r-Rahmani'r-Raheem
                 </Text>
               )}
+              
               {settings.showTranslation && (
                 <Text style={[
                   styles.previewTranslation,
@@ -333,12 +342,12 @@ export default function SupplicationSettings({
                     textAlign: settings.textAlignment,
                     color: colors.text,
                     lineHeight: settings.translationFontSize * settings.lineHeight,
-                    fontFamily: settings.fontFamily === 'System' ? 'System' : settings.fontFamily.toLowerCase()
                   }
                 ]}>
                   In the name of Allah, the Most Gracious, the Most Merciful
                 </Text>
               )}
+              
               {settings.showReferences && (
                 <Text style={[styles.previewReference, { color: colors.primary }]}>
                   Reference: Quran 1:1
@@ -364,56 +373,62 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
   },
-  closeButton: {
+  headerButton: {
     padding: 4,
+    minWidth: 60,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-  },
-  resetButton: {
-    padding: 4,
   },
   resetText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
+    textAlign: 'right',
   },
   content: {
     flex: 1,
   },
   section: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 20,
+    marginBottom: 16,
+  },
+  settingCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    overflow: 'hidden',
   },
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    marginBottom: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
   },
   settingInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
-    marginRight: 16,
+  },
+  settingIcon: {
+    marginRight: 12,
   },
   settingLabel: {
     fontSize: 16,
     fontWeight: '500',
-    marginBottom: 4,
   },
-  settingDescription: {
-    fontSize: 14,
-    lineHeight: 18,
-  },
-  settingGroup: {
-    marginBottom: 24,
+  divider: {
+    height: 1,
+    marginHorizontal: 20,
   },
   sliderContainer: {
-    marginBottom: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
   },
   sliderHeader: {
     flexDirection: 'row',
@@ -421,11 +436,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  sliderLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   sliderLabel: {
     fontSize: 16,
     fontWeight: '500',
+    marginLeft: 8,
   },
-  sliderValue: {
+  sizeIndicator: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    minWidth: 50,
+    alignItems: 'center',
+  },
+  sizeText: {
     fontSize: 14,
     fontWeight: '600',
   },
@@ -433,32 +460,41 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
   },
+  alignmentSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  alignmentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  alignmentTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
   alignmentButtons: {
     flexDirection: 'row',
     gap: 8,
-    marginTop: 8,
-    flexWrap: 'wrap',
   },
   alignmentButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
+    flex: 1,
+    paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 1,
-    gap: 4,
-    minWidth: 70,
-    justifyContent: 'center',
+    alignItems: 'center',
   },
   alignmentText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '500',
   },
   previewContainer: {
-    padding: 16,
-    borderRadius: 12,
+    padding: 20,
+    borderRadius: 16,
     borderWidth: 1,
-    gap: 12,
+    gap: 16,
   },
   previewArabic: {
     fontWeight: '400',
