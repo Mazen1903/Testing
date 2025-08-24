@@ -42,6 +42,7 @@ export interface ReminderNotificationData {
   transliteration?: string;
   translation?: string;
   scheduledTime: string;
+  [key: string]: unknown; // Add index signature for Expo notifications
 }
 
 export interface CreateReminderRequest {
