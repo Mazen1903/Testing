@@ -100,7 +100,10 @@ export default function SupplicationsScreen() {
     lineHeight: 1.6,
     arabicAlignment: 'right' as 'left' | 'center' | 'right',
     textAlignment: 'justify' as 'left' | 'center' | 'right' | 'justify',
-    fontFamily: 'System'
+    fontFamily: 'System',
+    backgroundColor: 'default' as 'default' | 'sepia' | 'dark' | 'highContrast',
+    autoScroll: false,
+    highlightMode: false
   });
   const horizontalScrollRef = useRef<ScrollView>(null);
   

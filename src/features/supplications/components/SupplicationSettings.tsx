@@ -59,7 +59,10 @@ export default function SupplicationSettings({
       lineHeight: 1.6,
       arabicAlignment: 'right',
       textAlignment: 'justify',
-      fontFamily: 'System'
+      fontFamily: 'System',
+      backgroundColor: 'default',
+      autoScroll: false,
+      highlightMode: false
     };
     onSettingsChange(defaultSettings);
   };
