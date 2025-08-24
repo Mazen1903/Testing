@@ -26,39 +26,78 @@ class ReminderService {
   private readonly STORAGE_KEY = '@supplication_reminders';
   private readonly HISTORY_KEY = '@reminder_history';
   private readonly STATS_KEY = '@reminder_stats';
+  private isInitialized = false;
 
   constructor() {
     this.initializeNotifications();
   }
 
   private async initializeNotifications() {
-    if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('supplications', {
-        name: 'Supplication Reminders',
-        importance: Notifications.AndroidImportance.HIGH,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#8B4513',
-        sound: 'default',
-      });
+    if (this.isInitialized) return;
+    
+    try {
+      // Request permissions first
+      const hasPermission = await this.requestPermissions();
+      if (!hasPermission) {
+        console.warn('Notification permissions not granted');
+        return;
+      }
+
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('supplications', {
+          name: 'Supplication Reminders',
+          importance: Notifications.AndroidImportance.HIGH,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#8B4513',
+          sound: 'default',
+          description: 'Notifications for your scheduled supplications',
+        });
+      }
+
+      // Set up notification response listener
+      Notifications.addNotificationResponseReceivedListener(this.handleNotificationResponse);
+      
+      this.isInitialized = true;
+      console.log('✅ Notification system initialized');
+    } catch (error) {
+      console.error('❌ Error initializing notifications:', error);
     }
   }
 
+  private handleNotificationResponse = (response: Notifications.NotificationResponse) => {
+    const data = response.notification.request.content.data as ReminderNotificationData;
+    console.log('📱 Notification tapped:', data);
+    
+    // Mark reminder as completed when notification is tapped
+    if (data.reminderId) {
+      this.markReminderCompleted(data.reminderId);
+    }
+  };
+
   // Request notification permissions
   async requestPermissions(): Promise<boolean> {
-    if (!Device.isDevice) {
-      console.warn('Notifications only work on physical devices');
+    try {
+      if (!Device.isDevice) {
+        console.warn('Notifications only work on physical devices');
+        return false;
+      }
+
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== 'granted') {
+        console.log('🔔 Requesting notification permissions...');
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+
+      const granted = finalStatus === 'granted';
+      console.log(granted ? '✅ Notification permissions granted' : '❌ Notification permissions denied');
+      return granted;
+    } catch (error) {
+      console.error('❌ Error requesting permissions:', error);
       return false;
     }
-
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-
-    return finalStatus === 'granted';
   }
 
   // Storage helpers
@@ -104,46 +143,67 @@ class ReminderService {
     const now = new Date();
     const scheduledTime = new Date(reminder.scheduledTime);
     
+    // Create a new date with today's date but the scheduled time
+    const nextTrigger = new Date();
+    nextTrigger.setHours(scheduledTime.getHours());
+    nextTrigger.setMinutes(scheduledTime.getMinutes());
+    nextTrigger.setSeconds(0);
+    nextTrigger.setMilliseconds(0);
+    
     switch (reminder.frequency) {
       case 'once':
         return scheduledTime > now ? scheduledTime : null;
         
       case 'daily':
-        const nextDaily = new Date(scheduledTime);
-        nextDaily.setDate(now.getDate());
-        if (nextDaily <= now) {
-          nextDaily.setDate(nextDaily.getDate() + 1);
+        // If the time has passed today, schedule for tomorrow
+        if (nextTrigger <= now) {
+          nextTrigger.setDate(nextTrigger.getDate() + 1);
         }
-        return nextDaily;
+        return nextTrigger;
         
       case 'weekly':
         if (!reminder.daysOfWeek || reminder.daysOfWeek.length === 0) return null;
         
-        const nextWeekly = new Date(scheduledTime);
         const currentDay = now.getDay();
-        const nextDay = reminder.daysOfWeek.find(day => day > currentDay) || 
-                       reminder.daysOfWeek[0];
+        let nextDay = reminder.daysOfWeek.find(day => {
+          if (day > currentDay) return true;
+          if (day === currentDay) {
+            // Same day - check if time hasn't passed yet
+            const todayTime = new Date();
+            todayTime.setHours(scheduledTime.getHours());
+            todayTime.setMinutes(scheduledTime.getMinutes());
+            return todayTime > now;
+          }
+          return false;
+        });
         
-        if (nextDay > currentDay) {
-          nextWeekly.setDate(now.getDate() + (nextDay - currentDay));
+        if (!nextDay) {
+          // No more days this week, get first day of next week
+          nextDay = reminder.daysOfWeek[0];
+          const daysUntilNext = (7 - currentDay + nextDay) % 7;
+          nextTrigger.setDate(nextTrigger.getDate() + (daysUntilNext === 0 ? 7 : daysUntilNext));
         } else {
-          nextWeekly.setDate(now.getDate() + (7 - currentDay + nextDay));
+          // Found a day this week
+          const daysUntilNext = nextDay - currentDay;
+          nextTrigger.setDate(nextTrigger.getDate() + daysUntilNext);
         }
-        return nextWeekly;
+        
+        return nextTrigger;
         
       case 'monthly':
-        const nextMonthly = new Date(scheduledTime);
-        nextMonthly.setMonth(now.getMonth());
-        if (nextMonthly <= now) {
-          nextMonthly.setMonth(nextMonthly.getMonth() + 1);
+        // If the time has passed this month, schedule for next month
+        if (nextTrigger <= now) {
+          nextTrigger.setMonth(nextTrigger.getMonth() + 1);
         }
-        return nextMonthly;
+        return nextTrigger;
         
       case 'custom':
         if (!reminder.customInterval) return null;
-        const nextCustom = new Date(scheduledTime);
-        nextCustom.setDate(now.getDate() + reminder.customInterval);
-        return nextCustom;
+        // If the time has passed today, add the custom interval
+        if (nextTrigger <= now) {
+          nextTrigger.setDate(nextTrigger.getDate() + reminder.customInterval);
+        }
+        return nextTrigger;
         
       default:
         return null;
@@ -153,15 +213,20 @@ class ReminderService {
   // Schedule notification for a reminder
   private async scheduleNotification(reminder: SupplicationReminder): Promise<string | null> {
     const nextTrigger = this.calculateNextTrigger(reminder);
-    if (!nextTrigger) return null;
+    if (!nextTrigger) {
+      console.log('❌ No next trigger calculated for reminder:', reminder.id);
+      return null;
+    }
 
     try {
+      console.log('📅 Scheduling notification for:', nextTrigger.toLocaleString());
+      
+      const notificationContent = this.getNotificationContent(reminder);
+      
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
-          title: reminder.title,
-          body: reminder.notificationStyle === 'full' 
-            ? reminder.supplicationText.translation || reminder.supplicationText.transliteration || 'Time for your supplication'
-            : `Time for ${reminder.supplicationTitle}`,
+          title: notificationContent.title,
+          body: notificationContent.body,
           data: {
             reminderId: reminder.id,
             supplicationTitle: reminder.supplicationTitle,
@@ -172,22 +237,47 @@ class ReminderService {
           } as ReminderNotificationData,
           sound: reminder.soundEnabled ? 'default' : false,
           vibrate: reminder.vibrationEnabled ? [0, 250, 250, 250] : [],
+          badge: 1,
         },
         trigger: {
           date: nextTrigger,
         },
       });
 
+      console.log('✅ Notification scheduled with ID:', notificationId);
       return notificationId;
     } catch (error) {
-      console.error('Error scheduling notification:', error);
+      console.error('❌ Error scheduling notification:', error);
       return null;
     }
+  }
+
+  private getNotificationContent(reminder: SupplicationReminder): { title: string; body: string } {
+    const title = `🤲 ${reminder.supplicationTitle}`;
+    
+    let body: string;
+    switch (reminder.notificationStyle) {
+      case 'minimal':
+        body = 'Time for your supplication';
+        break;
+      case 'full':
+        body = reminder.supplicationText.translation || 
+               reminder.supplicationText.transliteration || 
+               'Time for your supplication';
+        break;
+      case 'preview':
+      default:
+        body = `Time for ${reminder.supplicationTitle}`;
+        break;
+    }
+    
+    return { title, body };
   }
 
   // Public API methods
   async getAllReminders(): Promise<ApiResponse<SupplicationReminder[]>> {
     try {
+      await this.initializeNotifications();
       const reminders = await this.getReminders();
       return { success: true, data: reminders };
     } catch (error) {
@@ -203,9 +293,11 @@ class ReminderService {
     supplicationData: { title: string; arabic?: string; transliteration?: string; translation?: string }
   ): Promise<ApiResponse<SupplicationReminder>> {
     try {
+      await this.initializeNotifications();
+      
       const hasPermission = await this.requestPermissions();
       if (!hasPermission) {
-        return { success: false, error: 'Notification permissions required' };
+        return { success: false, error: 'Notification permissions required. Please enable notifications in your device settings.' };
       }
 
       const reminders = await this.getReminders();
@@ -236,11 +328,19 @@ class ReminderService {
         tags: reminderData.tags,
       };
 
-      // Calculate next trigger
+      // Calculate next trigger and schedule notification
       const nextTrigger = this.calculateNextTrigger(newReminder);
       if (nextTrigger) {
         newReminder.nextTrigger = nextTrigger.toISOString();
-        await this.scheduleNotification(newReminder);
+        const notificationId = await this.scheduleNotification(newReminder);
+        
+        if (!notificationId) {
+          return { success: false, error: 'Failed to schedule notification' };
+        }
+        
+        console.log('✅ Reminder created and notification scheduled');
+      } else {
+        console.log('⚠️ No next trigger calculated - reminder created but not scheduled');
       }
 
       reminders.push(newReminder);
@@ -248,6 +348,7 @@ class ReminderService {
 
       return { success: true, data: newReminder };
     } catch (error) {
+      console.error('❌ Error creating reminder:', error);
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Failed to create reminder' 
@@ -468,6 +569,37 @@ class ReminderService {
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Failed to get history' 
+      };
+    }
+  }
+
+  // Test notification (for debugging)
+  async testNotification(): Promise<ApiResponse<void>> {
+    try {
+      const hasPermission = await this.requestPermissions();
+      if (!hasPermission) {
+        return { success: false, error: 'Notification permissions required' };
+      }
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: '🤲 Test Reminder',
+          body: 'This is a test notification to verify the reminder system is working',
+          data: { test: true },
+          sound: 'default',
+          vibrate: [0, 250, 250, 250],
+          badge: 1,
+        },
+        trigger: {
+          seconds: 2, // Fire in 2 seconds
+        },
+      });
+
+      return { success: true, data: undefined };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Failed to send test notification' 
       };
     }
   }

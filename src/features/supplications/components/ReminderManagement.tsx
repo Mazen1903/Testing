@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  Alert,
   Switch,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -54,6 +55,19 @@ export default function ReminderManagement({ manuscriptColors }: ReminderManagem
       }
     } catch (error) {
       console.error('Error loading stats:', error);
+    }
+  };
+
+  const handleTestNotification = async () => {
+    try {
+      const response = await reminderService.testNotification();
+      if (response.success) {
+        Alert.alert('Success', 'Test notification sent! Check your notifications in 2 seconds.');
+      } else {
+        Alert.alert('Error', response.error || 'Failed to send test notification');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to send test notification');
     }
   };
 
@@ -159,6 +173,13 @@ export default function ReminderManagement({ manuscriptColors }: ReminderManagem
           <View style={styles.statsHeader}>
             <Ionicons name="analytics" size={20} color={manuscriptColors.brown} />
             <Text style={[styles.statsTitle, { color: manuscriptColors.ink }]}>Your Progress</Text>
+            <TouchableOpacity
+              style={[styles.testButton, { backgroundColor: manuscriptColors.brown + '15' }]}
+              onPress={handleTestNotification}
+            >
+              <Ionicons name="notifications" size={16} color={manuscriptColors.brown} />
+              <Text style={[styles.testButtonText, { color: manuscriptColors.brown }]}>Test</Text>
+            </TouchableOpacity>
           </View>
           
           <View style={styles.statsGrid}>
@@ -417,5 +438,17 @@ const styles = StyleSheet.create({
   completionText: {
     fontSize: 12,
     fontWeight: '500',
+  },
+  testButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  testButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 });
