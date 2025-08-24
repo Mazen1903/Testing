@@ -9,17 +9,17 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
-import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import * as Haptics from 'expo-haptics';
 import Animated, { 
+  FadeInDown, 
+  FadeInRight,
   useSharedValue, 
   useAnimatedStyle, 
   withSpring, 
   withSequence,
-  runOnJS
 } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 
 import { Colors } from '@/shared/constants/Colors';
 import { useTheme } from '@/shared/contexts/ThemeContext';
@@ -125,49 +125,40 @@ export default function SupplicationsScreen() {
     });
   };
 
-
   const handleSeriesSelect = (series: ZikrSeries) => {
     if (hasSubcategories(series) || isMixedSeries(series)) {
       // Complex or mixed series - show subcategories (and direct duas if mixed)
       setSelectedSeries(series);
       setShowSubcategories(true);
-    } else {
-      
     }
   };
 
-  const startZikrSession = (subcategory: DuaSubcategory) => {
+  const startZikrSession = async (subcategory: DuaSubcategory) => {
     try {
       setIsLoadingSession(true);
       
       // Validate subcategory data
       if (!subcategory || !subcategory.duas || subcategory.duas.length === 0) {
         console.error('Invalid subcategory data:', subcategory);
+        setIsLoadingSession(false);
         return;
       }
       
-      // Reset state safely
+      // Reset state safely with a small delay
       setSelectedSubcategory(null);
       setCurrentDuaIndex(0);
       setCurrentCount(0);
       
-      // Small delay to ensure state is reset
-      setTimeout(() => {
-        setSelectedSubcategory(subcategory);
-        setZikrSessionVisible(true);
-        setIsLoadingSession(false);
-      }, 100);
+      // Small delay to ensure state is reset properly
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      setSelectedSubcategory(subcategory);
+      setZikrSessionVisible(true);
+      setIsLoadingSession(false);
     } catch (error) {
       console.error('Error starting zikr session:', error);
       setIsLoadingSession(false);
     }
-  };
-
-  const startZikrSessionSafe = (subcategory: DuaSubcategory) => {
-    setSelectedSubcategory(subcategory);
-    setCurrentDuaIndex(0);
-    setCurrentCount(0);
-    setZikrSessionVisible(true);
   };
 
   const closeZikrSession = () => {
@@ -324,6 +315,7 @@ export default function SupplicationsScreen() {
       <TouchableOpacity
         style={styles.manuscriptCard}
         onPress={() => startZikrSession(subcategory)}
+        disabled={isLoadingSession}
       >
         <LinearGradient
           colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
@@ -335,20 +327,19 @@ export default function SupplicationsScreen() {
               <View style={styles.headerIcons}>
                 <Animated.View style={animatedStyle}>
                   <TouchableOpacity
-                  style={[styles.bookmarkButtonCard, {
-                    onPress={() => startZikrSession(subcategory)}
-                    disabled={isLoadingSession}
-                      ? manuscriptColors.brown + '20' 
-                      : manuscriptColors.border + '30',
-                    borderColor: manuscriptColors.border,
-                  }]}
-                  onPress={handleBookmark}
+                    style={[styles.bookmarkButtonCard, {
+                      backgroundColor: isBookmarked 
+                        ? manuscriptColors.brown + '20' 
+                        : manuscriptColors.border + '30',
+                      borderColor: manuscriptColors.border,
+                    }]}
+                    onPress={handleBookmark}
                   >
-                  <Ionicons 
-                    name={isBookmarked ? "bookmark" : "bookmark-outline"} 
-                    size={16} 
-                    color={isBookmarked ? manuscriptColors.brown : manuscriptColors.lightInk} 
-                  />
+                    <Ionicons 
+                      name={isBookmarked ? "bookmark" : "bookmark-outline"} 
+                      size={16} 
+                      color={isBookmarked ? manuscriptColors.brown : manuscriptColors.lightInk} 
+                    />
                   </TouchableOpacity>
                 </Animated.View>
                 <Ionicons name={subcategory.icon as any} size={20} color={manuscriptColors.brown} />
@@ -444,6 +435,7 @@ export default function SupplicationsScreen() {
             </TouchableOpacity>
           </View>
         </Animated.View>
+
         {/* Tab Content */}
         {activeTab === 'browse' ? (
           /* Zikr Series List or Subcategories */
@@ -511,194 +503,194 @@ export default function SupplicationsScreen() {
             </Text>
           </View>
         ) : (
-        <LinearGradient
-          colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
-          style={styles.manuscriptContainer}
-        >
-          <SafeAreaView style={styles.manuscriptSafeArea}>
-            {/* Spiral Binding */}
-            <SpiralBinding />
+          <LinearGradient
+            colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
+            style={styles.manuscriptContainer}
+          >
+            <SafeAreaView style={styles.manuscriptSafeArea}>
+              {/* Spiral Binding */}
+              <SpiralBinding />
 
-            {/* Manuscript Header */}
-            <View style={[styles.manuscriptHeader, { borderBottomColor: manuscriptColors.border }]}>
-              <TouchableOpacity
-                style={[styles.closeButton, {
-                  backgroundColor: manuscriptColors.parchment,
-                  borderColor: manuscriptColors.border
-                }]}
-                onPress={closeZikrSession}
-              >
-                <Ionicons name="chevron-back" size={24} color={manuscriptColors.brown} />
-              </TouchableOpacity>
-
-              <View style={styles.titleContainer}>
-                <Text style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}>
-                  {selectedSubcategory?.name || 'دعاء'}
-                </Text>
-                <Text style={[styles.manuscriptSubtitle, { color: manuscriptColors.lightInk }]}>
-                  {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
-                </Text>
-              </View>
-            </View>
-
-            {/* Manuscript Content - Horizontal Swiping */}
-            {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 ? (
-              <ScrollView
-                ref={horizontalScrollRef}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                onMomentumScrollEnd={handlePageChange}
-                style={styles.horizontalScrollView}
-                contentOffset={{ x: currentDuaIndex * width, y: 0 }}
-                bounces={false}
-                decelerationRate="fast"
-              >
-                {selectedSubcategory.duas.map((dua, index) => (
-                  <ScrollView
-                    key={index}
-                    style={[styles.manuscriptScrollView, { width }]}
-                    contentContainerStyle={styles.manuscriptContent}
-                    showsVerticalScrollIndicator={false}
-                  >
-                    <TouchableOpacity
-                      style={styles.tappableContent}
-                      onPress={index === currentDuaIndex ? incrementCount : undefined}
-                      activeOpacity={index === currentDuaIndex ? 0.8 : 1}
-                      disabled={index !== currentDuaIndex}
-                    >
-                      {/* Arabic Text */}
-                      <View style={styles.arabicSection}>
-                        <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
-                          {dua.arabic || 'Arabic text not available'}
-                        </Text>
-                      </View>
-
-                      {/* Divider */}
-                      <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
-
-                      {/* Transliteration */}
-                      <View style={styles.textSection}>
-                        <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
-                          {dua.transliteration || 'Transliteration not available'}
-                        </Text>
-                      </View>
-
-                      {/* Translation */}
-                      <View style={styles.textSection}>
-                        <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
-                          {dua.translation || 'Translation not available'}
-                        </Text>
-                      </View>
-
-                      {/* Reference */}
-                      <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
-                        {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
-                          <ExpandableText
-                            text={`Reference: ${dua.reference || 'No reference'}\n\n${dua.fullReference}`}
-                            numberOfLines={2}
-                            style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                            expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
-                            buttonStyle={[styles.learnMoreButton, {
-                              backgroundColor: manuscriptColors.brown + '15',
-                              borderColor: manuscriptColors.brown + '30'
-                            }]}
-                            textAlign="left"
-                          />
-                        ) : (
-                          <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
-                            {dua.reference || 'No reference available'}
-                          </Text>
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  </ScrollView>
-                ))}
-              </ScrollView>
-            ) : (
-              <View style={styles.errorContainer}>
-                <Text style={[styles.errorText, { color: manuscriptColors.ink }]}>
-                  No supplications available
-                </Text>
-                <TouchableOpacity 
-                  style={[styles.retryButton, { backgroundColor: manuscriptColors.brown }]}
+              {/* Manuscript Header */}
+              <View style={[styles.manuscriptHeader, { borderBottomColor: manuscriptColors.border }]}>
+                <TouchableOpacity
+                  style={[styles.closeButton, {
+                    backgroundColor: manuscriptColors.parchment,
+                    borderColor: manuscriptColors.border
+                  }]}
                   onPress={closeZikrSession}
                 >
-                  <Text style={styles.retryButtonText}>Go Back</Text>
+                  <Ionicons name="chevron-back" size={24} color={manuscriptColors.brown} />
                 </TouchableOpacity>
-              </View>
-            )}
 
-            {/* Navigation Indicator */}
-            {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
-              <View style={styles.swipeIndicatorContainer}>
-                {selectedSubcategory.duas.length > 1 && (
-                  <View style={styles.swipeDotsContainer}>
-                    {selectedSubcategory.duas.map((_, index) => (
-                      <View
-                        key={index}
-                        style={[
-                          styles.swipeDot,
-                          {
-                            backgroundColor: index === currentDuaIndex
-                              ? manuscriptColors.brown
-                              : manuscriptColors.border
-                          }
-                        ]}
-                      />
-                    ))}
-                  </View>
-                )}
-                <Text style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}>
-                  {selectedSubcategory.duas.length > 1
-                    ? 'Swipe left/right to navigate • Tap anywhere to count'
-                    : 'Tap anywhere on the screen to count'
-                  }
-                </Text>
-              </View>
-            )}
-
-            {/* Islamic Counter */}
-            {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
-              <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
-              {/* Counter Info Row */}
-              <View style={styles.counterInfoRow}>
-                <View style={[styles.counterLabelContainer, {
-                  backgroundColor: manuscriptColors.parchment + '80',
-                  borderColor: manuscriptColors.border
-                }]}>
-                  <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
+                <View style={styles.titleContainer}>
+                  <Text style={[styles.manuscriptTitle, { color: manuscriptColors.ink }]}>
+                    {selectedSubcategory?.name || 'دعاء'}
+                  </Text>
+                  <Text style={[styles.manuscriptSubtitle, { color: manuscriptColors.lightInk }]}>
+                    {selectedSubcategory?.duas[currentDuaIndex]?.title || ''}
                   </Text>
                 </View>
+              </View>
 
-                <TouchableOpacity
-                  style={styles.islamicCounterButton}
-                  onPress={incrementCount}
+              {/* Manuscript Content - Horizontal Swiping */}
+              {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 ? (
+                <ScrollView
+                  ref={horizontalScrollRef}
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
+                  onMomentumScrollEnd={handlePageChange}
+                  style={styles.horizontalScrollView}
+                  contentOffset={{ x: currentDuaIndex * width, y: 0 }}
+                  bounces={false}
+                  decelerationRate="fast"
                 >
-                  <LinearGradient
-                    colors={[manuscriptColors.gold, manuscriptColors.darkGold]}
-                    style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
-                  >
-                    <Text style={[styles.counterButtonText, { color: manuscriptColors.ink }]}>
-                      {currentCount + 1}
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                  {selectedSubcategory.duas.map((dua, index) => (
+                    <ScrollView
+                      key={index}
+                      style={[styles.manuscriptScrollView, { width }]}
+                      contentContainerStyle={styles.manuscriptContent}
+                      showsVerticalScrollIndicator={false}
+                    >
+                      <TouchableOpacity
+                        style={styles.tappableContent}
+                        onPress={index === currentDuaIndex ? incrementCount : undefined}
+                        activeOpacity={index === currentDuaIndex ? 0.8 : 1}
+                        disabled={index !== currentDuaIndex}
+                      >
+                        {/* Arabic Text */}
+                        <View style={styles.arabicSection}>
+                          <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
+                            {dua.arabic || 'Arabic text not available'}
+                          </Text>
+                        </View>
 
-                <View style={[styles.counterLabelContainer, {
-                  backgroundColor: manuscriptColors.parchment + '80',
-                  borderColor: manuscriptColors.border
-                }]}>
-                  <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    {selectedSubcategory?.duas?.[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas?.[currentDuaIndex]?.repetitions || 1} times`}
+                        {/* Divider */}
+                        <View style={[styles.manuscriptDivider, { backgroundColor: manuscriptColors.border }]} />
+
+                        {/* Transliteration */}
+                        <View style={styles.textSection}>
+                          <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
+                            {dua.transliteration || 'Transliteration not available'}
+                          </Text>
+                        </View>
+
+                        {/* Translation */}
+                        <View style={styles.textSection}>
+                          <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
+                            {dua.translation || 'Translation not available'}
+                          </Text>
+                        </View>
+
+                        {/* Reference */}
+                        <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
+                          {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
+                            <ExpandableText
+                              text={`Reference: ${dua.reference || 'No reference'}\n\n${dua.fullReference}`}
+                              numberOfLines={2}
+                              style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                              expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
+                              buttonStyle={[styles.learnMoreButton, {
+                                backgroundColor: manuscriptColors.brown + '15',
+                                borderColor: manuscriptColors.brown + '30'
+                              }]}
+                              textAlign="left"
+                            />
+                          ) : (
+                            <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
+                              {dua.reference || 'No reference available'}
+                            </Text>
+                          )}
+                        </View>
+                      </TouchableOpacity>
+                    </ScrollView>
+                  ))}
+                </ScrollView>
+              ) : (
+                <View style={styles.errorContainer}>
+                  <Text style={[styles.errorText, { color: manuscriptColors.ink }]}>
+                    No supplications available
+                  </Text>
+                  <TouchableOpacity 
+                    style={[styles.retryButton, { backgroundColor: manuscriptColors.brown }]}
+                    onPress={closeZikrSession}
+                  >
+                    <Text style={styles.retryButtonText}>Go Back</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {/* Navigation Indicator */}
+              {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
+                <View style={styles.swipeIndicatorContainer}>
+                  {selectedSubcategory.duas.length > 1 && (
+                    <View style={styles.swipeDotsContainer}>
+                      {selectedSubcategory.duas.map((_, index) => (
+                        <View
+                          key={index}
+                          style={[
+                            styles.swipeDot,
+                            {
+                              backgroundColor: index === currentDuaIndex
+                                ? manuscriptColors.brown
+                                : manuscriptColors.border
+                            }
+                          ]}
+                        />
+                      ))}
+                    </View>
+                  )}
+                  <Text style={[styles.swipeHint, { color: manuscriptColors.lightInk }]}>
+                    {selectedSubcategory.duas.length > 1
+                      ? 'Swipe left/right to navigate • Tap anywhere to count'
+                      : 'Tap anywhere on the screen to count'
+                    }
                   </Text>
                 </View>
-              </View>
-              </View>
-            )}
-          </SafeAreaView>
-        </LinearGradient>
+              )}
+
+              {/* Islamic Counter */}
+              {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
+                <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
+                  {/* Counter Info Row */}
+                  <View style={styles.counterInfoRow}>
+                    <View style={[styles.counterLabelContainer, {
+                      backgroundColor: manuscriptColors.parchment + '80',
+                      borderColor: manuscriptColors.border
+                    }]}>
+                      <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
+                        Dhikr {currentDuaIndex + 1} of {selectedSubcategory?.duas.length || 1}
+                      </Text>
+                    </View>
+
+                    <TouchableOpacity
+                      style={styles.islamicCounterButton}
+                      onPress={incrementCount}
+                    >
+                      <LinearGradient
+                        colors={[manuscriptColors.gold, manuscriptColors.darkGold]}
+                        style={[styles.counterButtonGradient, { borderColor: manuscriptColors.brown }]}
+                      >
+                        <Text style={[styles.counterButtonText, { color: manuscriptColors.ink }]}>
+                          {currentCount + 1}
+                        </Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+
+                    <View style={[styles.counterLabelContainer, {
+                      backgroundColor: manuscriptColors.parchment + '80',
+                      borderColor: manuscriptColors.border
+                    }]}>
+                      <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
+                        {selectedSubcategory?.duas?.[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas?.[currentDuaIndex]?.repetitions || 1} times`}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              )}
+            </SafeAreaView>
+          </LinearGradient>
         )}
       </Modal>
     </SafeAreaView>
@@ -1126,4 +1118,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-}); 
+});
