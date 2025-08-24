@@ -26,7 +26,7 @@ import { useTheme } from '@/shared/contexts/ThemeContext';
 import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplications';
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
-import { CollectionTab, SettingsGear } from '@/src/features/supplications/components';
+import { CollectionTab } from '@/src/features/supplications/components';
 
 const { width, height } = Dimensions.get('window');
 
@@ -545,10 +545,15 @@ export default function SupplicationsScreen() {
                   </Text>
                 </View>
 
-                <SettingsGear 
+                <TouchableOpacity
+                  style={[styles.settingsButton, {
+                    backgroundColor: manuscriptColors.parchment,
+                    borderColor: manuscriptColors.border
+                  }]}
                   onPress={() => setShowSettings(true)}
-                  manuscriptColors={manuscriptColors}
-                />
+                >
+                  <Ionicons name="settings" size={20} color={manuscriptColors.brown} />
+                </TouchableOpacity>
               </View>
 
               {/* Manuscript Content - Horizontal Swiping */}
@@ -914,6 +919,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
   },
   closeButton: {
+    padding: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  settingsButton: {
     padding: 8,
     borderRadius: 20,
     borderWidth: 1,
