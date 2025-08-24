@@ -13,7 +13,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
   {
     id: 'daily-supplications',
     title: 'Daily Supplications',
-    description: 'The Importance of Daily Supplications - Essential prayers for every Muslim\'s daily routine',
+    description: 'The Importance of Daily Supplications\n\nDaily supplications form the foundation of a Muslim\'s spiritual connection with Allah. These essential duas help maintain constant remembrance throughout the day, from waking up to going to sleep. Regular recitation of daily supplications purifies the heart, brings barakah (blessings) to our time, and creates a protective spiritual shield around the believer. The Prophet (ﷺ) emphasized the importance of these daily remembrances as they keep us connected to Allah in every moment of our lives.',
     categories: ['daily'],
     icon: 'calendar',
     subcategories: [
@@ -102,7 +102,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
   {
     id: 'hadith-based',
     title: 'Hadith-based Supplications',
-    description: 'The Importance of Hadith-based Supplications - Authentic supplications from the Quran and Sunnah for every aspect of life',
+    description: 'The Importance of Hadith-based Supplications\n\nHadith-based supplications are the authentic duas taught directly by Prophet Muhammad (ﷺ) through his words, actions, and approvals. These supplications carry immense spiritual weight as they are the exact words and methods our beloved Prophet used to communicate with Allah. Following these Sunnah supplications connects us directly to the prophetic tradition, ensuring our worship is performed in the most beloved manner to Allah. Each dua has been preserved through authentic chains of narration and represents the perfect way to seek Allah\'s help, protection, and blessings in every situation of life.',
     categories: ['hadith'],
     icon: 'book',
     subcategories: [
@@ -1694,7 +1694,7 @@ export const ZIKR_SERIES: ZikrSeries[] = [
   {
     id: 'quranic-supplications',
     title: 'Quranic Supplications',
-    description: 'The Importance of Quranic Supplications - Prayers from the Holy Quran by the Prophets and believers',
+    description: 'The Importance of Quranic Supplications\n\nQuranic supplications are the direct words of Allah, revealed in the Holy Quran as perfect examples of how to call upon Him. These duas were made by the Prophets and righteous believers, and Allah preserved them in His final revelation as guidance for all humanity. When we recite Quranic supplications, we use the exact words that Allah chose and approved, making them the most powerful and accepted forms of dua. These supplications teach us the proper etiquette of calling upon Allah and demonstrate how the Prophets sought His help in times of need, guidance, and gratitude.',
     categories: ['quranic'],
     icon: 'library',
     subcategories: [
