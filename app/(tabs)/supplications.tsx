@@ -26,7 +26,8 @@ import { useTheme } from '@/shared/contexts/ThemeContext';
 import { ZikrSeries, ZikrCategory, DuaSubcategory } from '@/shared/types/supplications';
 import { ZIKR_SERIES, ZIKR_CATEGORIES } from '@/shared/constants/supplications';
 import { ExpandableText } from '@/src/components/ui/ExpandableText';
-import { CollectionTab, SupplicationSettings, type SupplicationDisplaySettings } from '@/src/features/supplications/components';
+import { CollectionTab, SupplicationSettings, ReminderModal, ReminderManagement, type SupplicationDisplaySettings } from '@/src/features/supplications/components';
+import { reminderService } from '@/shared/services/reminder.service';
 
 const { width, height } = Dimensions.get('window');
 
@@ -78,7 +79,7 @@ export default function SupplicationsScreen() {
   const { isDark } = useTheme();
   const colors = Colors[isDark ? 'dark' : 'light'];
   const manuscriptColors = getManuscriptColors(isDark, colors);
-  const [activeTab, setActiveTab] = useState<'browse' | 'collection'>('browse');
+  const [activeTab, setActiveTab] = useState<'browse' | 'collection' | 'reminders'>('browse');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSeries, setSelectedSeries] = useState<ZikrSeries | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<DuaSubcategory | null>(null);
@@ -89,6 +90,7 @@ export default function SupplicationsScreen() {
   const [bookmarkedDuas, setBookmarkedDuas] = useState<Set<string>>(new Set());
   const [isLoadingSession, setIsLoadingSession] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
   const [displaySettings, setDisplaySettings] = useState({
     showArabic: true,
     showTransliteration: true,
@@ -413,7 +415,8 @@ export default function SupplicationsScreen() {
             <TouchableOpacity
               style={[
                 styles.tabButton,
-                activeTab === 'browse' && [styles.activeTabButton, { backgroundColor: manuscriptColors.brown }]
+                activeTab === 'browse' && [styles.activeTabButton, { backgroundColor: manuscriptColors.brown }],
+                { flex: 1 }
               ]}
               onPress={() => setActiveTab('browse')}
             >
@@ -433,7 +436,8 @@ export default function SupplicationsScreen() {
             <TouchableOpacity
               style={[
                 styles.tabButton,
-                activeTab === 'collection' && [styles.activeTabButton, { backgroundColor: manuscriptColors.brown }]
+                activeTab === 'collection' && [styles.activeTabButton, { backgroundColor: manuscriptColors.brown }],
+                { flex: 1 }
               ]}
               onPress={() => setActiveTab('collection')}
             >
@@ -446,7 +450,28 @@ export default function SupplicationsScreen() {
                 styles.tabButtonText,
                 { color: activeTab === 'collection' ? '#FFFFFF' : manuscriptColors.lightInk }
               ]}>
-                Collection {bookmarkedDuas.size > 0 && `(${bookmarkedDuas.size})`}
+                Collection
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                styles.tabButton,
+                activeTab === 'reminders' && [styles.activeTabButton, { backgroundColor: manuscriptColors.brown }],
+                { flex: 1 }
+              ]}
+              onPress={() => setActiveTab('reminders')}
+            >
+              <Ionicons 
+                name="alarm" 
+                size={16} 
+                color={activeTab === 'reminders' ? '#FFFFFF' : manuscriptColors.lightInk} 
+              />
+              <Text style={[
+                styles.tabButtonText,
+                { color: activeTab === 'reminders' ? '#FFFFFF' : manuscriptColors.lightInk }
+              ]}>
+                Reminders
               </Text>
             </TouchableOpacity>
           </View>
@@ -492,7 +517,7 @@ export default function SupplicationsScreen() {
               ))}
             </Animated.View>
           )
-        ) : (
+        ) : activeTab === 'collection' ? (
           /* Collection Tab */
           <CollectionTab
             manuscriptColors={manuscriptColors} 
@@ -502,6 +527,9 @@ export default function SupplicationsScreen() {
               startZikrSession(subcategory);
             }}
           />
+        ) : (
+          /* Reminders Tab */
+          <ReminderManagement manuscriptColors={manuscriptColors} />
         )}
       </ScrollView>
 
@@ -556,6 +584,16 @@ export default function SupplicationsScreen() {
                   onPress={() => setShowSettings(true)}
                 >
                   <Ionicons name="settings" size={20} color={manuscriptColors.brown} />
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={[styles.settingsButton, {
+                    backgroundColor: manuscriptColors.parchment,
+                    borderColor: manuscriptColors.border
+                  }]}
+                  onPress={() => setShowReminderModal(true)}
+                >
+                  <Ionicons name="alarm" size={20} color={manuscriptColors.brown} />
                 </TouchableOpacity>
               </View>
 
@@ -737,6 +775,40 @@ export default function SupplicationsScreen() {
             ...settings as typeof prevSettings
           }))}
           manuscriptColors={manuscriptColors}
+        />
+        
+        {/* Reminder Modal */}
+        <ReminderModal
+          visible={showReminderModal}
+          onClose={() => setShowReminderModal(false)}
+          onCreateReminder={async (reminderData) => {
+            try {
+              if (!selectedSubcategory) {
+                console.error('No subcategory selected for reminder');
+                return;
+              }
+              
+              const supplicationData = {
+                title: selectedSubcategory.name,
+                arabic: selectedSubcategory.duas[currentDuaIndex]?.arabic,
+                transliteration: selectedSubcategory.duas[currentDuaIndex]?.transliteration,
+                translation: selectedSubcategory.duas[currentDuaIndex]?.translation,
+              };
+              
+              const response = await reminderService.createReminder(reminderData, supplicationData);
+              if (response.success) {
+                setShowReminderModal(false);
+                // Show success message or update UI
+                console.log('Reminder created successfully');
+              } else {
+                console.error('Failed to create reminder:', response.error);
+              }
+            } catch (error) {
+              console.error('Error creating reminder:', error);
+            }
+          }}
+          selectedSubcategory={selectedSubcategory}
+          isCreating={false}
         />
       </Modal>
     </SafeAreaView>
@@ -1154,7 +1226,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   tabButton: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
