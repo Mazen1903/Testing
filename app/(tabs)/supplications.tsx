@@ -87,6 +87,7 @@ export default function SupplicationsScreen() {
   const [currentDuaIndex, setCurrentDuaIndex] = useState(0);
   const [currentCount, setCurrentCount] = useState(0);
   const [bookmarkedDuas, setBookmarkedDuas] = useState<Set<string>>(new Set());
+  const [isLoadingSession, setIsLoadingSession] = useState(false);
   const horizontalScrollRef = useRef<ScrollView>(null);
   
   // Animation values for bookmark buttons
@@ -136,6 +137,33 @@ export default function SupplicationsScreen() {
   };
 
   const startZikrSession = (subcategory: DuaSubcategory) => {
+    try {
+      setIsLoadingSession(true);
+      
+      // Validate subcategory data
+      if (!subcategory || !subcategory.duas || subcategory.duas.length === 0) {
+        console.error('Invalid subcategory data:', subcategory);
+        return;
+      }
+      
+      // Reset state safely
+      setSelectedSubcategory(null);
+      setCurrentDuaIndex(0);
+      setCurrentCount(0);
+      
+      // Small delay to ensure state is reset
+      setTimeout(() => {
+        setSelectedSubcategory(subcategory);
+        setZikrSessionVisible(true);
+        setIsLoadingSession(false);
+      }, 100);
+    } catch (error) {
+      console.error('Error starting zikr session:', error);
+      setIsLoadingSession(false);
+    }
+  };
+
+  const startZikrSessionSafe = (subcategory: DuaSubcategory) => {
     setSelectedSubcategory(subcategory);
     setCurrentDuaIndex(0);
     setCurrentCount(0);
@@ -143,10 +171,18 @@ export default function SupplicationsScreen() {
   };
 
   const closeZikrSession = () => {
-    setZikrSessionVisible(false);
-    setSelectedSubcategory(null);
-    setCurrentDuaIndex(0);
-    setCurrentCount(0);
+    try {
+      setZikrSessionVisible(false);
+      
+      // Delay clearing state to prevent crashes during modal close
+      setTimeout(() => {
+        setSelectedSubcategory(null);
+        setCurrentDuaIndex(0);
+        setCurrentCount(0);
+      }, 300);
+    } catch (error) {
+      console.error('Error closing zikr session:', error);
+    }
   };
 
   const goBackToSeries = () => {
@@ -155,46 +191,81 @@ export default function SupplicationsScreen() {
   };
 
   const incrementCount = () => {
-    if (!selectedSubcategory) return;
-
-    const currentDua = selectedSubcategory.duas[currentDuaIndex];
-    const newCount = currentCount + 1;
-
-    if (newCount >= (currentDua.repetitions || 1)) {
-      // Move to next dua
-      if (currentDuaIndex < selectedSubcategory.duas.length - 1) {
-        // Completed current dhikr, moving to next
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        const nextIndex = currentDuaIndex + 1;
-        setCurrentDuaIndex(nextIndex);
-        setCurrentCount(0);
-        // Auto-scroll to next page
-        horizontalScrollRef.current?.scrollTo({
-          x: nextIndex * width,
-          animated: true
-        });
-      } else {
-        // Session complete - stronger celebration feedback
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        setTimeout(() => {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        }, 200);
-        closeZikrSession();
+    try {
+      if (!selectedSubcategory || !selectedSubcategory.duas || selectedSubcategory.duas.length === 0) {
+        console.warn('No subcategory or duas available');
+        return;
       }
-    } else {
-      // Regular count increment - light tap feedback
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      setCurrentCount(newCount);
+      
+      if (currentDuaIndex >= selectedSubcategory.duas.length) {
+        console.warn('Current dua index out of bounds');
+        return;
+      }
+
+      const currentDua = selectedSubcategory.duas[currentDuaIndex];
+      if (!currentDua) {
+        console.warn('Current dua not found');
+        return;
+      }
+      
+      const newCount = currentCount + 1;
+      const targetRepetitions = currentDua.repetitions || 1;
+
+      if (newCount >= targetRepetitions) {
+        // Move to next dua
+        if (currentDuaIndex < selectedSubcategory.duas.length - 1) {
+          // Completed current dhikr, moving to next
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          const nextIndex = currentDuaIndex + 1;
+          setCurrentDuaIndex(nextIndex);
+          setCurrentCount(0);
+          
+          // Safe auto-scroll with error handling
+          setTimeout(() => {
+            try {
+              horizontalScrollRef.current?.scrollTo({
+                x: nextIndex * width,
+                animated: true
+              });
+            } catch (scrollError) {
+              console.warn('Error auto-scrolling:', scrollError);
+            }
+          }, 100);
+        } else {
+          // Session complete - stronger celebration feedback
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          setTimeout(() => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          }, 200);
+          closeZikrSession();
+        }
+      } else {
+        // Regular count increment - light tap feedback
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setCurrentCount(newCount);
+      }
+    } catch (error) {
+      console.error('Error incrementing count:', error);
     }
   };
 
   const handlePageChange = (event: any) => {
-    const pageIndex = Math.round(event.nativeEvent.contentOffset.x / width);
-    if (pageIndex !== currentDuaIndex && pageIndex >= 0 && pageIndex < (selectedSubcategory?.duas.length || 0)) {
-      setCurrentDuaIndex(pageIndex);
-      setCurrentCount(0); // Reset counter when manually swiping to different dua
-      // Light haptic feedback for manual swipe
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    try {
+      if (!event?.nativeEvent?.contentOffset || !selectedSubcategory?.duas) {
+        return;
+      }
+      
+      const pageIndex = Math.round(event.nativeEvent.contentOffset.x / width);
+      const maxIndex = selectedSubcategory.duas.length - 1;
+      
+      if (pageIndex !== currentDuaIndex && pageIndex >= 0 && pageIndex <= maxIndex) {
+        setCurrentDuaIndex(pageIndex);
+        setCurrentCount(0); // Reset counter when manually swiping to different dua
+        // Light haptic feedback for manual swipe
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+    } catch (error) {
+      console.error('Error handling page change:', error);
     }
   };
 
@@ -265,7 +336,8 @@ export default function SupplicationsScreen() {
                 <Animated.View style={animatedStyle}>
                   <TouchableOpacity
                   style={[styles.bookmarkButtonCard, {
-                    backgroundColor: isBookmarked 
+                    onPress={() => startZikrSession(subcategory)}
+                    disabled={isLoadingSession}
                       ? manuscriptColors.brown + '20' 
                       : manuscriptColors.border + '30',
                     borderColor: manuscriptColors.border,
@@ -432,6 +504,13 @@ export default function SupplicationsScreen() {
         visible={zikrSessionVisible}
         onRequestClose={closeZikrSession}
       >
+        {isLoadingSession ? (
+          <View style={[styles.loadingContainer, { backgroundColor: manuscriptColors.parchment }]}>
+            <Text style={[styles.loadingText, { color: manuscriptColors.ink }]}>
+              Loading supplications...
+            </Text>
+          </View>
+        ) : (
         <LinearGradient
           colors={[manuscriptColors.parchment, manuscriptColors.darkParchment]}
           style={styles.manuscriptContainer}
@@ -463,7 +542,7 @@ export default function SupplicationsScreen() {
             </View>
 
             {/* Manuscript Content - Horizontal Swiping */}
-            {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
+            {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 ? (
               <ScrollView
                 ref={horizontalScrollRef}
                 horizontal
@@ -472,6 +551,8 @@ export default function SupplicationsScreen() {
                 onMomentumScrollEnd={handlePageChange}
                 style={styles.horizontalScrollView}
                 contentOffset={{ x: currentDuaIndex * width, y: 0 }}
+                bounces={false}
+                decelerationRate="fast"
               >
                 {selectedSubcategory.duas.map((dua, index) => (
                   <ScrollView
@@ -484,11 +565,12 @@ export default function SupplicationsScreen() {
                       style={styles.tappableContent}
                       onPress={index === currentDuaIndex ? incrementCount : undefined}
                       activeOpacity={index === currentDuaIndex ? 0.8 : 1}
+                      disabled={index !== currentDuaIndex}
                     >
                       {/* Arabic Text */}
                       <View style={styles.arabicSection}>
                         <Text style={[styles.manuscriptArabic, { color: manuscriptColors.ink }]}>
-                          {dua.arabic || ''}
+                          {dua.arabic || 'Arabic text not available'}
                         </Text>
                       </View>
 
@@ -498,14 +580,14 @@ export default function SupplicationsScreen() {
                       {/* Transliteration */}
                       <View style={styles.textSection}>
                         <Text style={[styles.manuscriptTransliteration, { color: manuscriptColors.lightInk }]}>
-                          {dua.transliteration || ''}
+                          {dua.transliteration || 'Transliteration not available'}
                         </Text>
                       </View>
 
                       {/* Translation */}
                       <View style={styles.textSection}>
                         <Text style={[styles.manuscriptTranslation, { color: manuscriptColors.lightInk }]}>
-                          {dua.translation || ''}
+                          {dua.translation || 'Translation not available'}
                         </Text>
                       </View>
 
@@ -513,7 +595,7 @@ export default function SupplicationsScreen() {
                       <View style={[styles.referenceSection, { borderTopColor: manuscriptColors.border }]}>
                         {(dua.fullReference && (dua.id === '1-2' || dua.id === '2-1' || dua.id === '2-2' || dua.id === '2-6' || dua.id === '2-8')) ? (
                           <ExpandableText
-                            text={`Reference: ${dua.reference || ''}\n\n${dua.fullReference}`}
+                            text={`Reference: ${dua.reference || 'No reference'}\n\n${dua.fullReference}`}
                             numberOfLines={2}
                             style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
                             expandStyle={[styles.manuscriptReference, { color: manuscriptColors.brown }]}
@@ -525,7 +607,7 @@ export default function SupplicationsScreen() {
                           />
                         ) : (
                           <Text style={[styles.manuscriptReference, { color: manuscriptColors.brown }]}>
-                            {dua.reference || ''}
+                            {dua.reference || 'No reference available'}
                           </Text>
                         )}
                       </View>
@@ -533,10 +615,22 @@ export default function SupplicationsScreen() {
                   </ScrollView>
                 ))}
               </ScrollView>
+            ) : (
+              <View style={styles.errorContainer}>
+                <Text style={[styles.errorText, { color: manuscriptColors.ink }]}>
+                  No supplications available
+                </Text>
+                <TouchableOpacity 
+                  style={[styles.retryButton, { backgroundColor: manuscriptColors.brown }]}
+                  onPress={closeZikrSession}
+                >
+                  <Text style={styles.retryButtonText}>Go Back</Text>
+                </TouchableOpacity>
+              </View>
             )}
 
             {/* Navigation Indicator */}
-            {selectedSubcategory && (
+            {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
               <View style={styles.swipeIndicatorContainer}>
                 {selectedSubcategory.duas.length > 1 && (
                   <View style={styles.swipeDotsContainer}>
@@ -565,7 +659,8 @@ export default function SupplicationsScreen() {
             )}
 
             {/* Islamic Counter */}
-            <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
+            {selectedSubcategory && selectedSubcategory.duas && selectedSubcategory.duas.length > 0 && (
+              <View style={[styles.islamicCounterContainer, { borderTopColor: manuscriptColors.border }]}>
               {/* Counter Info Row */}
               <View style={styles.counterInfoRow}>
                 <View style={[styles.counterLabelContainer, {
@@ -596,13 +691,15 @@ export default function SupplicationsScreen() {
                   borderColor: manuscriptColors.border
                 }]}>
                   <Text style={[styles.counterLabelText, { color: manuscriptColors.brown }]}>
-                    {selectedSubcategory?.duas[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas[currentDuaIndex]?.repetitions || 1} times`}
+                    {selectedSubcategory?.duas?.[currentDuaIndex]?.repetitions === 1 ? 'Once' : `${selectedSubcategory?.duas?.[currentDuaIndex]?.repetitions || 1} times`}
                   </Text>
                 </View>
               </View>
-            </View>
+              </View>
+            )}
           </SafeAreaView>
         </LinearGradient>
+        )}
       </Modal>
     </SafeAreaView>
   );
@@ -951,6 +1048,36 @@ const styles = StyleSheet.create({
   counterButtonText: {
     fontSize: 32,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   learnMoreButton: {
     borderWidth: 1,
